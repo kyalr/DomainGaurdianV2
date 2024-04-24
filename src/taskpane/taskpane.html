@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Domain Guardian</title>
+
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script type="text/javascript" src="taskpane.js"></script>
+
+    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>
+
+    <style>
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1px;
+        }
+
+        p {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 10px;
+            line-height: 1.2;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 5px 20px;
+            background-color: #4285f4;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 1px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .cta-button:hover {
+            background-color: #1a73e8;
+        }
+
+        .ms-font-su {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .ms-font-xl {
+             font-size: 18px;   
+        }
+
+                body {
+            font-family: Arial, sans-serif;
+            }
+            .container {
+            width: 250px;
+            margin: 0 auto;
+            margin-top: 100px;
+            }
+            input[type="text"],
+            input[type="password"],
+            input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            }
+            input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            }
+            input[type="submit"]:hover {
+            background-color: #45a049;
+            }
+
+        </style>
+        
+</head>
+
+<body class="ms-font-m ms-welcome ms-Fabric">
+
+    <header class="ms-welcome__header ms-bgColor-neutralLighter">
+        <h1 class="ms-font-su">Welcome to Domain Guardian</h1>
+    </header>
+   
+    <main id="app-body" class="ms-welcome__main" style="display: none;">
+
+        <div style="width: 100%; height: 1000px; padding-left: 20px;"><div >
+            <div>
+   
+                    <label type="text" for="username">Username:</label><br>
+                    <input type="text" id="username" name="username"><br>
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password"><br><br>
+                    <button class="cta-button" onclick="login()">Login</button>
+    
+
+                <h1 style="padding-left: 20px;"></h1>
+                <button class="cta-button" type="submit" id="openReport">Open Report</button>
+                <div id="embed-container" style="height:200px;width: 100%;"></div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>   
+
+    <script src="https://unpkg.com/powerbi-client"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.18.0/dist/powerbi.min.js"></script>
+
+    <script>
+
+
+
+        function login() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            const AutheticationToken = null;
+
+
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            const raw = JSON.stringify({
+            "userNameOrEmailAddress": username,
+            "password": password,
+            "twoFactorVerificationCode": "string",
+            "rememberClient": true,
+            "twoFactorRememberClientToken": "string",
+            "singleSignIn": true,
+            "returnUrl": "string",
+            "captchaResponse": "string"
+            });
+
+            const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+            };
+
+            fetch("https://strategnoscloudqa.com/api/TokenAuth/Authenticate", requestOptions)
+            .then(response => response.json()) // Parse response as JSON
+            .then(data => {
+                        const AutheticationToken = data.success;
+                        if(AutheticationToken == true){
+                            document.getElementById('openReport').style.visibility = 'visible'
+                        }
+                        else{
+                            console.log("You may not enter")
+                        }
+                
+            })
+                .catch(error => console.error(error));
+
+            }
+
+
+
+
+        let bearerToken;
+        // Add button click event handler
+        document.getElementById("openReport").addEventListener("click", function() {
+            getBearerToken();
+        });
+
+        function getBearerToken() {
+            const myHeaders = new Headers();
+            myHeaders.append("Cookie", "fpc=Av7aDLznq-ZLiHHI259-Uu6LX2vzAgAAAJSiud0OAAAA; stsservicecookie=estsfd; x-ms-gateway-slice=estsfd");
+
+            const formdata = new FormData();
+            formdata.append("grant_type", "client_credentials");
+            formdata.append("scope", "https://analysis.windows.net/powerbi/api/.default");
+            formdata.append("client_id", "9c470723-5fda-4af4-9041-3e7d711e5f8c");
+            formdata.append("client_secret", "6i5_7~knQ-3iP-9d.lOVw1mPV4UkcFEW_F");
+
+            const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: formdata,
+                redirect: "follow"
+    };
+
+    fetch("https://login.microsoftonline.com/858a2bd3-fcd2-45ee-b46c-f934803bd0b2/oauth2/v2.0/token", requestOptions)
+        .then(response => response.json()) // Parse response as JSON
+        .then(data => {
+            const bearerToken = data.access_token;
+            console.log("bearer:" + data.access_token) // Assign access token value to the variable
+            getEmbedToken(bearerToken); // Call getEmbedToken with the obtained bearer token
+        })
+        .catch(error => console.error(error));
+}
+
+function getEmbedToken(bearerToken) {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer " + bearerToken); // Replace with your access token
+
+    const raw = JSON.stringify({
+        "reports": [{
+            "id": "c4d8fb6f-6207-468d-8c2b-8362d08b7a98"
+        }],
+        "datasets": [{
+            "id": "e630b89b-b891-4a2d-b1ac-c61491ea0aaa"
+        }],
+        "targetWorkspaces": [{
+            "id": "d2095bbb-35a0-4aed-855c-ce7f5eab84df"
+        }]
+    });
+
+    const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+    };
+
+    fetch("https://api.powerbi.com/v1.0/myorg/GenerateToken", requestOptions)
+        .then(response => response.json()) // Parse response as JSON
+        .then(data => {
+            const accessToken = data.token; // Assign access token value to the variable
+            console.log("accessToken: " + accessToken); // Optionally log the access token
+
+            // Set up the configuration object that determines what to embed and how to embed it.
+            const embedConfiguration = {
+                accessToken: accessToken,
+                embedUrl: 'https://app.powerbi.com/reportEmbed?config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLUVVUk9QRS1OT1JUSC1CLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0IiwiZW1iZWRGZWF0dXJlcyI6eyJ1c2FnZU1ldHJpY3NWTmV4dCI6dHJ1ZX19',
+                tokenType: 1,
+                id: 'c4d8fb6f-6207-468d-8c2b-8362d08b7a98',
+                type: 'report',
+                settings: {
+                    extensions: [
+                    {
+                        command: {
+                            name: "campaign",
+                            title: "Start campaign",
+                            icon: 'ALT',
+                            extend: {
+                                visualOptionsMenu: {
+                                    title: "Export to Spreadsheet"
+                                }
+                            }
+                        }
+                    }]
+                }
+            };
+
+            // Get a reference to the HTML element that contains the embedded report.
+            const embedContainer = document.getElementById('embed-container');
+
+            // Embed the report.
+            let report = powerbi.embed(embedContainer, embedConfiguration);
+
+            report.on("commandTriggered", async function (event) {
+            if (event.detail.command === "campaign") {
+                const pages = await report.getPages();
+                
+                    // Retrieve the page that contain the visual. For the sample report it will be the active page
+                    let page = pages.filter(function (page) {
+                        return page.isActive
+                    })[0];
+                
+                    const visuals = await page.getVisuals();
+                
+                    // Retrieve the target visual.
+                    let visual = visuals.filter(function (visual) {
+                        return visual.title === "Validation Master Plan";
+                    })[0];
+
+                    const result = await visual.exportData();
+
+                    // Convert CSV data to HTML table
+                    let emailBody = "<table border='1'>";
+                    let lines = result.data.split("\r\n"); // Split CSV data into lines
+                    lines.forEach(function (line, index) {
+                    if (line) {
+                        let cells = line.split(","); // Split each line into cells
+                        if (index === 0) {
+                        // First line is header
+                        emailBody += "<tr>";
+                        cells.forEach(function (cell) {
+                            emailBody += "<th>" + cell + "</th>";
+                        });
+                        emailBody += "</tr>";
+                        } else {
+                        // Other lines are data rows
+                        emailBody += "<tr>";
+                        cells.forEach(function (cell) {
+                            emailBody += "<td>" + cell + "</td>";
+                        });
+                        emailBody += "</tr>";
+                        }
+                    }
+                    });
+                    emailBody += "</table>";
+
+                    // Set email body
+                    Office.context.mailbox.item.body.setAsync(emailBody, { coercionType: Office.CoercionType.Html });
+
+
+            }})
+
+        })
+        .catch(error => console.error(error));
+
+        //window.open("taskpane.html", "Popup", "width=600,height=400")
+    }
+
+
+
+    </script>
+    
+
+

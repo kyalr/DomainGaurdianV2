@@ -1,0 +1,10 @@
+{
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript"
+    ],
+    "azureAutomation.directory.basePath": "c:\\Users\\kyler",
+    "liveServer.settings.port": 5501
+  }
+  
