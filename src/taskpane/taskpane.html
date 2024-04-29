@@ -207,7 +207,7 @@
             console.log("bearer:" + data.access_token) // Assign access token value to the variable
             getEmbedToken(bearerToken); // Call getEmbedToken with the obtained bearer token
         })
-        .catch(error => console.error(error));
+        .catch(error => document.getElementById('reportWarning').style.visibility = "visible");
 }
 
 function getEmbedToken(bearerToken) {
@@ -319,8 +319,6 @@ function getEmbedToken(bearerToken) {
 
         })
         .catch(error => console.error(error));
-
-        //window.open("taskpane.html", "Popup", "width=600,height=400")
     }
 
 
