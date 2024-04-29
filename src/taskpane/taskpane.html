@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Domain Guardian</title>
+    <title>Domain Gaurdian</title>
 
     <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
@@ -33,6 +33,7 @@
             background-color: #f4f4f4;
             padding: 10px;
             line-height: 1.2;
+
         }
         
         .cta-button {
@@ -94,7 +95,7 @@
 <body class="ms-font-m ms-welcome ms-Fabric">
 
     <header class="ms-welcome__header ms-bgColor-neutralLighter">
-        <h1 class="ms-font-su">Welcome to Domain Guardian</h1>
+        <h1 class="ms-font-su">Welcome to Domain Gaurdian</h1>
     </header>
    
     <main id="app-body" class="ms-welcome__main" style="display: none;">
@@ -111,6 +112,8 @@
 
                 <h1 style="padding-left: 20px;"></h1>
                 <button class="cta-button" type="submit" id="openReport">Open Report</button>
+                <p id="warning" style="color: rgb(253, 145, 145);">Incorrect username or password!</p>
+                <p id="reportWarning" style="color: rgb(253, 145, 145);">The report cannot be displayed!</p>
                 <div id="embed-container" style="height:200px;width: 100%;"></div>
             </div>
         </div>
@@ -162,17 +165,16 @@
                         const AutheticationToken = data.success;
                         if(AutheticationToken == true){
                             document.getElementById('openReport').style.visibility = 'visible'
+                            document.getElementById('warning').style.visibility = 'hidden'
                         }
                         else{
-                            console.log("You may not enter")
+                            document.getElementById('warning').style.visibility = 'visible'
                         }
                 
             })
                 .catch(error => console.error(error));
 
             }
-
-
 
 
         let bearerToken;
@@ -195,7 +197,7 @@
                 method: "POST",
                 headers: myHeaders,
                 body: formdata,
-                redirect: "follow"
+                redirect: "follow",
     };
 
     fetch("https://login.microsoftonline.com/858a2bd3-fcd2-45ee-b46c-f934803bd0b2/oauth2/v2.0/token", requestOptions)
@@ -313,8 +315,6 @@ function getEmbedToken(bearerToken) {
 
                     // Set email body
                     Office.context.mailbox.item.body.setAsync(emailBody, { coercionType: Office.CoercionType.Html });
-
-
             }})
 
         })

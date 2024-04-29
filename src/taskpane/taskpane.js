@@ -6,6 +6,8 @@ Office.onReady((info) => {
       document.getElementById("app-body").style.display = "flex";
       
       document.getElementById('openReport').style.visibility = 'hidden'
+      document.getElementById('warning').style.visibility = 'hidden'
+      document.getElementById('reportWarning').style.visibility = 'hidden'
 
     }
   });
