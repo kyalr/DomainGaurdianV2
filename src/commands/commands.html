@@ -8,6 +8,7 @@
     <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     <script type="text/javascript" src="commands.js"></script>
+
 </head>
 
 <body>
@@ -23,7 +24,6 @@ function onItemSendHandler(event) {
     .then((uniqueDomains) => {
       // Display the email domains of the recipients as a comma-separated string.
       let domainsString = Array.from(uniqueDomains).join("\n");      
-
       event.completed({
         allowEvent: false,
         cancelLabel: "Don't Send",
@@ -37,7 +37,7 @@ function onItemSendHandler(event) {
     const currentTime = new Date().getTime();
     const milliseconds = 3 * 60 * 1000;
     const timeDelay = new Date(currentTime + milliseconds);
-      console.log(timeDelay)
+      
       Office.context.mailbox.item.delayDeliveryTime.setAsync(timeDelay, (asyncResult) => {
         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
           console.log(asyncResult.error.message);
@@ -45,18 +45,22 @@ function onItemSendHandler(event) {
         }
         console.log("Message delivery has been scheduled.");
       }); 
-
+    
 }
 
 async function getAllRecipients() {
   return new Promise((resolve, reject) => {
-    let toRecipients, ccRecipients, bccRecipients;
+    let toRecipients, ccRecipients, bccRecipients, startTime, endTime;
     let uniqueDomains = new Set();
+    var test
+
+    let item = Office.context.mailbox.item;
 
     // Verify if the mail item is an appointment or message.
     if (item.itemType === Office.MailboxEnums.ItemType.Appointment) {
       toRecipients = item.requiredAttendees;
       ccRecipients = item.optionalAttendees;
+
     } else {
       toRecipients = item.to;
       ccRecipients = item.cc;
@@ -89,7 +93,8 @@ async function getAllRecipients() {
         addDomains(asyncResult.value);
 
         // Get the recipients from the Bcc field of the message being composed, if applicable.
-        if (bccRecipients.length > 0) {
+        
+        if (bccRecipients && bccRecipients.length > 0) {
           bccRecipients.getAsync((asyncResult) => {
             if (asyncResult.status === Office.AsyncResultStatus.Failed) {
               reject(asyncResult.error.message);
@@ -107,6 +112,114 @@ async function getAllRecipients() {
       });
     });
   });
+}
+
+function saveAppointment(event){
+  let userId, parentId, displayName, startDate, endDate, timesheets, folderCode;
+  userId = localStorage.getItem("userId");
+  parentId = localStorage.getItem("buttonId");
+  timesheets = localStorage.getItem("timesheets");
+  folderCode = localStorage.getItem("folderCode")
+  
+  console.log(timesheets);
+
+  if(timesheets == "true"){
+      Office.context.mailbox.item.start.getAsync((result) => {
+      if (result.status !== Office.AsyncResultStatus.Succeeded) {
+          console.error(`Action failed with message ${result.error.message}`);
+          return;
+      }
+        startDate = result.value;
+        console.log(startDate)
+      });
+
+      Office.context.mailbox.item.end.getAsync((result) => {
+      if (result.status !== Office.AsyncResultStatus.Succeeded) {
+          console.error(`Action failed with message ${result.error.message}`);
+          return;
+      }
+        endDate = result.value;
+      });
+
+      Office.context.mailbox.item.subject.getAsync((result) => {
+      if (result.status !== Office.AsyncResultStatus.Succeeded) {
+          console.error(`Action failed with message ${result.error.message}`);
+          return;
+      }
+        displayName = result.value;
+          // Check if all required values are available before calling CreateTask
+          if (userId && parentId && displayName && startDate && endDate) {
+            console.log(userId, parentId, displayName, startDate, endDate)
+            const myHeaders = new Headers();
+            myHeaders.append("accept", "text/plain");
+            myHeaders.append("Content-Type", "application/json-patch+json");
+            myHeaders.append("Authorization", "Bearer " + localStorage.getItem("SCToken"));
+
+            const raw = JSON.stringify({
+              "initialUsers": [
+                  userId
+              ],
+              "featureValues": [
+                  {
+                  "name": "App.Diagram",
+                  "value": "false"
+                  },
+                  {
+                  "name": "App.FileAttachments",
+                  "value": "false"
+                  },
+                  {
+                  "name": "App.Notes",
+                  "value": "false"
+                  }
+              ],
+              "parentId": parentId,
+              "organizationTaskTypeId": 3,
+              "organizationTaskStatusId": 1,
+              "isBillable": false,
+              "timeZoneId": "South Africa Standard Time",
+              "startDate": startDate,
+              "endDate": endDate,
+              "folderCode": folderCode,
+              "travelDistance": 0,
+              "displayName": displayName
+            });
+
+            const requestOptions = {
+              method: "POST",
+              headers: myHeaders,
+              body: raw,
+              redirect: "follow"
+            };
+
+            fetch("https://strategnos.strategnoscloudqa.com/api/services/app/Task/CreateUnit", requestOptions)
+            .then((response) => response.text())
+            .then((result) => {console.log(result),
+              event.completed({ allowEvent: true });
+            })
+            .catch((error) => console.error(error));
+              }
+      });
+    }
+    else {
+      getAllRecipients()
+    .then((uniqueDomains) => {
+      // Display the email domains of the recipients as a comma-separated string.
+      let domainsString = Array.from(uniqueDomains).join("\n");      
+      event.completed({
+        allowEvent: false,
+        cancelLabel: "Don't Send",
+        commandId: "",
+        contextData: JSON.stringify({ a: "aValue", b: "bValue" }),
+        errorMessage: domainsString,
+        sendModeOverride: Office.MailboxEnums.SendModeOverride.PromptUser,          
+      });
+    })  
+  }
+}
+
+function setTimesheets(){
+  localStorage.setItem("timesheets", "false")
 }
 
 </script>

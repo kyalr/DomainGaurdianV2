@@ -10,6 +10,8 @@
     <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     <script type="text/javascript" src="taskpane.js"></script>
+    <script src="https://kit.fontawesome.com/8f86fe6637.js" crossorigin="anonymous"></script>
+
 
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>
@@ -52,8 +54,10 @@
         }
 
         .ms-font-su {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
+            display: inline-block;
+            margin-left: 15px;
         }
 
         .ms-font-xl {
@@ -94,52 +98,222 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(136, 135, 135, 0.5); /* Semi-transparent black */
+            background-color: rgba(82, 82, 82, 0.5); /* Semi-transparent black */
             z-index: 999; /* Ensure it's on top of other elements */
             }
             .loading-spinner {
                 position: absolute;
-                top: 20%;
+                top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
             }
 
-        </style>
+            .tree {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+/* Style for tree nodes */
+.tree-node {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Style for node label button */
+.node-button {
+    display: block;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    width: 100%;
+    text-align: left;
+}
+
+.node-button:hover {
+    background-color: #b2e0ff;
+}
+
+/* Indentation based on level */
+.tree-node > li {
+    margin-left: 0px;
+}
+
+/* Different levels of indentation */
+.tree-node > li > ul {
+    margin-left: 1px;
+    border-left: 1px solid #ccc;
+    padding-left: 15px;
+}
+
+/* Collapse/Expand functionality */
+.tree-node > li > ul.collapsed {
+    display: none;
+}
+            /* Context menu styles */
+            .context-menu {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                background-color: #fff;
+                border: 1px solid #ccc;
+                padding: 5px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            }
+
+            .context-menu ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .context-menu ul li {
+                margin: 5px 0;
+            }
+
+            .context-menu ul li a {
+                text-decoration: none;
+                color: #333;
+                padding: 0px;
+                display: block;
+                text-align: left;
+            }
+
+            .context-menu ul li a:hover {
+                background-color: #f0f0f0;
+            }
+            .selected {
+                background-color: #4285f4; /* Blue background color */
+                color: white; /* White text color */
+                border: 1px solid #2f3030; /* Darker blue border */
+                /* Add any other styles to indicate selection */
+            }
+            .logout-button {
+                display: inline-block;
+                background-color: rgb(175, 175, 175); /* Red background color, change as needed */
+                color: #fff; /* White text color */
+                border: none;
+                border-radius: 4px;
+                font-size: 10px;
+                text-decoration: none;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                margin-left: 10px; /* Adjust margin as needed */
+                padding-bottom: 2px;
+                padding-top: 2px;
+            }
+
+            .logout-button:hover {
+                background-color: rgb(43, 43, 43); /* Darker red on hover, change as needed */
+            }
+            .node-icon {
+                background-color: red;
+            }
+            .header-container {
+                display: flex;
+                align-items: center;
+            }
+            #checkboxContainer {
+                display: inline-block;
+                text-align: left;
+                margin-bottom: 5px;
+                margin-top: 5px;
+                width: 100%;
+                margin-right: 15px;
+                
+            }
+            #checkboxlabel:hover {
+                cursor: pointer;
+                background-color: #b2e0ff;
+                border-radius: 8px;
+            }
+
+            .search:after{
+                font-family: 'FontAwesome';
+                content: '\f274';
+                position: absolute;
+                right: 6px;
+            }
+
+    </style>
         
 </head>
 
 <body class="ms-font-m ms-welcome ms-Fabric">
 
     <header class="ms-welcome__header ms-bgColor-neutralLighter">
-        <h1 class="ms-font-su">Welcome to Domain Gaurdian</h1>
+        <div class="header-container">
+            <h1 class="ms-font-su">Welcome to Domain Guardian</h1>
+            <button class="logout-button" id="logout" onclick="logout()">
+              <i class="fa fa-sign-out"></i>
+            </button>
+          </div>
+
     </header>
    
     <main id="app-body" class="ms-welcome__main" style="display: none;">
 
         <div style="width: 100%; height: 1000px; padding-left: 20px;"><div >
-            <div>
-   
+
+            <div id="login-section">
                     <label type="text" for="username">Username:</label><br>
                     <input type="text" id="username" name="username"><br>
                     <label for="password">Password:</label><br>
                     <input type="password" id="password" name="password"><br><br>
                     <button class="cta-button" onclick="login()">Login</button>
 
-                    <!-- Add a modal overlay -->
-                    <div id="loading-overlay" class="loading-overlay">
-                    <div class="loading-spinner">
-                        <img style="width: 300px; height: 200px;" src="C:\Users\kyler\Desktop\DomainGaurdianV2\assets\loading.gif" alt="Loading..." />
-                    </div>
-                    </div>
 
-                <h1 style="padding-left: 20px;"></h1>
-                <button class="cta-button" type="submit" id="openReport">Open Report</button>
                 <p id="warning" style="color: rgb(253, 145, 145);">Incorrect username or password!</p>
-                <p id="reportWarning" style="color: rgb(253, 145, 145);">The report cannot be displayed!</p>
-                <div id="embed-container" style="height:200px;width: 100%;"></div>
+
             </div>
+
+
+            <div id = "treediv">
+                <div class="fontpassword">
+                    <input class="search" type="text" id="search-input" placeholder="Search...">
+                </div>
+                <div id="contentWrapper" style="text-align: left;margin-left: 8px;">
+                    <div id="checkboxContainer">
+                        <input type="checkbox" name="radio" id="checkbox" style="display: none;">
+                        <label for="checkbox" id="checkboxlabel">
+                            <i class="fa-regular fa-clock"></i> <!-- Unchecked checkbox icon -->
+                            <i class="fa-solid fa-clock" style="display: none;"></i> <!-- Checked checkbox icon -->
+                            timesheets <em style="font-size: 12px;">(click here to enable tasks)</em>
+                        </label>
+                    </div>
+                    <!-- Other content -->
+                </div>
+
+                <div id="organization-tree"></div>
+            </div><br>
+
+            <div id="reporting">
+                <button class="cta-button" onclick="embedPowerBIReport()" id="openReport">Open Report</button>
+                <div id="embed-container" style="height:200px;width: 100%; padding-top: 10px;"></div>
+                <p id="reportWarning" style="color: rgb(253, 145, 145);">The report cannot be displayed!</p>
+            </div>
+
+            <!-- Add a modal overlay -->
+            <div id="loading-overlay" class="loading-overlay">
+                <div class="loading-spinner">
+                    <img style="width: 300px; height: 200px;" src="C:\Users\kyler\Desktop\DomainGaurdianV2\assets\loading.gif" alt="Loading..." />
+                </div>
+                </div>
+            <br>
+
+
         </div>
     </main>
+
+    <!-- Context menu popup -->
+    <div id="context-menu" class="context-menu">
+        <ul>
+            <li><a href="#" id="menu-option-1">Add Task</a></li>
+            <!-- Add more menu options as needed -->
+        </ul>
+    </div>
 
 </body>
 
@@ -152,131 +326,190 @@
     <script>
 
 
+let userId;
 
-        function login() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            document.getElementById("loading-overlay").style.display = "block";
+document.getElementById("checkbox").addEventListener("change", function() {
+        var checkboxIcon = document.getElementById("checkboxlabel").querySelectorAll("i");
+        checkboxIcon.forEach(function(icon) {
+            icon.style.display = this.checked ? "none" : "inline-block";
+        }, this);
+        // Toggle the display of the checked icon
+        checkboxIcon[1].style.display = this.checked ? "inline-block" : "none";
+    });
 
-            const AutheticationToken = null;
-
-
-            const myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-
-            const raw = JSON.stringify({
-            "userNameOrEmailAddress": username,
-            "password": password,
-            "twoFactorVerificationCode": "string",
-            "rememberClient": true,
-            "twoFactorRememberClientToken": "string",
-            "singleSignIn": true,
-            "returnUrl": "string",
-            "captchaResponse": "string"
-            });
-
-            const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: raw,
-            redirect: "follow"
-            };
-
-            fetch("https://strategnoscloudqa.com/api/TokenAuth/Authenticate", requestOptions)
-            .then(response => response.json()) // Parse response as JSON
-            .then(data => {
-                        const AutheticationToken = data.success;
-                        if(AutheticationToken == true){
-                            document.getElementById('openReport').style.visibility = 'visible'
-                            document.getElementById('warning').style.visibility = 'hidden'
-                        }
-                        else{
-                            document.getElementById('warning').style.visibility = 'visible'
-                        }
-                        document.getElementById("loading-overlay").style.display = "none"
-                
-            })
-                .catch(error => {console.error(error);
-                document.getElementById("loading-overlay").style.display = "none";
-                });
-            }
-
-
-        let bearerToken;
-        // Add button click event handler
-        document.getElementById("openReport").addEventListener("click", function() {
-            getBearerToken();
-        });
-
-        function getBearerToken() {
-            document.getElementById("loading-overlay").style.display = "block";
-            const myHeaders = new Headers();
-            myHeaders.append("Cookie", "fpc=Av7aDLznq-ZLiHHI259-Uu6LX2vzAgAAAJSiud0OAAAA; stsservicecookie=estsfd; x-ms-gateway-slice=estsfd");
-
-            const formdata = new FormData();
-            formdata.append("grant_type", "client_credentials");
-            formdata.append("scope", "https://analysis.windows.net/powerbi/api/.default");
-            formdata.append("client_id", "9c470723-5fda-4af4-9041-3e7d711e5f8c");
-            formdata.append("client_secret", "6i5_7~knQ-3iP-9d.lOVw1mPV4UkcFEW_F");
-
-            const requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: formdata,
-                redirect: "follow",
-    };
-
-    fetch("https://login.microsoftonline.com/858a2bd3-fcd2-45ee-b46c-f934803bd0b2/oauth2/v2.0/token", requestOptions)
-        .then(response => response.json()) // Parse response as JSON
-        .then(data => {
-            const bearerToken = data.access_token;
-            console.log("bearer:" + data.access_token) // Assign access token value to the variable
-            getEmbedToken(bearerToken); // Call getEmbedToken with the obtained bearer token
-            document.getElementById("loading-overlay").style.display = "none"
-        })
-        .catch(error => {document.getElementById('reportWarning').style.visibility = "visible";
-        document.getElementById("loading-overlay").style.display = "none"});
+function logout(){
+    localStorage.clear()
+    Office.context.ui.closeContainer();
 }
 
-function getEmbedToken(bearerToken) {
+var checkbox = document.getElementById('checkbox');
+checkbox.addEventListener('click', function() {
+    if (this.checked) {
+        localStorage.setItem("timesheets", "true")
+        let toRecipients, ccRecipients, bccRecipients;
+
+      // Verify if the mail item is an appointment or message.
+      if (item.itemType === Office.MailboxEnums.ItemType.Appointment) {
+          toRecipients = item.requiredAttendees;
+          ccRecipients = item.optionalAttendees;
+      }
+      else {
+          toRecipients = item.to;
+          ccRecipients = item.cc;
+          bccRecipients = item.bcc;
+      }
+    toRecipients.setAsync(
+          [{
+              "displayName": Office.context.mailbox.userProfile.displayName,
+              "emailAddress": Office.context.mailbox.userProfile.emailAddress
+           }],
+          (asyncResult) => {
+              if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                  console.log(asyncResult.error.message);
+                  return;
+              }
+  
+              console.log("Successfully set the recipients in the Cc or Optional field.");
+              // Run additional operations appropriate to your scenario.
+      });
+    } else {
+        localStorage.setItem("timesheets", "false")
+    }
+});
+
+
+function login() {
+
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    document.getElementById("loading-overlay").style.display = "block";
+    document.getElementById('logout').style.display = 'block'
+
+    const authenticationSuccess = null;
+    var authenticationToken = null;
+
+    var isLoggedIn;
+
+
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + bearerToken); // Replace with your access token
 
     const raw = JSON.stringify({
-        "reports": [{
-            "id": "c4d8fb6f-6207-468d-8c2b-8362d08b7a98"
-        }],
-        "datasets": [{
-            "id": "e630b89b-b891-4a2d-b1ac-c61491ea0aaa"
-        }],
-        "targetWorkspaces": [{
-            "id": "d2095bbb-35a0-4aed-855c-ce7f5eab84df"
-        }]
+    "userNameOrEmailAddress": username,
+    "password": password,
+    "twoFactorVerificationCode": "string",
+    "rememberClient": true,
+    "twoFactorRememberClientToken": "string",
+    "singleSignIn": true,
+    "returnUrl": "string",
+    "captchaResponse": "string"
     });
 
     const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow"
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
     };
 
-    fetch("https://api.powerbi.com/v1.0/myorg/GenerateToken", requestOptions)
-        .then(response => response.json()) // Parse response as JSON
-        .then(data => {
-            const accessToken = data.token; // Assign access token value to the variable
-            console.log("accessToken: " + accessToken); // Optionally log the access token
+    fetch("https://strategnos.strategnoscloudqa.com/api/TokenAuth/Authenticate", requestOptions)
+    .then(response => response.json()) // Parse response as JSON
+    .then(data => {
+                userId = data.result.userId;
+                var myVariable  = userId;
+                const authenticationSuccess = data.success;
+                if(authenticationSuccess == true){
+                    localStorage.setItem("userId", userId);
+                    document.getElementById('reporting').style.display = 'block'
+                    document.getElementById('warning').style.display = 'none'
+                    authenticationToken = data.result.accessToken
+                    localStorage.setItem("SCToken", authenticationToken);
+                    getOrganizationUNits(authenticationToken);
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById("contentWrapper").style.display = "block"
+                }
+                else{
+                    document.getElementById('warning').style.visibility = 'visible'
+                }
+                document.getElementById("loading-overlay").style.display = "none"
+        
+    })
+        .catch(error => {console.error(error);
+            document.getElementById("loading-overlay").style.display = "none";
+        });
 
-            // Set up the configuration object that determines what to embed and how to embed it.
-            const embedConfiguration = {
-                accessToken: accessToken,
-                embedUrl: 'https://app.powerbi.com/reportEmbed?config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLUVVUk9QRS1OT1JUSC1CLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0IiwiZW1iZWRGZWF0dXJlcyI6eyJ1c2FnZU1ldHJpY3NWTmV4dCI6dHJ1ZX19',
-                tokenType: 1,
-                id: 'c4d8fb6f-6207-468d-8c2b-8362d08b7a98',
-                type: 'report',
-                settings: {
-                    extensions: [
+}
+
+          
+function getOrganizationUNits(authenticationToken){
+    document.getElementById("loading-overlay").style.display = "block";
+    const myHeaders = new Headers();
+    myHeaders.append("accept", "text/plain");
+    myHeaders.append("Authorization", "Bearer " + authenticationToken);
+
+    const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow"
+    };
+
+    fetch("https://strategnos.strategnoscloudqa.com/api/services/app/OrganizationUnit/GetOrganizationTreeByTenantAndUserId", requestOptions)
+    .then(response => response.json()) // Parse response as JSON
+    .then(result => {
+    // Call function to populate dropdown with fetched data
+        console.log(result)
+        const organizationTree = generateOrganizationTree(result);
+        const treeContainer = document.getElementById('organization-tree');
+        treeContainer.appendChild(organizationTree);
+        document.getElementById("loading-overlay").style.display = "none"
+        document.getElementById("search-input").style.display = "block"
+
+    })
+    .catch(error => {console.error(error);            
+    document.getElementById("loading-overlay").style.display = "none";});
+}
+
+
+function embedPowerBIReport() {
+
+  document.getElementById("loading-overlay").style.display = "block";
+  const myHeaders = new Headers();
+  myHeaders.append("accept", "text/plain");
+  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("SCToken"));
+  
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow"
+  };
+  
+  fetch("https://strategnos.strategnoscloudqa.com/api/services/app/TenantDashboard/GetReportEmbedInfo?reportId=201", requestOptions)
+  .then((response) => response.json()) // Parse response as JSON
+  .then((data) => {
+        const embedToken = data.result.embedParams.embedToken.token;
+        const embedUrl = data.result.embedParams.embedReport[0].embedUrl;
+        const reportId = data.result.embedParams.embedReport[0].reportId
+        let config = {
+          type: 'report',
+          accessToken: embedToken,
+          embedUrl: embedUrl,
+          tokenType: 1,
+          id: reportId,
+          settings: {
+              panes: {
+                  filters: {
+                      visible: true
+                  },
+                  pageNavigation: {
+                      visible: true
+                  }
+              },
+              bars: {
+                  statusBar: {
+                      visible: true
+                  }
+              },
+              extensions: [
                     {
                         command: {
                             name: "campaign",
@@ -289,69 +522,153 @@ function getEmbedToken(bearerToken) {
                             }
                         }
                     }]
-                }
-            };
+          }
+      };
 
-            // Get a reference to the HTML element that contains the embedded report.
-            const embedContainer = document.getElementById('embed-container');
+      // Get a reference to the embedded report HTML element
+      let embedContainer = document.getElementById("embed-container");
+      // Embed the report and display it within the div container.
+      report = powerbi.embed(embedContainer, config);
+      document.getElementById("loading-overlay").style.display = "none";
 
-            // Embed the report.
-            let report = powerbi.embed(embedContainer, embedConfiguration);
+      
 
-            report.on("commandTriggered", async function (event) {
-            if (event.detail.command === "campaign") {
-                const pages = await report.getPages();
-                
-                    // Retrieve the page that contain the visual. For the sample report it will be the active page
-                    let page = pages.filter(function (page) {
-                        return page.isActive
-                    })[0];
-                
-                    const visuals = await page.getVisuals();
-                
-                    // Retrieve the target visual.
-                    let visual = visuals.filter(function (visual) {
-                        return visual.title === "Validation Master Plan";
-                    })[0];
 
-                    const result = await visual.exportData();
+      })
+  .catch((error) => {console.error(error)
+    document.getElementById("loading-overlay").style.display = "none";
+  });
 
-                    // Convert CSV data to HTML table
-                    let emailBody = "<table border='1'>";
-                    let lines = result.data.split("\r\n"); // Split CSV data into lines
-                    lines.forEach(function (line, index) {
-                    if (line) {
-                        let cells = line.split(","); // Split each line into cells
-                        if (index === 0) {
-                        // First line is header
-                        emailBody += "<tr>";
-                        cells.forEach(function (cell) {
-                            emailBody += "<th>" + cell + "</th>";
-                        });
-                        emailBody += "</tr>";
-                        } else {
-                        // Other lines are data rows
-                        emailBody += "<tr>";
-                        cells.forEach(function (cell) {
-                            emailBody += "<td>" + cell + "</td>";
-                        });
-                        emailBody += "</tr>";
-                        }
-                    }
-                    });
-                    emailBody += "</table>";
+}
 
-                    // Set email body
-                    Office.context.mailbox.item.body.setAsync(emailBody, { coercionType: Office.CoercionType.Html });
-            }})
 
-        })
-        .catch(error => console.error(error));
+function generateOrganizationTree(data, parentId = null) {
+
+    const tree = document.createElement('ul');
+    tree.classList.add('tree-node');
+
+    // Filter items based on parentId and accessPermitted property
+    //const filteredItems = data.result.treeData.items.filter(item => item.parentId === parentId && item.accessPermitted);
+
+    // Loop through filtered items and create tree nodes
+    for (i = 0; i < data.result.length; i++) {
+
+        const currentItem = data.result[i];
+
+    if (currentItem.parentId === parentId ) {
+        const node = document.createElement('li');
+
+        // Create button for the node label
+        const button = document.createElement('button');
+        button.classList.add('node-button');
+        button.textContent = currentItem.displayName;
+        button.setAttribute('data-id', currentItem.id); 
+        button.setAttribute('userId', userId)
+        button.setAttribute('folderCode', currentItem.folderCode)
+        var nodeType = currentItem.displayType
+
+        const icon = document.createElement('i');
+        icon.setAttribute("class", getIconClassesForNodeType(nodeType))
+
+
+        button.innerHTML = '';
+
+        // Check if the item has children
+        const hasChildren = data.result.some(childItem => childItem.parentId === currentItem.id);
+
+        if (hasChildren) {
+            button.classList.add('has-children');
+        }
+
+        button.addEventListener('click', handleUnitSelection);
+
+        // Add click event listener to the button
+        button.addEventListener('click', () => {
+            // Toggle visibility of child nodes
+            const childNodes = node.querySelector('ul');
+            if (childNodes) {
+                childNodes.classList.toggle('collapsed');
+            } else {
+                const newChildNodes = generateOrganizationTree(data, currentItem.id);
+                node.appendChild(newChildNodes);
+            }
+        });
+
+        // Append icon and text to the button
+        button.appendChild(icon);
+        button.appendChild(document.createTextNode(" " + currentItem.displayName));
+        node.appendChild(button);
+        tree.appendChild(node);
     }
+    };
+    return tree;
+}
+
+function handleUnitSelection(event) {
+        // Remove selected class from all buttons
+        document.querySelectorAll('.node-button').forEach(button => {
+            button.classList.remove('selected');
+        });
+
+        // Add selected class to the clicked button
+        const clickedButton = event.target;
+        const buttonId = clickedButton.getAttribute('data-id');
+        const userId = clickedButton.getAttribute('userId');
+        const folderCode = clickedButton.getAttribute('folderCode');
+        console.log(folderCode)
+        clickedButton.classList.add('selected');
+        localStorage.setItem("buttonId", buttonId)
+        localStorage.setItem("folderCode", folderCode)
+        
+}
+
+function getIconClassesForNodeType(nodeType) {
+    switch (nodeType) {
+        case 'Business Unit':
+            return 'fa-solid fa-building'; // Icon for Business Unit
+        case 'Folder':
+            return 'fa-solid fa-folder';
+        case 'Branch':
+            return 'fa-solid fa-location-dot'; 
+        case 'Environment':
+            return 'fa-solid fa-warehouse';
+        default:
+            return 'fas fa-question-circle'; // Default icon
+    }
+}
+
+function handleSearchInput() {
+    const searchTerm = document.getElementById('search-input').value;
+    filterOrganizationTree(searchTerm)
+}
+
+function filterOrganizationTree(searchTerm) {
+    debugger;
+    const treeContainer = document.getElementById('organization-tree');
+    const treeNodes = treeContainer.querySelectorAll('.node-button'); // Select all node buttons
+
+    treeNodes.forEach(node => {
+    const nodeName = node.textContent.toLowerCase(); // Get node name and convert to lowercase
+
+    if (nodeName.includes(searchTerm.toLowerCase())) {
+        // Show node if it matches search term
+        node.style.display = '';
+    } else {
+        // Hide node if it does not match search term
+        node.style.display = 'none';
+    }
+});
+}
+
+function openAllNodes(){
+    this.document.get
+}
 
 
 
-    </script>
+document.getElementById('search-input').addEventListener('input', handleSearchInput);
+
+</script>
     
 
 

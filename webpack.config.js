@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const urlDev = "https://localhost:3000/";
 const urlProd = "https://www.contoso.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
+const nodeExternals = require('webpack-node-externals');
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
@@ -24,8 +25,21 @@ module.exports = async (env, options) => {
     output: {
       clean: true,
     },
+      target: 'node',
+      externals: [nodeExternals()],
     resolve: {
       extensions: [".html", ".js"],
+      // fallback: {
+      //   "stream": require.resolve("stream-browserify"),  
+      //   "querystring": require.resolve("querystring-es3"), 
+      //   "http": require.resolve("stream-http"),  
+      //   "crypto": require.resolve("crypto-browserify"),
+      //   "zlib": require.resolve("browserify-zlib"),
+      //   "fs": false,
+      //   "net": false,
+      //   "async_hooks": false,
+      //   "vm": false
+      // }
     },
     module: {
       rules: [

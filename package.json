@@ -26,10 +26,14 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
+    "browserify-zlib": "^0.2.0",
     "core-js": "^3.9.1",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "regenerator-runtime": "^0.13.7"
+    "querystring-es3": "^0.2.1",
+    "regenerator-runtime": "^0.13.7",
+    "request": "^2.79.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
@@ -37,12 +41,16 @@
     "@types/office-js": "^1.0.256",
     "@types/office-runtime": "^1.0.23",
     "acorn": "^8.5.0",
+    "assert": "^2.1.0",
     "babel-loader": "^8.2.2",
+    "buffer": "^6.0.3",
     "copy-webpack-plugin": "^9.0.1",
+    "crypto-browserify": "^3.12.0",
     "eslint-plugin-office-addins": "^2.1.5",
     "file-loader": "^6.2.0",
     "html-loader": "^4.1.0",
     "html-webpack-plugin": "^5.5.0",
+    "https-browserify": "^1.0.0",
     "office-addin-cli": "^1.5.5",
     "office-addin-debugging": "^5.0.12",
     "office-addin-dev-certs": "^1.11.3",
@@ -50,8 +58,13 @@
     "office-addin-manifest": "^1.12.3",
     "office-addin-prettier-config": "^1.2.0",
     "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
     "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
     "source-map-loader": "^3.0.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.3",
     "webpack": "^5.76.3",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "4.13.1"
