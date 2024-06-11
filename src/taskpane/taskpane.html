@@ -280,7 +280,7 @@
                         <label for="checkbox" id="checkboxlabel">
                             <i class="fa-regular fa-clock"></i> <!-- Unchecked checkbox icon -->
                             <i class="fa-solid fa-clock" style="display: none;"></i> <!-- Checked checkbox icon -->
-                            Timesheets <em style="font-size: 12px;">(click here to bill your time)</em>
+                            Timesheets <em style="font-size: 12px;" id="timesheetAck">(click here to bill your time)</em>
                         </label>
                     </div>
                     <!-- Other content -->
@@ -302,6 +302,8 @@
                 </div>
                 </div>
             <br>
+
+            <div><div class="sketchfab-embed-wrapper"> <iframe title="Isometric Living Room" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/8c4123cafbb2482a891ac6399f6c1ee8/embed"> </iframe> <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;"> <a href="https://sketchfab.com/3d-models/isometric-living-room-8c4123cafbb2482a891ac6399f6c1ee8?utm_medium=embed&utm_campaign=share-popup&utm_content=8c4123cafbb2482a891ac6399f6c1ee8" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Isometric Living Room </a> by <a href="https://sketchfab.com/curlscurly?utm_medium=embed&utm_campaign=share-popup&utm_content=8c4123cafbb2482a891ac6399f6c1ee8" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Curlscurly </a> on <a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=8c4123cafbb2482a891ac6399f6c1ee8" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a></p></div></div>
 
 
         </div>
@@ -347,6 +349,7 @@ checkbox.addEventListener('click', function() {
     if (this.checked) {
         localStorage.setItem("timesheets", "true")
         let toRecipients, ccRecipients, bccRecipients;
+        document.getElementById("timesheetAck").style.display = "none";
 
       // Verify if the mail item is an appointment or message.
       if (item.itemType === Office.MailboxEnums.ItemType.Appointment) {
@@ -374,6 +377,7 @@ checkbox.addEventListener('click', function() {
       });
     } else {
         localStorage.setItem("timesheets", "false")
+        document.getElementById("timesheetAck").style.display = "inline-block";
     }
 });
 
