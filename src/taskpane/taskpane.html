@@ -263,6 +263,39 @@ input[type="submit"]:hover {
     cursor: not-allowed;
 }
 
+.notification {
+    visibility: hidden;
+    width: 200px; /* Match the width of the .cta-button */
+    background-color: #444444; /* Dark background color */
+    color: #ffffff; /* Light text color */
+    text-align: center;
+    border-radius: 1px; /* Match the border-radius of the .cta-button */
+    padding: 5px 20px; /* Match the padding of the .cta-button */
+    margin-top: 10px; /* Space between the button and the notification */
+    display: inline-block; /* Ensure it takes up the same space as the button */
+}
+
+.notification.error {
+    background-color: #dc3545; /* Error background color */
+    color: #ffffff; /* Light text color */
+}
+
+.notification.show {
+    visibility: visible;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 65%; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {bottom: 65%; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+
+
 
     </style>
         
@@ -279,6 +312,8 @@ input[type="submit"]:hover {
           </div>
 
     </header>
+
+    
    
     <main id="app-body" class="ms-welcome__main" style="display: none;">
 
@@ -290,9 +325,9 @@ input[type="submit"]:hover {
                     <label for="password">Password:</label><br>
                     <input type="password" id="password" name="password"><br><br>
                     <button class="cta-button" onclick="login()">Login</button>
+                    <p id="notification" class="notification"></p>
 
-
-                <p id="warning" style="color: rgb(253, 145, 145);">Incorrect username or password!</p>
+                <p id="warning" style="color: rgb(253, 145, 145);">Incorrect Password!</p>
 
             </div>
 
@@ -471,14 +506,16 @@ function login() {
                     document.getElementById("contentWrapper").style.display = "block"
                 }
                 else{
-                    document.getElementById('warning').style.visibility = 'visible'
+                    console.log("hit")
                 }
                 document.getElementById("loading-overlay").style.display = "none"
                 
         
-    })
+        })
         .catch(error => {console.error(error);
             document.getElementById("loading-overlay").style.display = "none";
+            showNotification("Incorrect Details!", 'error')
+            
         });
 
 }
@@ -645,6 +682,17 @@ function filterOrganizationTree(searchTerm) {
 function openAllNodes(){
     this.document.get
 }
+
+function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.innerText = message;
+            notification.className = 'notification'; // reset classes
+            notification.classList.add(type);
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+        }, 3000);
+    }
 
 
 
