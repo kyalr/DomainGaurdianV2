@@ -23,7 +23,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/taskpane/paskpane.html"/>
+        <SourceLocation DefaultValue="https://localhost:3000/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -127,9 +127,10 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://kyalr.github.io/1/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/commands/commands.html" />
-        <bt:Url id="Taskpane.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/taskpane/taskpane.html" />
-        <bt:Url id="WebViewRuntime.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/commands/commands.html" />
+        <bt:Url id="Commands.Url" DefaultValue="https://localhost:3000/commands.html" />
+        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html" />
+        <bt:Url id="WebViewRuntime.Url" DefaultValue="https://localhost:3000/commands.html" />
+        <bt:Url id="Test.Url" DefaultValue="https://localhost:3000/test.html" />
         <!-- Entry needed for Outlook on Windows. -->
       </bt:Urls>
       <bt:ShortStrings>

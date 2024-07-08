@@ -11,104 +11,117 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     <script type="text/javascript" src="taskpane.js"></script>
     <script src="https://kit.fontawesome.com/8f86fe6637.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <script src="https://cdn.syncfusion.com/ej2/24.1.41/dist/ej2.min.js" type="text/javascript"></script>
 
 
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>
 
     <style>
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1px;
-        }
+h1 {
+    color:#222222; /* Light text color */
+    margin-bottom: 10px;
+    font-size: 1px;
+    color: white;
+}
 
-        p {
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto 20px;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            padding: 10px;
-            line-height: 1.2;
+p {
+    color: white; /* Lighter text color */
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
 
-        }
-        
-        .cta-button {
-            display: inline-block;
-            padding: 5px 20px;
-            background-color: #4285f4;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 1px;
-            transition: background-color 0.3s;
-            width: 100%;
-        }
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    background-color: #222222; /* Dark background color */
+    padding: 10px;
+    line-height: 1.2;
+}
 
-        .cta-button:hover {
-            background-color: #1a73e8;
-        }
+.cta-button {
+    display: inline-block;
+    padding: 5px 20px;
+    background-color: #4285f4;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 1px;
+    transition: background-color 0.3s;
+    width: 100%;
+}
 
-        .ms-font-su {
-            font-size: 18px;
-            font-weight: bold;
-            display: inline-block;
-            margin-left: 15px;
-        }
+.cta-button:hover {
+    background-color: #1a73e8;
+}
 
-        .ms-font-xl {
-             font-size: 18px;   
-        }
+.ms-font-su {
+    font-size: 18px;
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 15px;
+    color: #ffffff; /* Light text color */
+}
 
-                body {
-            font-family: Arial, sans-serif;
-            }
-            .container {
-            width: 250px;
-            margin: 0 auto;
-            margin-top: 100px;
-            }
-            input[type="text"],
-            input[type="password"],
-            input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            }
-            input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            }
-            input[type="submit"]:hover {
-            background-color: #45a049;
-            }
-            .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(82, 82, 82, 0.5); /* Semi-transparent black */
-            z-index: 999; /* Ensure it's on top of other elements */
-            }
-            .loading-spinner {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            }
+.ms-font-xl {
+    font-size: 18px;
+    color: #ffffff; /* Light text color */
+}
 
-            .tree {
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 250px;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    display: inline-block;
+    border: 1px solid #444444; /* Dark border color */
+    box-sizing: border-box;
+    background-color: #555555; /* Dark input background */
+    color: #ffffff; /* Light text color */
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(82, 82, 82, 0.5); /* Semi-transparent black */
+    z-index: 999; /* Ensure it's on top of other elements */
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.tree {
     font-family: Arial, sans-serif;
     padding: 20px;
 }
@@ -124,16 +137,18 @@
 .node-button {
     display: block;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #444444; /* Dark border color */
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     width: 100%;
     text-align: left;
+    background-color: #555555; /* Dark background color */
+    color: #ffffff; /* Light text color */
 }
 
 .node-button:hover {
-    background-color: #b2e0ff;
+    background-color: #fdb8f7;
 }
 
 /* Indentation based on level */
@@ -144,7 +159,7 @@
 /* Different levels of indentation */
 .tree-node > li > ul {
     margin-left: 1px;
-    border-left: 1px solid #ccc;
+    border-left: 1px solid #444444; /* Dark border color */
     padding-left: 15px;
 }
 
@@ -152,90 +167,102 @@
 .tree-node > li > ul.collapsed {
     display: none;
 }
-            /* Context menu styles */
-            .context-menu {
-                display: none;
-                position: fixed;
-                z-index: 1000;
-                background-color: #fff;
-                border: 1px solid #ccc;
-                padding: 5px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            }
 
-            .context-menu ul {
-                list-style-type: none;
-                margin: 0;
-                padding: 0;
-            }
+/* Context menu styles */
+.context-menu {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    background-color: #333333; /* Dark background color */
+    border: 1px solid #444444; /* Dark border color */
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
 
-            .context-menu ul li {
-                margin: 5px 0;
-            }
+.context-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
 
-            .context-menu ul li a {
-                text-decoration: none;
-                color: #333;
-                padding: 0px;
-                display: block;
-                text-align: left;
-            }
+.context-menu ul li {
+    margin: 5px 0;
+}
 
-            .context-menu ul li a:hover {
-                background-color: #f0f0f0;
-            }
-            .selected {
-                background-color: #4285f4; /* Blue background color */
-                color: white; /* White text color */
-                border: 1px solid #2f3030; /* Darker blue border */
-                /* Add any other styles to indicate selection */
-            }
-            .logout-button {
-                display: inline-block;
-                background-color: rgb(175, 175, 175); /* Red background color, change as needed */
-                color: #fff; /* White text color */
-                border: none;
-                border-radius: 4px;
-                font-size: 10px;
-                text-decoration: none;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-                margin-left: 10px; /* Adjust margin as needed */
-                padding-bottom: 2px;
-                padding-top: 2px;
-            }
+.context-menu ul li a {
+    text-decoration: none;
+    color: #cccccc; /* Light text color */
+    padding: 0px;
+    display: block;
+    text-align: left;
+}
 
-            .logout-button:hover {
-                background-color: rgb(43, 43, 43); /* Darker red on hover, change as needed */
-            }
-            .node-icon {
-                background-color: red;
-            }
-            .header-container {
-                display: flex;
-                align-items: center;
-            }
-            #checkboxContainer {
-                display: inline-block;
-                text-align: left;
-                margin-bottom: 5px;
-                margin-top: 5px;
-                width: 100%;
-                margin-right: 15px;
-                
-            }
-            #checkboxlabel:hover {
-                cursor: pointer;
-                background-color: #b2e0ff;
-                border-radius: 8px;
-            }
+.context-menu ul li a:hover {
+    background-color: #555555; /* Darker hover background */
+}
 
-            .search:after{
-                font-family: 'FontAwesome';
-                content: '\f274';
-                position: absolute;
-                right: 6px;
-            }
+.selected {
+    background-color: rgb(241, 77, 178); /* Blue background color */
+    color: white; /* White text color */
+    border: 1px solid #2f3030; /* Darker blue border */
+    /* Add any other styles to indicate selection */
+}
+
+.logout-button {
+    display: inline-block;
+    background-color: #666666; /* Darker background color */
+    color: #fff; /* White text color */
+    border: none;
+    border-radius: 4px;
+    font-size: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px; /* Adjust margin as needed */
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
+.logout-button:hover {
+    background-color: #555555; /* Darker background on hover */
+}
+
+.node-icon {
+    background-color: red;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+}
+
+#checkboxContainer {
+    display: inline-block;
+    text-align: left;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    width: 100%;
+    margin-right: 15px;
+}
+
+#checkboxlabel:hover {
+    cursor: pointer;
+    background-color: #74c5fc;
+    border-radius: 8px;
+}
+
+.search:after{
+    font-family: 'FontAwesome';
+    content: '\f274';
+    position: absolute;
+    right: 6px;
+}
+
+#openReport:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 
     </style>
         
@@ -243,7 +270,7 @@
 
 <body class="ms-font-m ms-welcome ms-Fabric">
 
-    <header class="ms-welcome__header ms-bgColor-neutralLighter">
+    <header >
         <div class="header-container">
             <h1 class="ms-font-su">Welcome to Domain Guardian</h1>
             <button class="logout-button" id="logout" onclick="logout()">
@@ -280,7 +307,7 @@
                         <label for="checkbox" id="checkboxlabel">
                             <i class="fa-regular fa-clock"></i> <!-- Unchecked checkbox icon -->
                             <i class="fa-solid fa-clock" style="display: none;"></i> <!-- Checked checkbox icon -->
-                            Timesheets <em style="font-size: 12px;" id="timesheetAck">(click here to bill your time)</em>
+                            Timesheets <em style="font-size: 12px;color: white;" id="timesheetAck">(click here to bill your time)</em>
                         </label>
                     </div>
                     <!-- Other content -->
@@ -290,9 +317,16 @@
             </div><br>
 
             <div id="reporting">
-                <button class="cta-button" onclick="embedPowerBIReport()" id="openReport">Open Report</button>
+                <button class="cta-button" disabled title="Please select a unit from the list above" onclick="embedPowerBIReport()" id="openReport">Open Report</button>
                 <div id="embed-container" style="height:200px;width: 100%; padding-top: 10px;"></div>
                 <p id="reportWarning" style="color: rgb(253, 145, 145);">The report cannot be displayed!</p>
+            </div>
+
+            <div style="width: 100%; height: 1000px; padding-left: 20px;"><div >
+                <div >
+                    <h1 style="padding-left: 20px;"></h1>
+                    <div id="spreadsheet" style="height: 1000px;"></div>
+                </div>
             </div>
 
             <!-- Add a modal overlay -->
@@ -329,6 +363,8 @@
 
 
 let userId;
+var NodeId;
+document.getElementById('openReport').disabled = true;
 
 document.getElementById("checkbox").addEventListener("change", function() {
         var checkboxIcon = document.getElementById("checkboxlabel").querySelectorAll("i");
@@ -338,6 +374,8 @@ document.getElementById("checkbox").addEventListener("change", function() {
         // Toggle the display of the checked icon
         checkboxIcon[1].style.display = this.checked ? "inline-block" : "none";
     });
+
+
 
 function logout(){
     localStorage.clear()
@@ -436,6 +474,7 @@ function login() {
                     document.getElementById('warning').style.visibility = 'visible'
                 }
                 document.getElementById("loading-overlay").style.display = "none"
+                
         
     })
         .catch(error => {console.error(error);
@@ -461,7 +500,6 @@ function getOrganizationUNits(authenticationToken){
     .then(response => response.json()) // Parse response as JSON
     .then(result => {
     // Call function to populate dropdown with fetched data
-        console.log(result)
         const organizationTree = generateOrganizationTree(result);
         const treeContainer = document.getElementById('organization-tree');
         treeContainer.appendChild(organizationTree);
@@ -476,74 +514,12 @@ function getOrganizationUNits(authenticationToken){
 
 function embedPowerBIReport() {
 
-  document.getElementById("loading-overlay").style.display = "block";
-  const myHeaders = new Headers();
-  myHeaders.append("accept", "text/plain");
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("SCToken"));
-  
-  const requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-    redirect: "follow"
-  };
-  
-  fetch("https://strategnos.strategnoscloudqa.com/api/services/app/TenantDashboard/GetReportEmbedInfo?reportId=201", requestOptions)
-  .then((response) => response.json()) // Parse response as JSON
-  .then((data) => {
-        const embedToken = data.result.embedParams.embedToken.token;
-        const embedUrl = data.result.embedParams.embedReport[0].embedUrl;
-        const reportId = data.result.embedParams.embedReport[0].reportId
-        let config = {
-          type: 'report',
-          accessToken: embedToken,
-          embedUrl: embedUrl,
-          tokenType: 1,
-          id: reportId,
-          settings: {
-              panes: {
-                  filters: {
-                      visible: true
-                  },
-                  pageNavigation: {
-                      visible: true
-                  }
-              },
-              bars: {
-                  statusBar: {
-                      visible: true
-                  }
-              },
-              extensions: [
-                    {
-                        command: {
-                            name: "campaign",
-                            title: "Start campaign",
-                            icon: 'ALT',
-                            extend: {
-                                visualOptionsMenu: {
-                                    title: "Export to Spreadsheet"
-                                }
-                            }
-                        }
-                    }]
-          }
-      };
-
-      // Get a reference to the embedded report HTML element
-      let embedContainer = document.getElementById("embed-container");
-      // Embed the report and display it within the div container.
-      report = powerbi.embed(embedContainer, config);
-      document.getElementById("loading-overlay").style.display = "none";
-
-      
-
-
-      })
-  .catch((error) => {console.error(error)
+    const scToken = localStorage.getItem("SCToken");
+    const myWindow = window.open(`test.html?scToken=${encodeURIComponent(scToken)}&nodeId=${encodeURIComponent(NodeId)}`, "", "width=1000px,height=600px");
     document.getElementById("loading-overlay").style.display = "none";
-  });
 
 }
+
 
 
 function generateOrganizationTree(data, parentId = null) {
@@ -589,6 +565,7 @@ function generateOrganizationTree(data, parentId = null) {
         // Add click event listener to the button
         button.addEventListener('click', () => {
             // Toggle visibility of child nodes
+            NodeId = currentItem.id;
             const childNodes = node.querySelector('ul');
             if (childNodes) {
                 childNodes.classList.toggle('collapsed');
@@ -623,6 +600,7 @@ function handleUnitSelection(event) {
         clickedButton.classList.add('selected');
         localStorage.setItem("buttonId", buttonId)
         localStorage.setItem("folderCode", folderCode)
+        document.getElementById('openReport').disabled = false;
         
 }
 
@@ -671,6 +649,8 @@ function openAllNodes(){
 
 
 document.getElementById('search-input').addEventListener('input', handleSearchInput);
+
+
 
 </script>
     

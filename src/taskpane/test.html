@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Domain Gaurdian</title>
+
+
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script type="text/javascript" src="taskpane.js"></script>
+    <script src="https://kit.fontawesome.com/8f86fe6637.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="//ej2.syncfusion.com/javascript/demos/spreadsheet/default/datasource.js"
+        type="text/javascript"></script>
+    <script src="https://cdn.syncfusion.com/ej2/24.1.41/dist/ej2.min.js" type="text/javascript"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+    <link href="https://cdn.syncfusion.com/ej2/24.1.41/material.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+
+</head>
+
+<style>
+
+.form-container {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between forms */
+    max-width: 100%; /* Maximum width of form container */
+    height: 5%;
+}
+
+.form-wrapper {
+    flex: 0 0 calc(50% - 8px); /* Two forms in a row */
+    background-color: #333333; /* Dark background color */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Adjusted shadow color */
+    margin-bottom: 20px; /* Margin between forms */
+}
+
+.modern-form {
+    /* Basic form styles */
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex; /* Use flexbox for horizontal layout */
+    align-items: center; /* Center items vertically */
+}
+
+label {
+    flex: 1; /* Take up all available space */
+    margin-right: 8px; /* Space between label and input */
+    font-weight: bold;
+    color: #ffffff; /* Light text color */
+}
+
+.form-control {
+    flex: 2; /* Take up more space than label */
+    width: 100%; /* Full width input */
+    padding: 8px;
+    font-size: 10px;
+    border: 1px solid #444444; /* Dark border color */
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #555555; /* Dark input background */
+    color: #ffffff; /* Light text color */
+}
+
+.textarea {
+    resize: vertical; /* Allow vertical resizing of textarea */
+}
+
+.cta-button {
+    margin-top: 10px; /* Margin above button for spacing */
+    padding: 5px 10px; /* Padding inside button */
+    background-color: #007bff; /* Button color */
+    color: #ffffff; /* Text color */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+}
+
+.cta-button:hover {
+    background-color: #1a73e8;
+}
+
+.hidden {
+    display: none !important; /* Hide the form using class */
+}
+
+.notification {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #444444; /* Dark background color */
+    color: #ffffff; /* Light text color */
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 80%;
+    bottom: 20px;
+    font-size: 12px;
+}
+
+.notification.success {
+    background-color: #28a745; /* Success background color */
+    color: #ffffff; /* Light text color */
+}
+
+.notification.error {
+    background-color: #dc3545; /* Error background color */
+    color: #ffffff; /* Light text color */
+}
+
+.notification.show {
+    visibility: visible;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+
+
+
+</style>
+
+<body>
+
+    <div id="reporting">
+
+        <div style="padding: 10px;">
+            <h2>Reporting</h2>
+        </div>
+
+
+        <div class="form-container" id="forms" style="display: none;">
+            <!-- First Form -->
+            <div class="form-wrapper">
+       
+                <form id="taskForm" class="modern-form">
+                    <div class="form-group">
+                        <label for="taskNameInput">Task Name:</label>
+                        <input type="text" id="taskNameInput" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="startDateInput">Start Date:</label>
+                        <input type="datetime-local" id="startDateInput" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDateInput">End Date:</label>
+                        <input type="datetime-local" id="endDateInput" class="form-control">
+                    </div>
+                </form>
+            </div>
+        
+            <!-- Second Form (for comments) -->
+            <div class="form-wrapper">
+                <form id="commentForm" class="modern-form">
+                    <div class="form-group">
+                        <label for="commentInput">Comments:</label>
+                        <textarea id="commentInput" class="form-control textarea" rows="6"></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div>
+            <button id="submitComment" style="display: none; width: 100%;" class="cta-button" onclick="createOrUpdateNote()">Save</button>
+        </div>
+
+        <p id="notification" class="notification"></p>
+
+
+        <div id="embed-container" style="height:500px;width: 100%; padding-top: 10px;"></div>
+        <div style="width: 100%; height: 1000px; padding-left: 20px;">
+            <div>
+                <div>
+                    <h1 style="padding-left: 20px;"></h1>
+                    <div id="spreadsheet" style="height: 1000px;"></div>
+                </div>
+            </div>
+        </div>
+
+
+</body>
+
+</html>
+
+<style>
+
+</style>
+
+<script src="https://unpkg.com/powerbi-client"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.18.0/dist/powerbi.min.js"></script>
+
+<script>
+
+    models = window['powerbi-client'].models;
+
+    var StratCloudToken;
+
+    window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const myVariable = urlParams.get('scToken');
+        StratCloudToken = urlParams.get('scToken');
+        embedReport(myVariable)
+    };
+
+    function openSpreadsheet(jsonData, fileInput) {
+        ej.base.enableRipple(true);
+        //Initialize Spreadsheet component
+        var spreadsheet = new ej.spreadsheet.Spreadsheet({
+            sheets: [
+                {
+                    name: 'Sheet 1',
+                    ranges: [{ dataSource: jsonData }],
+                }
+            ],
+            openUrl: 'https://services.syncfusion.com/js/production/api/spreadsheet/open',
+            saveUrl: 'https://strategnos.sharepoint.com/sites/IT/_layouts/15/download.aspx?UniqueId=2cd3b7d3-3e24-4d5d-b6f5-e02dd376d936&Translate=false&tempauth=v1.eyJzaXRlaWQiOiI2YjQ5MDExMS1iZDE1LTQyZTktOGRlNy0yMDFmZjM1Nzg5M2MiLCJhcHBfZGlzcGxheW5hbWUiOiJTaGFyZVBvaW50QXBwIiwiYXVkIjoiMDAwMDAwMDMtMDAwMC0wZmYxLWNlMDAtMDAwMDAwMDAwMDAwL3N0cmF0ZWdub3Muc2hhcmVwb2ludC5jb21AODU4YTJiZDMtZmNkMi00NWVlLWI0NmMtZjkzNDgwM2JkMGIyIiwiZXhwIjoiMTcxOTgxODUwOCJ9.CgoKBHNuaWQSAjY0EgsInLKl84PojD0QBRoNMjAuMTkwLjE5MC4zNSosOGkycytQWU9BK3BJQjM3RzdOc0pJdlN3TDRNbUU3K2RHblNBM2xnUnkvbz0wggE4AUIQoTfyHB7gAJA_GTPZzb3KckoQaGFzaGVkcHJvb2Z0b2tlbnoBMboBH2FsbHNpdGVzLndyaXRlIGFsbHByb2ZpbGVzLnJlYWTCAUlkMTQ0ZDM0OC1iZTBiLTQ4MTUtYjM5YS02YjgyZjViZTY3N2JAODU4YTJiZDMtZmNkMi00NWVlLWI0NmMtZjkzNDgwM2JkMGIyyAEB.rwAO_IeK2AjXCkGJ6TH6_HNC1kSPta-TjnF0DHvn1Sg&ApiVersion=2.0',
+            beforeSave: uploadToSP(spreadsheet)
+
+        });
+        //Render initialized Spreadsheet component
+        spreadsheet.appendTo('#spreadsheet');
+        console.log(spreadsheet)
+        console.log(spreadsheet.workbookSaveModule.saveJSON.toString())
+    }
+
+    function uploadDocToSC(spreadsheet) {
+
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + StratCloudToken);
+
+        const formdata = new FormData();
+        formdata.append("data", "{\"organizationUnitId\":89}");
+        formdata.append("uploadedFile[]", spreadsheet);
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: formdata,
+            redirect: "follow"
+        };
+
+        fetch("https://strategnos.strategnoscloudqa.com/OrganizationUnitDocuments/UploadDocument", requestOptions)
+            .then((response) => response.text())
+            .then((result) => console.log(result))
+            .catch((error) => console.error(error));
+
+        // Return the save URL
+        return "https://strategnos.strategnoscloudqa.com/OrganizationUnitDocuments/UploadDocument";
+    }
+
+    function uploadFile() {
+        debugger;
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+        if (file) {
+            uploadDocToSC(file);
+        } else {
+            console.error('No file selected');
+        }
+    }
+
+    function beforeSaving(){
+        console.log("hit")
+    }
+
+    var taskName;
+    var taskStarErrtDate;
+    var taskEndDate;
+    var note;
+    var noteOrganizationUnitID;
+    var noteId;
+    var notesEnabled;
+
+    function embedReport(myVariable) {
+
+        const myHeaders = new Headers();
+        myHeaders.append("accept", "text/plain");
+        myHeaders.append("Authorization", "Bearer " + myVariable);
+
+        const requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow"
+        };
+
+        fetch("https://strategnos.strategnoscloudqa.com/api/services/app/TenantDashboard/GetReportEmbedInfo?reportId=361", requestOptions)
+            .then((response) => response.json()) // Parse response as JSON
+            .then((data) => {
+
+                const embedToken = data.result.embedParams.embedToken.token;
+                const embedUrl = data.result.embedParams.embedReport[0].embedUrl;
+                const reportId = data.result.embedParams.embedReport[0].reportId;
+                let config = {
+                    type: 'report',
+                    accessToken: embedToken,
+                    embedUrl: embedUrl,
+                    tokenType: 1,
+                    id: reportId,
+                    permissions: models.Permissions.all,
+                    settings: {
+                        panes: {
+                            filters: {
+                                visible: false
+                            },
+                            pageNavigation: {
+                                visible: true
+                            }
+                        },
+                        bars: {
+                            statusBar: {
+                                visible: true
+                            }
+                        },
+                        extensions: [
+                            {
+                                command: {
+                                    name: "campaign",
+                                    title: "Start campaign",
+                                    icon: 'ALT',
+                                    extend: {
+                                        visualOptionsMenu: {
+                                            title: "Export to Spreadsheet"
+                                        }
+                                    }
+                                }
+                            }]
+                            
+                    }
+                };
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const nodeId = urlParams.get('nodeId');
+                
+                var nodeIdNumber = Number(nodeId);
+
+                // Get a reference to the embedded report HTML element
+                let embedContainer = document.getElementById("embed-container");
+                // Embed the report and display it within the div container.
+                report = powerbi.embed(embedContainer, config);
+
+                const filter = {
+                    $schema: "http://powerbi.com/product/schema#basic",
+                    target: {
+                        table: "Query2",
+                        column: "ParentId"
+                    },
+                    operator: "In",
+                    values: [nodeIdNumber]
+                };
+
+                // Apply the filter once the report is loaded
+                report.on("loaded", function() {
+                    report.updateFilters(models.FiltersOperations.Add, [filter])
+                        .then(function() {
+                            console.log("Report filter was added.");
+                        })
+                        .catch(function(errors) {
+                            console.log(errors);
+                        });
+                });
+
+
+                // report.on will add an event listener.
+                report.on("dataSelected", function (event) {
+                    let data = event.detail;
+                    console.log("Event - dataSelected:\n", data);
+                    taskName = data.dataPoints[0].identity[0].equals;
+                    taskStartDate = data.dataPoints[0].identity[1].equals;
+                    taskEndDate = data.dataPoints[0].identity[2].equals;
+                    note = data.dataPoints[0].identity[3].equals;
+                    noteOrganizationUnitID = data.dataPoints[0].identity[4].equals;
+                    noteId = data.dataPoints[0].identity[5].equals;
+                    notesEnabled = data.dataPoints[0].identity[6].equals;
+
+                    // Convert to Date object
+                    const StartDate = new Date(taskStartDate);
+                    const EndDate = new Date(taskEndDate);
+
+                    // Format date as YYYY-MM-DDTHH:MM
+                    const formattedStartDate = StartDate.toISOString().slice(0, 16);
+                    const formattedEndDate = EndDate.toISOString().slice(0, 16);
+
+                    document.getElementById("taskNameInput").value = taskName;
+                    document.getElementById("startDateInput").value = formattedStartDate;
+                    document.getElementById("endDateInput").value = formattedEndDate;
+                    document.getElementById('commentInput').value = note;
+
+                    var form = document.getElementById('forms');
+                    form.style.display = 'flex';
+
+                    var submitButton = document.getElementById('submitComment');
+                    submitButton.style.display = 'block';
+
+                });
+
+
+                report.on("commandTriggered", async function (event) {
+
+                    const pages = await report.getPages();
+
+                    // Retrieve the page that contain the visual. For the sample report it will be the active page
+                    let page = pages.filter(function (page) {
+                        return page.isActive
+                    })[0];
+
+                    page.updateFilters(models.FiltersOperations.Add, [filter]);
+                    console.log("Page filter was added.");
+
+                    const visuals = await page.getVisuals();
+
+                    console.log(visuals)
+
+                    // Retrieve the target visual.
+                    let visual = visuals.filter(function (visual) {
+                        return visual.name === "e2cd66f842406a483576";
+                    })[0];
+
+                    // Exports visual data
+                    const result = await visual.exportData();
+
+                    console.log(result)
+
+                    // Assuming result.data is a CSV string
+                    const csvData = result.data;
+
+                    Papa.parse(csvData, {
+                        header: true,  // Treat the first row as headers
+                        complete: function (results) {
+                            // 'results.data' now contains the parsed JSON data
+                            const jsonData = results.data;
+                            console.log(jsonData)
+
+                            // You can do something with the JSON data here
+                            openSpreadsheet(jsonData);
+
+                        }
+                    });
+                })
+                
+
+                report.on("buttonClicked", async function (event) {
+                    if (event.detail.title === "Refresh") {
+                        try {
+                            await report.refresh();
+                            console.log("Refreshed");
+                        }
+                        catch (errors) {
+                            console.log(errors);
+                        }
+                    }
+                    else if (event.detail.title === "Edit") {
+                        report.switchMode("edit");
+                    }
+                });
+            })
+
+
+    }
+
+    function createOrUpdateNote(){
+        console.log(notesEnabled)
+
+        var currentdate = new Date(); 
+        var datetime = currentdate.getDate() + "/"
+                        + (currentdate.getMonth()+1)  + "/" 
+                        + currentdate.getFullYear() + " @ "  
+                        + currentdate.getHours() + ":"  
+                        + currentdate.getMinutes() + ":" 
+                        + currentdate.getSeconds();
+        console.log(datetime)
+
+        if(notesEnabled === "App.Notes"){
+        
+            const myHeaders = new Headers();
+            myHeaders.append("accept", "*/*");
+            myHeaders.append("Content-Type", "application/json-patch+json");
+            myHeaders.append("X-XSRF-TOKEN", "null");
+            myHeaders.append("Authorization", "Bearer " + StratCloudToken);
+
+            const raw = JSON.stringify({
+            "organizationUnitId": noteOrganizationUnitID,
+            "createOrUpdateNote": {
+                "notes": datetime + '<br>' + document.getElementById("commentInput").value,
+                "id": noteId
+            }
+            });
+
+            const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+            };
+
+            fetch("https://strategnos.strategnoscloudqa.com/api/services/app/OrganizationUnitNote/CreateOrUpdateNote", requestOptions)
+            .then((response) => response.text())
+            .then((result) => {
+                console.log(result);
+                showNotification("Success: Note created or updated successfully!", 'success');;
+            })
+            .catch((error) => console.error(error));
+            showNotification("Error: Unable to create or update the note.", 'error');
+        }
+        else{
+            console.log("Notes feature is not enabled", 'error')
+            showNotification("Error: Notes feature is note enabled.", 'error');
+        }
+    }
+    
+    function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.innerText = message;
+            notification.className = 'notification'; // reset classes
+            notification.classList.add(type);
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+        }, 3000);
+    }
+
+</script>
