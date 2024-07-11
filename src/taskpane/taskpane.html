@@ -34,26 +34,33 @@ p {
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Sequel Sans Light', sans-serif;
     text-align: center;
-    background-color: #222222; /* Dark background color */
+    background-image: url('https://localhost:3000/assets/StrategnosHorse.jpg'); /* Replace with your image path */
+    background-size: cover;
+    background-position: calc(50% - 55px) center; 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     padding: 10px;
     line-height: 1.2;
 }
 
+
+
 .cta-button {
     display: inline-block;
     padding: 5px 20px;
-    background-color: #4285f4;
-    color: #fff;
+    background-color: #D2B08D;
+    color: black;
     text-decoration: none;
-    border-radius: 1px;
+    border-radius: 8px;
     transition: background-color 0.3s;
     width: 100%;
 }
 
 .cta-button:hover {
-    background-color: #1a73e8;
+    background-color: #ECEDF8;
+    color: #33333A;
 }
 
 .ms-font-su {
@@ -62,6 +69,9 @@ body {
     display: inline-block;
     margin-left: 15px;
     color: #ffffff; /* Light text color */
+    background: linear-gradient(to right, #ECEDF8, #D2B08D); /* Dark blue to gold gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .ms-font-xl {
@@ -88,7 +98,7 @@ input[type="submit"] {
     display: inline-block;
     border: 1px solid #444444; /* Dark border color */
     box-sizing: border-box;
-    background-color: #555555; /* Dark input background */
+    background-color: #33333A; /* Dark input background */
     color: #ffffff; /* Light text color */
 }
 
@@ -110,7 +120,7 @@ input[type="submit"]:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(82, 82, 82, 0.5); /* Semi-transparent black */
+    background-color: rgb(7, 7, 28, 0.8); /* Semi-transparent black */
     z-index: 999; /* Ensure it's on top of other elements */
 }
 
@@ -148,7 +158,7 @@ input[type="submit"]:hover {
 }
 
 .node-button:hover {
-    background-color: #fdb8f7;
+    background-color: #33333A;
 }
 
 /* Indentation based on level */
@@ -197,12 +207,32 @@ input[type="submit"]:hover {
     text-align: left;
 }
 
+.gradient-background {
+            background: linear-gradient(0deg, #9ba7c4 0%, #0d111a 80%);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+
+
 .context-menu ul li a:hover {
     background-color: #555555; /* Darker hover background */
 }
 
 .selected {
-    background-color: rgb(241, 77, 178); /* Blue background color */
+    background-color: #D2B08D; /* Blue background color */
     color: white; /* White text color */
     border: 1px solid #2f3030; /* Darker blue border */
     /* Add any other styles to indicate selection */
@@ -276,13 +306,38 @@ input[type="submit"]:hover {
 }
 
 .notification.error {
-    background-color: #dc3545; /* Error background color */
-    color: #ffffff; /* Light text color */
+    background-color: #ecedf800; /* Error background color */
+    color:  #ecedf800; /* Light text color */
+    border-radius: 5px;
+    animation: shake 1s;
+}
+
+.input-error::placeholder {
+    color: rgba(255, 24, 24, 0.411); 
+    border-color: red;/* Transparent red placeholder text color */
+}
+
+/* Shake animation class */
+.shake {
+    animation: shake 0.5s;
+}
+
+#labels{
+    color: white;
 }
 
 .notification.show {
     visibility: visible;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 90% { transform: translateX(-5px); }
+    20%, 80% { transform: translateX(5px); }
+    30%, 70% { transform: translateX(-3px); }
+    40%, 60% { transform: translateX(3px); }
+    50% { transform: translateX(0); }
 }
 
 @keyframes fadein {
@@ -295,9 +350,26 @@ input[type="submit"]:hover {
     to {bottom: 0; opacity: 0;}
 }
 
+#DigitalSolutions{
+    height: 52px;
+    display: inline-block;
+    margin-left: 10px;
+}
 
+.rotating-image {
+    animation: rotate 5s linear infinite;
+}
 
-    </style>
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+</style>
         
 </head>
 
@@ -305,26 +377,24 @@ input[type="submit"]:hover {
 
     <header >
         <div class="header-container">
-            <h1 class="ms-font-su">Welcome to Domain Guardian</h1>
+            <img id="DigitalSolutions" src = "https://localhost:3000/assets/Consillience.png">
+            <!-- <h1 class="ms-font-su">Welcome to Domain Guardian</h1> -->
             <button class="logout-button" id="logout" onclick="logout()">
-              <i class="fa fa-sign-out"></i>
+            <i class="fa fa-sign-out"></i>
             </button>
           </div>
-
     </header>
 
-    
+    <br>
    
     <main id="app-body" class="ms-welcome__main" style="display: none;">
 
         <div style="width: 100%; height: 1000px; padding-left: 20px;"><div >
 
             <div id="login-section">
-                    <label type="text" for="username">Username:</label><br>
-                    <input type="text" id="username" name="username"><br>
-                    <label for="password">Password:</label><br>
-                    <input type="password" id="password" name="password"><br><br>
-                    <button class="cta-button" onclick="login()">Login</button>
+                    <input placeholder="Username or email *" type="text" id="username" name="username"><br>
+                    <input placeholder="Password *" type="password" id="password" name="password"><br><br>
+                    <button class="cta-button" id="loginButton" onclick="login()">Login</button>
                     <p id="notification" class="notification"></p>
 
                 <p id="warning" style="color: rgb(253, 145, 145);">Incorrect Password!</p>
@@ -340,9 +410,9 @@ input[type="submit"]:hover {
                     <div id="checkboxContainer">
                         <input type="checkbox" name="radio" id="checkbox" style="display: none;">
                         <label for="checkbox" id="checkboxlabel">
-                            <i class="fa-regular fa-clock"></i> <!-- Unchecked checkbox icon -->
-                            <i class="fa-solid fa-clock" style="display: none;"></i> <!-- Checked checkbox icon -->
-                            Timesheets <em style="font-size: 12px;color: white;" id="timesheetAck">(click here to bill your time)</em>
+                            <i class="fa-regular fa-clock" style="color: white;"></i> <!-- Unchecked checkbox icon -->
+                            <i class="fa-solid fa-clock" style="display: none; color: white;"></i> <!-- Checked checkbox icon -->
+                            <em style="color: white;">Timesheets </em><em style="font-size: 12px;color: white;" id="timesheetAck">(click here to bill your time)</em>
                         </label>
                     </div>
                     <!-- Other content -->
@@ -367,7 +437,7 @@ input[type="submit"]:hover {
             <!-- Add a modal overlay -->
             <div id="loading-overlay" class="loading-overlay">
                 <div class="loading-spinner">
-                    <img style="width: 300px; height: 200px;" src="C:\Users\kyler\Desktop\DomainGaurdianV2\assets\loading.gif" alt="Loading..." />
+                    <img class="rotating-image"  style=" height: 100px;" src="C:\Users\kyler\Desktop\DomainGaurdianV2\assets\ConsilienceIcon.png" alt="Loading..." />
                 </div>
                 </div>
             <br>
@@ -460,7 +530,7 @@ function login() {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
     document.getElementById("loading-overlay").style.display = "block";
-    document.getElementById('logout').style.display = 'block'
+
 
     const authenticationSuccess = null;
     var authenticationToken = null;
@@ -492,6 +562,7 @@ function login() {
     fetch("https://strategnos.strategnoscloudqa.com/api/TokenAuth/Authenticate", requestOptions)
     .then(response => response.json()) // Parse response as JSON
     .then(data => {
+                document.getElementById('logout').style.display = 'block'
                 userId = data.result.userId;
                 var myVariable  = userId;
                 const authenticationSuccess = data.success;
@@ -515,14 +586,33 @@ function login() {
         .catch(error => {console.error(error);
             document.getElementById("loading-overlay").style.display = "none";
             showNotification("Incorrect Details!", 'error')
+
+
+            document.getElementById("username").classList.add('shake');
+            document.getElementById("password").classList.add('shake');
+
+            document.getElementById('username').classList.add('input-error');
+            document.getElementById('password').classList.add('input-error');
+
+            
+
+            // Remove shake animation after it's done
+            setTimeout(() => {
+                document.getElementById("username").classList.remove('shake')
+                document.getElementById("password").classList.remove('shake')
+            }, 500); // Match the duration of the shake animation
             
         });
 
 }
-
           
 function getOrganizationUNits(authenticationToken){
     document.getElementById("loading-overlay").style.display = "block";
+    document.body.classList.add('gradient-background');
+    const img = document.getElementById('DigitalSolutions');
+    img.style.width = '90%'
+    img.style.marginLeft = '0px'
+
     const myHeaders = new Headers();
     myHeaders.append("accept", "text/plain");
     myHeaders.append("Authorization", "Bearer " + authenticationToken);
@@ -548,7 +638,6 @@ function getOrganizationUNits(authenticationToken){
     document.getElementById("loading-overlay").style.display = "none";});
 }
 
-
 function embedPowerBIReport() {
 
     const scToken = localStorage.getItem("SCToken");
@@ -556,8 +645,6 @@ function embedPowerBIReport() {
     document.getElementById("loading-overlay").style.display = "none";
 
 }
-
-
 
 function generateOrganizationTree(data, parentId = null) {
 
@@ -694,11 +781,7 @@ function showNotification(message, type) {
         }, 3000);
     }
 
-
-
 document.getElementById('search-input').addEventListener('input', handleSearchInput);
-
-
 
 </script>
     
