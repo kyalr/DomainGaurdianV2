@@ -6,8 +6,8 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Consilience Companion"/>
   <Description DefaultValue="Meet Domain Guardian, your trusty sidekick in the world of emails!🌐✉️"/>
-  <IconUrl DefaultValue="https://localhost:3000/assets/icon-80.png"/>
-  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-128.png"/>
+  <IconUrl DefaultValue="https://kyalr.github.io/DomainGaurdianV2/assets/icon-80.png"/>
+  <HighResolutionIconUrl DefaultValue="https://kyalr.github.io/DomainGaurdianV2/assets/icon-128.png"/>
   <SupportUrl DefaultValue="https://www.strategnos.com/#contact"/>
   <AppDomains>
     <AppDomain>https://www.strategnos.com</AppDomain>
@@ -23,7 +23,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://localhost:3000/taskpane.html"/>
+        <SourceLocation DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/taskpane/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -122,16 +122,16 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/assets/icon-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/assets/icon-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/icon-80.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/DigitalSolutions.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/assets/icon-80.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/assets/DigitalSolutions.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://localhost:3000/commands.html" />
-        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html" />
-        <bt:Url id="WebViewRuntime.Url" DefaultValue="https://localhost:3000/commands.html" />
-        <bt:Url id="Test.Url" DefaultValue="https://localhost:3000/test.html" />
+        <bt:Url id="Commands.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/commands/commands.html" />
+        <bt:Url id="Taskpane.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/taskpane/taskpane.html" />
+        <bt:Url id="WebViewRuntime.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/commandscommands.html" />
+        <bt:Url id="Test.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/taskpane/test.html" />
         <!-- Entry needed for Outlook on Windows. -->
       </bt:Urls>
       <bt:ShortStrings>
