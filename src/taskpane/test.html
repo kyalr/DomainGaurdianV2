@@ -151,8 +151,7 @@ label {
     background-color: #444444; /* Dark background color */
     color: #ffffff; /* Light text color */
     text-align: center;
-    border-radius: 2px;
-    padding: 16px;
+    padding: 8px;
     position: fixed;
     z-index: 1;
     left: 80%;
@@ -161,18 +160,20 @@ label {
 }
 
 .notification.success {
-    background-color: #28a745; /* Success background color */
+    background-color: #1bc5bdab; /* Success background color */
     color: #ffffff; /* Light text color */
+    border-radius: 8px;
 }
 
 .notification.error {
-    background-color: #dc3545; /* Error background color */
+    background-color: #ff6b6b; /* Error background color */
     color: #ffffff; /* Light text color */
+    border-radius: 8px;
 }
 
 .notification.show {
     visibility: visible;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 3.5s;
 }
 
 @keyframes fadein {
@@ -181,7 +182,7 @@ label {
 }
 
 @keyframes fadeout {
-    from {bottom: 30px; opacity: 1;} 
+    from {bottom: 30px; opacity: 0;} 
     to {bottom: 0; opacity: 0;}
 }
 
@@ -324,9 +325,9 @@ label {
             <div class="error-content">
                 <div class="error-header">
                     <i class="fa-solid fa-circle-exclamation fa-shake fa-2xl" style="color: #ff6b6b; display: inline-block; font-size: 55px; padding-top: 5px;"></i>
-                    <h1 class="error-code" style="display: inline-block;">Error</h1>
+                    <h1 class="error-code" style="display: inline-block;">Error...</h1>
                 </div>
-                <p class="error-message">Oops! The report could not be loaded. Please try again later</p>
+                <p class="error-message">Oops! The report could not be loaded. Please ensure you have access.</p>
             </div>
         </div>
     
@@ -348,7 +349,7 @@ label {
             </div>
         </div>
 
-        <p id="notification" class="notification"></p>
+        <p id="notification" class="notification">You session has timed out. Please login again.</p>
 </body>
 
 </html>
@@ -478,7 +479,7 @@ label {
                         displayOption: models.DisplayOption.FitToPage,
                         panes: {
                             filters: {
-                                visible: false
+                                visible: true
                             },
                             pageNavigation: {
                                 visible: false
@@ -509,21 +510,27 @@ label {
                 const urlParams = new URLSearchParams(window.location.search);
                 const nodeId = urlParams.get('nodeId');
                 
-                var nodeIdNumber = Number(nodeId);
+                var nodeIdNumber = nodeId;
 
                 // Get a reference to the embedded report HTML element
                 let embedContainer = document.getElementById("embed-container");
                 // Embed the report and display it within the div container.
                 report = powerbi.embed(embedContainer, config);
 
+                console.log('LOOK' + nodeIdNumber)
+
                 const filter = {
-                    $schema: "http://powerbi.com/product/schema#basic",
+                    $schema: "http://powerbi.com/product/schema#advanced",
                     target: {
                         table: "Query2",
-                        column: "ParentId"
+                        column: "Code"
                     },
-                    operator: "In",
-                    values: [nodeIdNumber]
+                    filterType: 0,
+                    logicalOperator: "And",
+                    conditions: [{
+                        operator: "StartsWith",
+                        value: nodeIdNumber
+                    }]
                 };
 
                 // Apply the filter once the report is loaded
@@ -592,7 +599,7 @@ label {
 
                     // Retrieve the target visual.
                     let visual = visuals.filter(function (visual) {
-                        return visual.name === "e2cd66f842406a483576";
+                        return visual.name === "cf056270a7ddea7cbe97";
                     })[0];
 
                     // Exports visual data
@@ -684,11 +691,10 @@ label {
                 showNotification("Success: Note created or updated successfully!", 'success');;
             })
             .catch((error) => console.error(error));
-            showNotification("Error: Unable to create or update the note.", 'error');
         }
         else{
             console.log("Notes feature is not enabled", 'error')
-            showNotification("Error: Notes feature is note enabled.", 'error');
+            showNotification("Error! Notes feature is not enabled.", 'error');
         }
     }
     

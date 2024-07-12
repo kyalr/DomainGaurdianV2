@@ -7,8 +7,6 @@ Office.onReady(function (info) {
       item = Office.context.mailbox.item;
 
       checkLoggedIn();
-
-
       
     }
   });
@@ -35,6 +33,7 @@ Office.onReady(function (info) {
       document.getElementById('logout').style.display = 'none';
       document.getElementById("contentWrapper").style.display = "none";
       document.getElementById("timesheetsLabel").style.display = 'none';
+      document.getElementById("relogin").style.display = 'visible';
 
 
     }

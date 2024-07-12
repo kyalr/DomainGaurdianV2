@@ -130,7 +130,7 @@
       <bt:Urls>
         <bt:Url id="Commands.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/commands/commands.html" />
         <bt:Url id="Taskpane.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/taskpane/taskpane.html" />
-        <bt:Url id="WebViewRuntime.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/commandscommands.html" />
+        <bt:Url id="WebViewRuntime.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/commands/commands.html" />
         <bt:Url id="Test.Url" DefaultValue="https://kyalr.github.io/DomainGaurdianV2/src/taskpane/test.html" />
         <!-- Entry needed for Outlook on Windows. -->
       </bt:Urls>
