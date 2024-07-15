@@ -147,14 +147,13 @@ label {
 .notification {
     visibility: hidden;
     min-width: 250px;
-    margin-left: -125px;
     background-color: #444444; /* Dark background color */
     color: #ffffff; /* Light text color */
     text-align: center;
     padding: 8px;
     position: fixed;
     z-index: 1;
-    left: 80%;
+    right: 20px; /* Changed from left: 80% to right: 20px */
     bottom: 20px;
     font-size: 12px;
 }
@@ -335,7 +334,7 @@ label {
             <div style="height: 450px;" id="embed-container" class="embed-container"></div>
             <div id="loading-overlay" class="loading-overlay">
                 <div class="loading-spinner">
-                    <img class="rotating-image" style=" height: 100px;" src="https://kyalr.github.io/DomainGaurdianV2/assets/ConsilienceIcon.png" alt="Loading..." />
+                    <img class="rotating-image" style=" height: 60px;" src="https://kyalr.github.io/DomainGaurdianV2/assets/ConsilienceIcon.png" alt="Loading..." />
                 </div>
             </div>
         </div>
@@ -349,7 +348,7 @@ label {
             </div>
         </div>
 
-        <p id="notification" class="notification">You session has timed out. Please login again.</p>
+        <p id="notification" class="notification"></p>
 </body>
 
 </html>
@@ -688,19 +687,19 @@ label {
             .then((response) => response.text())
             .then((result) => {
                 console.log(result);
-                showNotification("Success: Note created or updated successfully!", 'success');;
+                showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Note created or updated successfully!", 'success');
             })
             .catch((error) => console.error(error));
         }
-        else{
-            console.log("Notes feature is not enabled", 'error')
-            showNotification("Error! Notes feature is not enabled.", 'error');
-        }
+            else{
+                console.log("Notes feature is not enabled", 'error')
+                showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Notes feature is not enabled.", 'error');
+            }
     }
     
     function showNotification(message, type) {
             const notification = document.getElementById('notification');
-            notification.innerText = message;
+            notification.innerHTML = message;
             notification.className = 'notification'; // reset classes
             notification.classList.add(type);
             notification.classList.add('show');
@@ -726,10 +725,10 @@ label {
         });
 
         const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow"
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
         };
 
         fetch("https://strategnos.strategnoscloudqa.com/api/services/app/Forms/SaveSurveyResults", requestOptions)

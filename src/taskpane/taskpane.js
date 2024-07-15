@@ -25,6 +25,7 @@ Office.onReady(function (info) {
       
     }
     else{
+      document.getElementById("relogin").style.display = 'block';
       document.getElementById("search-input").style.display = 'none';
       document.getElementById("app-body").style.display = "flex";
       document.getElementById('reporting').style.display = 'none';
@@ -32,8 +33,7 @@ Office.onReady(function (info) {
       document.getElementById('reportWarning').style.display = 'none';
       document.getElementById('logout').style.display = 'none';
       document.getElementById("contentWrapper").style.display = "none";
-      document.getElementById("timesheetsLabel").style.display = 'none';
-      document.getElementById("relogin").style.display = 'visible';
+
 
 
     }
