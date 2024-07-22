@@ -13,7 +13,6 @@ Office.onReady(function (info) {
   
   function checkLoggedIn() {
     // Check if the userId is stored in localStorage
-    debugger;
     userId = localStorage.getItem("userId");
     token = localStorage.getItem("SCToken")
     if (userId) {
@@ -33,9 +32,10 @@ Office.onReady(function (info) {
       document.getElementById('reportWarning').style.display = 'none';
       document.getElementById('logout').style.display = 'none';
       document.getElementById("contentWrapper").style.display = "none";
-
-
-
+      document.getElementById("password").style.display = 'none';
+      document.getElementById("loginButton").style.display = 'none';
+      document.getElementById("tenantSelect").style.display = 'none';
+      document.getElementById("tenantButton").style.display = 'block';
     }
 }
 

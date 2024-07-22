@@ -46,6 +46,23 @@ body {
     }
 }
 
+.input-error {
+    border-color: #ff6b6b;/* Transparent red placeholder text color */
+}
+
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 90% { transform: translateX(-5px); }
+    20%, 80% { transform: translateX(5px); }
+    30%, 70% { transform: translateX(-3px); }
+    40%, 60% { transform: translateX(3px); }
+    50% { transform: translateX(0); }
+}
+
 
 .loading-overlay {
     display: block;
@@ -269,6 +286,11 @@ label {
     gap: 10px; /* Add space between the icon and the h1 */
 }
 
+#newLineItemButton{
+    display: none;
+    margin-bottom: 10px;
+}
+
 
 </style>
 
@@ -318,6 +340,68 @@ label {
                 <button id="submitComment" class="cta-button" onclick="createOrUpdateNote()">Save</button>
                 <button style="background-color: #ECEDF8;" id="closeComment" class="cta-button" onclick="closeComment()">Cancel</button>
             </div>
+        </div>
+        
+        <div class="cardInput" id="survey-card">
+            <div class="form-container" id="forms">
+                <!-- First Form -->
+                <div class="form-wrapper">
+                    <form id="taskForm" class="modern-form">
+                        <div class="form-group">
+                            <label for="taskNameInput">Material Code:</label>
+                            <input type="text" id="MaterialCodeInput" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDateInput">Reorder Point:</label>
+                            <input type="number" id="ReorderPointInput" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDateInput">Lead Time:</label>
+                            <input type="number" id="LeadTimeInput" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDateInput">Max:</label>
+                            <input type="number" id="MaxInput" class="form-control" required>
+                        </div>
+    
+                    </form>
+                </div>
+            
+                <!-- Second Form (for comments) -->
+                <div class="form-wrapper">
+                    <form id="commentForm" class="modern-form">
+                        <div class="form-group">
+                            <label for="endDateInput">MRP Type:</label>
+                            <select id="MRPTypeInput" class="form-control" required>
+                                <option value="VB">VB</option>
+                                <option value="ZP">ZP</option>
+                                <option value="ND">ND</option>
+                                <option value="PD">PD</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDateInput">Output Type:</label>
+                            <select id="OutputTypeInput" class="form-control" required>
+                                <option value="Lead Time Change">Lead Time Change</option>
+                                <option value="MRP Change">MRP Change</option>
+                                <option value="Inventory Level Adjustments">Inventory Level Adjustments</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="commentInput">Comments:</label>
+                            <textarea id="comment2Input" class="form-control textarea" rows="6"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="button-container">
+                <button id="submitComment" class="cta-button" onclick="updateSurveyResult()">Save</button>
+                <button style="background-color: #ECEDF8;" id="closeComment" class="cta-button" onclick="closeSurvey()">Cancel</button>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="newLineItemButton" class="cta-button" onclick="createNewLineItem()"><i class="fa-regular fa-square-plus"></i> New line Item</button>
         </div>
 
         <div class="error-container" id="error-container">
@@ -369,16 +453,57 @@ label {
     var noteId;
     var notesEnabled;
 
+    var materialCode;
+    var reorderPoint;
+    var leadTime;
+    var max;
+    var mrpType;
+    var outputType;
+    var comments;
+    var userSurveyId;
+    var surveyOrganizationUnitId
+
+    var surveyCreateVsUpdate;
+    var surveyUserToken;
+    var organizationUnit;
+
     function closeComment(){
         document.getElementById('forms-card').style.display = 'none';
+    }
+
+    function closeSurvey(){
+        document.getElementById('survey-card').style.display = 'none';
+        document.getElementById('newLineItemButton').style.display = 'block';
+
+        const inputs = [
+            document.getElementById('MaterialCodeInput'),
+            document.getElementById('ReorderPointInput'),
+            document.getElementById('LeadTimeInput'),
+            document.getElementById('MaxInput'),
+            document.getElementById('MRPTypeInput'),
+            document.getElementById('OutputTypeInput'),
+            document.getElementById('comment2Input')
+        ];
+
+        inputs.forEach(input => {
+            input.classList.remove('shake', 'input-error');
+        });
+
+
+    }
+
+    function check(){
+        console.log(surveyCreateVsUpdate)
     }
 
     window.onload = function () {
         const urlParams = new URLSearchParams(window.location.search);
         const myVariable = urlParams.get('scToken');
         StratCloudToken = urlParams.get('scToken');
+        organizationUnit = urlParams.get('organizationUnit');
         embedReport(myVariable)
         document.getElementById('embed-container').style.visibility = 'hidden'
+
     };
 
     function openSpreadsheet(jsonData, fileInput) {
@@ -441,7 +566,7 @@ label {
     }
 
     function embedReport(myVariable) {
-        debugger;
+
         const myHeaders = new Headers();
         myHeaders.append("accept", "text/plain");
         myHeaders.append("Authorization", "Bearer " + myVariable);
@@ -462,6 +587,7 @@ label {
             })
             .then((data) => {
 
+                document.getElementById('newLineItemButton').style.display = 'block';
                 const embedToken = data.result.embedParams.embedToken.token;
                 const embedUrl = data.result.embedParams.embedReport[0].embedUrl;
                 const reportId = data.result.embedParams.embedReport[0].reportId;
@@ -477,7 +603,7 @@ label {
                         displayOption: models.DisplayOption.FitToPage,
                         panes: {
                             filters: {
-                                visible: true
+                                visible: false
                             },
                             pageNavigation: {
                                 visible: false
@@ -515,9 +641,7 @@ label {
                 // Embed the report and display it within the div container.
                 report = powerbi.embed(embedContainer, config);
 
-                console.log('LOOK' + nodeIdNumber)
-
-                const filter = {
+                const taskFilter = {
                     $schema: "http://powerbi.com/product/schema#advanced",
                     target: {
                         table: "Query2",
@@ -531,11 +655,27 @@ label {
                     }]
                 };
 
+                const surveyFilter = {
+                    $schema: "http://powerbi.com/product/schema#advanced",
+                    target: {
+                        table: "Query1",
+                        column: "Code"
+                    },
+                    filterType: 0,
+                    logicalOperator: "And",
+                    conditions: [{
+                        operator: "StartsWith",
+                        value: nodeIdNumber
+                    }]
+                };
+
+
                 // Apply the filter once the report is loaded
                 report.on("loaded", function() {    
                     document.getElementById('embed-container').style.visibility = 'visible'
                     document.getElementById('loading-overlay').style.display = 'none';
-                    report.updateFilters(models.FiltersOperations.Add, [filter])
+
+                    report.updateFilters(models.FiltersOperations.Add, [taskFilter,surveyFilter])
                         .then(function() {
                             console.log("Report filter was added.");
                         })
@@ -544,11 +684,40 @@ label {
                         });
                 });
 
-
                 // report.on will add an event listener.
                 report.on("dataSelected", function (event) {
                     let data = event.detail;
-                    console.log("Event - dataSelected:\n", data);
+                    if(data.visual.name === '6e717e20e3465899e056'){
+
+                        surveyCreateVsUpdate = 'update';
+                        document.getElementById('survey-card').style.display = 'block';
+                        document.getElementById('newLineItemButton').style.display = 'none';
+
+                        console.log(data)
+                        
+                        reorderPoint = data.dataPoints[0].identity[8].equals;
+                        mrpType = data.dataPoints[0].identity[4].equals;
+                        max = data.dataPoints[0].identity[3].equals;
+                        outputType = data.dataPoints[0].identity[6].equals;
+                        leadTime = data.dataPoints[0].identity[1].equals;
+                        materialCode = data.dataPoints[0].identity[2].equals;
+                        comments = data.dataPoints[0].identity[0].equals;
+                        userSurveyId = data.dataPoints[0].identity[7].equals;
+                        surveyOrganizationUnitId = data.dataPoints[0].identity[5].equals;
+                        
+                        console.log(userSurveyId)
+
+                        document.getElementById('MaterialCodeInput').value = materialCode;
+                        document.getElementById('ReorderPointInput').value = Number(reorderPoint);
+                        document.getElementById('LeadTimeInput').value = Number(leadTime);
+                        document.getElementById('MaxInput').value = Number(max);
+                        document.getElementById('MRPTypeInput').value = mrpType;
+                        document.getElementById('OutputTypeInput').value = outputType;
+                        document.getElementById('comment2Input').value = comments;
+
+
+
+                    }else{
                     taskName = data.dataPoints[0].identity[0].equals;
                     taskStartDate = data.dataPoints[0].identity[1].equals;
                     taskEndDate = data.dataPoints[0].identity[2].equals;
@@ -575,9 +744,9 @@ label {
 
                     var submitButton = document.getElementById('submitComment');
                     submitButton.style.display = 'block';
+                    }
 
                 });
-
 
                 report.on("commandTriggered", async function (event) {
 
@@ -708,32 +877,175 @@ label {
     }
 
     function updateSurveyResult(){
-        const myHeaders = new Headers();
-        myHeaders.append("accept", "*/*");
-        myHeaders.append("Content-Type", "application/json-patch+json");
-        myHeaders.append("X-XSRF-TOKEN", "null");
-        myHeaders.append("Authorization", "Bearer " + StratCloudToken);
 
-        const raw = JSON.stringify({
-        "surveyId": "a31a0398-b597-4321-e343-08dc9f3c4ca5",
-        "userToken": "0ac73855-0ed1-46aa-db0b-08dbf27b4707",
-        "organizationUnitId": "6572",
-        "surveyResultsAsJson": "{\"reorderPoint\":6,\"max\":11,\"leadTime\":1,\"mrpType\":\"ZP\",\"comment\":\"This is comment number 2\",\"outputType\":\"Inventory Level Adjustments\",\"materialCode\":\"BAR1234\"}",
-        "tenantId": 14,
-        "editing": "true"
+        const inputs = [
+            document.getElementById('MaterialCodeInput'),
+            document.getElementById('ReorderPointInput'),
+            document.getElementById('LeadTimeInput'),
+            document.getElementById('MaxInput'),
+            document.getElementById('MRPTypeInput'),
+            document.getElementById('OutputTypeInput'),
+            document.getElementById('comment2Input')
+        ];
+
+        let isValid = true;
+
+        inputs.forEach(input => {
+            if (input.value.trim() === '') {
+                input.classList.add('shake', 'input-error');
+                isValid = false;
+            } else {
+                input.classList.remove('shake', 'input-error');
+            }
         });
+        
 
-        const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: raw,
-            redirect: "follow"
-        };
+        // Check if any input is empty
+        if (!isValid) {
+            console.log('hit')
+        }
+        else{
+            if(surveyCreateVsUpdate === 'update'){
+                console.log(comments)
 
-        fetch("https://demo.strategnosportal.co.za/api/services/app/Forms/SaveSurveyResults", requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
+                const myHeaders = new Headers();
+                myHeaders.append("accept", "*/*");
+                myHeaders.append("Content-Type", "application/json-patch+json");
+                myHeaders.append("X-XSRF-TOKEN", "null");
+                myHeaders.append("Authorization", "Bearer " + StratCloudToken);
+
+                var raw = JSON.stringify({
+                "surveyId": "a31a0398-b597-4321-e343-08dc9f3c4ca5",
+                "userToken": userSurveyId,
+                "organizationUnitId": surveyOrganizationUnitId,
+                "surveyResultsAsJson": JSON.stringify({
+                    "reorderPoint": document.getElementById('ReorderPointInput').value,
+                    "max": document.getElementById('MaxInput').value,
+                    "leadTime": document.getElementById('LeadTimeInput').value,
+                    "mrpType": document.getElementById('MRPTypeInput').value,
+                    "comment": document.getElementById('comment2Input').value,
+                    "outputType": document.getElementById('OutputTypeInput').value,
+                    "materialCode": document.getElementById('MaterialCodeInput').value
+                }),
+                "tenantId": 14,
+                "editing": "true"
+                });
+
+                const requestOptions = {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: "follow"
+                };
+
+                fetch("https://demo.strategnosportal.co.za/api/services/app/Forms/SaveCompletedSurveyResults", requestOptions)
+                .then((response) => response.text())
+                .then((result) => 
+                    showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created or updated successfully!", 'success'
+                ))
+                .catch((error) => 
+                    showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Notes feature is not enabled.", 'error')
+                );
+            }else if (surveyCreateVsUpdate === 'create'){
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const organizationUnit = urlParams.get('organizationUnit');
+
+                console.log(organizationUnit);
+
+                const requestOptions = {
+                    method: "GET",
+                    redirect: "follow"
+                };
+
+                // Construct the URL with the organizationUnit
+                const url = `https://demo.strategnosportal.co.za/api/services/app/SurveysAnonymous/GetSurveyToComplete?OrganizationUnitId=${organizationUnit}&Id=a31a0398-b597-4321-e343-08dc9f3c4ca5`;
+
+                fetch(url, requestOptions)
+                    .then((response) => response.text())
+                    .then((result) => {
+                        const jsonResult = JSON.parse(result); // Parse the text as JSON
+                        if (jsonResult && jsonResult.result && jsonResult.result.userToken) {
+                            const surveyUserToken = jsonResult.result.userToken; 
+                            console.log(surveyUserToken)
+                            // Extract the userToken
+                                //SECOND CALL
+                                const myHeaders = new Headers();
+                                myHeaders.append("Content-Type", "application/json");
+
+                                const raw = JSON.stringify({
+                                "surveyId": "a31a0398-b597-4321-e343-08dc9f3c4ca5",
+                                "userToken": surveyUserToken,
+                                "organizationUnitId": Number(organizationUnit),
+                                "surveyResultsAsJson": JSON.stringify({
+                                    "reorderPoint": document.getElementById('ReorderPointInput').value,
+                                    "max": document.getElementById('MaxInput').value,
+                                    "leadTime": document.getElementById('LeadTimeInput').value,
+                                    "mrpType": document.getElementById('MRPTypeInput').value,
+                                    "comment": document.getElementById('comment2Input').value,
+                                    "outputType": document.getElementById('OutputTypeInput').value,
+                                    "materialCode": document.getElementById('MaterialCodeInput').value
+                                }),
+                                "tenantId": 14
+                                });
+
+                                const requestOptions2 = {
+                                method: "POST",
+                                headers: myHeaders,
+                                body: raw,
+                                redirect: "follow"
+                                };
+
+                                fetch("https://demo.strategnosportal.co.za/api/services/app/SurveysAnonymous/SaveCompletedSurveyResults", requestOptions2)
+                                .then((response) => response.text())
+                                .then((result) => console.log(result))
+                                .catch((error) => console.error(error));
+                        } else {
+                            console.error('userToken is undefined or not present in the response');
+                        }
+                    })
+                    .catch((error) => console.error('Error:', error));
+
+
+
+
+                
+            }
+        }
     }
+
+    function createNewLineItem() {
+        surveyCreateVsUpdate = 'create'
+        document.getElementById('survey-card').style.display = 'block';
+        document.getElementById('newLineItemButton').style.display = 'none';
+        
+        document.getElementById('MaterialCodeInput').value = '';
+        document.getElementById('ReorderPointInput').value = '';
+        document.getElementById('LeadTimeInput').value = '';
+        document.getElementById('MaxInput').value = '';
+        document.getElementById('MRPTypeInput').value = '';
+        document.getElementById('OutputTypeInput').value = '';
+        document.getElementById('comment2Input').value = '';
+    }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = [
+        document.getElementById('MaterialCodeInput'),
+        document.getElementById('ReorderPointInput'),
+        document.getElementById('LeadTimeInput'),
+        document.getElementById('MaxInput'),
+        document.getElementById('MRPTypeInput'),
+        document.getElementById('OutputTypeInput'),
+        document.getElementById('comment2Input')
+    ];
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value.trim() !== '') {
+                        input.classList.remove('shake', 'input-error');
+                }
+                });
+            });
+        });
 
 </script>

@@ -89,7 +89,7 @@ body {
     margin-top: 100px;
 }
 
-input[type="text"],
+input[type="text"],input[type="select"],
 input[type="password"],
 input[type="submit"] {
     width: 100%;
@@ -313,8 +313,7 @@ input[type="submit"]:hover {
 }
 
 .input-error::placeholder {
-    color: rgba(255, 24, 24, 0.411); 
-    border-color: red;/* Transparent red placeholder text color */
+    color:  #ff6b6b94;/* Transparent red placeholder text color */
 }
 
 /* Shake animation class */
@@ -369,6 +368,31 @@ input[type="submit"]:hover {
     }
 }
 
+.form-control {
+    width: 100%;
+    padding: 5px;
+    margin: 5px 0;
+    display: inline-block;
+    border: 1px solid #444444; /* Dark border color */
+    box-sizing: border-box;
+    background-color: #33333A; /* Dark input background */
+    color: #ffffff; /* Light text color */
+}
+
+.input-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .input-container input {
+            flex: 1;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .input-container i {
+            margin-left: 10px;
+            color: white;
+        }
 
 
 </style>
@@ -396,8 +420,12 @@ input[type="submit"]:hover {
         <div style="width: 100%; height: 1000px; padding-left: 20px;"><div >
 
             <div id="login-section">
-                    <input placeholder="Username or email *" type="text" id="username" name="username"><br>
-                    <input placeholder="Password *" type="password" id="password" name="password"><br><br>
+                    <select id="tenantSelect" placeholder="Tenant *" class="form-control" ></select>
+                    <div class="input-container">
+                        <input placeholder="Username or mail *" type="text" id="username" name="username"></input>
+                        <i style="display: none;" id="loadIcon" class="fa-solid fa-spinner fa-spin fa-xl"></i>
+                    </div>
+                    <input placeholder="Password *" type="password" id="password" name="password">
                     <button class="cta-button" id="loginButton" onclick="login()">Login</button>
                     <p id="notification" class="notification"></p>
 
@@ -476,6 +504,7 @@ var NodeId;
 var code;
 var tenantId;
 document.getElementById('openReport').disabled = true;
+var username;
 
 document.getElementById("checkbox").addEventListener("change", function() {
         var checkboxIcon = document.getElementById("checkboxlabel").querySelectorAll("i");
@@ -485,7 +514,67 @@ document.getElementById("checkbox").addEventListener("change", function() {
         // Toggle the display of the checked icon
         checkboxIcon[1].style.display = this.checked ? "inline-block" : "none";
     });
+    
 
+    document.addEventListener('DOMContentLoaded', function() {
+    const usernameInput = document.getElementById('username');
+
+
+    usernameInput.addEventListener('blur', function() {
+        const username = usernameInput.value.trim();
+        document.getElementById('loadIcon').style.display = 'block';
+        if (username) {
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add any other necessary headers here
+                }
+            };
+
+            fetch(`https://strategnosportal.co.za/api/services/app/TenantLookup/GetTenantNamesByUsername?username=${username}`, requestOptions)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text(); // Fetch the response as text
+                })
+                .then((text) => {
+                    const result = JSON.parse(text); // Parse the text as JSON
+                    console.log(result); // Log the result to the console for debugging
+                    populateSelect(result);
+                })
+                .catch((error) => console.error('Fetch error:', error));
+        }
+    });
+
+    function populateSelect(data) {
+        const selectElement = document.getElementById('tenantSelect');
+        selectElement.innerHTML = ''; // Clear existing options
+        console.log(data.result.length)
+        if (data.success && data.result.length != 0) {
+            data.result.forEach(optionText => {
+                const option = document.createElement('option');
+                option.value = optionText;
+                option.textContent = optionText;
+                selectElement.appendChild(option);
+                document.getElementById('tenantSelect').style.display = 'block';
+                document.getElementById('loginButton').style.display = 'block';
+                document.getElementById('password').style.display = 'block';
+                document.getElementById('loadIcon').style.display = 'none';
+            });
+        } else {
+            console.error('API call failed:', data.error);
+            document.getElementById('username').classList.add('input-error');
+            document.getElementById('username').style.borderColor = '#ff6b6b94'
+            document.getElementById('username').value = '';
+            document.getElementById('username').placeholder = 'No user found'
+            document.getElementById('username').classList.add('shake');
+            document.getElementById('loadIcon').style.display = 'none';
+
+        }
+    }
+});
 
 
 function logout(){
@@ -533,6 +622,7 @@ checkbox.addEventListener('click', function() {
 
 function login() {
 
+    var tenantName = document.getElementById('tenantSelect').value;
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
     document.getElementById("loading-overlay").style.display = "block";
@@ -565,10 +655,9 @@ function login() {
     redirect: "follow"
     };
 
-    fetch("https://demo.strategnosportal.co.za/api/TokenAuth/Authenticate", requestOptions)
+    fetch(`https://${tenantName}.strategnosportal.co.za/api/TokenAuth/Authenticate`, requestOptions)
     .then(response => response.json()) // Parse response as JSON
     .then(data => {
-                document.getElementById('logout').style.display = 'block'
                 userId = data.result.userId;
                 var myVariable  = userId;
                 const authenticationSuccess = data.success;
@@ -578,14 +667,14 @@ function login() {
                     document.getElementById('warning').style.display = 'none'
                     authenticationToken = data.result.accessToken
                     localStorage.setItem("SCToken", authenticationToken);
-                    getOrganizationUNits(authenticationToken);
+                    getOrganizationUNits(authenticationToken, tenantName);
                     document.getElementById('login-section').style.display = 'none';
                     document.getElementById("contentWrapper").style.display = "block"
                 }
                 else{
                     console.log("hit")
                 }
-                document.getElementById("loading-overlay").style.display = "none"
+                
                 
         
         })
@@ -597,8 +686,12 @@ function login() {
             document.getElementById("username").classList.add('shake');
             document.getElementById("password").classList.add('shake');
 
-            document.getElementById('username').classList.add('input-error');
-            document.getElementById('password').classList.add('input-error');
+            document.getElementById('username').style.borderColor = '#ff6b6b94';
+            document.getElementById('password').style.borderColor = '#ff6b6b94';
+
+            
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
 
             
 
@@ -612,8 +705,7 @@ function login() {
 
 }
           
-function getOrganizationUNits(authenticationToken){
-    document.getElementById("loading-overlay").style.display = "block";
+function getOrganizationUNits(authenticationToken, tenantName){
     document.body.classList.add('gradient-background');
     const img = document.getElementById('DigitalSolutions');
     img.style.width = '90%'
@@ -629,9 +721,10 @@ function getOrganizationUNits(authenticationToken){
     redirect: "follow"
     };
 
-    fetch("https://demo.strategnosportal.co.za/api/services/app/OrganizationUnit/GetOrganizationTreeByTenantAndUserId", requestOptions)
+    fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/OrganizationUnit/GetOrganizationTreeByTenantAndUserId`, requestOptions)
     .then(response => response.json()) // Parse response as JSON
     .then(result => {
+        console.log(result)
     // Call function to populate dropdown with fetched data
         const organizationTree = generateOrganizationTree(result);
         const treeContainer = document.getElementById('organization-tree');
@@ -647,7 +740,7 @@ function getOrganizationUNits(authenticationToken){
 function embedPowerBIReport() {
 
     const scToken = localStorage.getItem("SCToken");
-    const myWindow = window.open(`test.html?scToken=${encodeURIComponent(scToken)}&nodeId=${encodeURIComponent(code)}`, "", "width=1000px,height=600px");
+    const myWindow = window.open(`test.html?scToken=${encodeURIComponent(scToken)}&nodeId=${encodeURIComponent(code)}&organizationUnit=${encodeURIComponent(NodeId)}`, "", "width=1000px,height=600px");
     document.getElementById("loading-overlay").style.display = "none";
 
 }
@@ -698,7 +791,6 @@ function generateOrganizationTree(data, parentId = null) {
             NodeId = currentItem.id;
             code = currentItem.code;
 
-            console.log("HERE" + code + ' ' + tenantId)
             const childNodes = node.querySelector('ul');
             if (childNodes) {
                 childNodes.classList.toggle('collapsed');
@@ -758,7 +850,6 @@ function handleSearchInput() {
 }
 
 function filterOrganizationTree(searchTerm) {
-    debugger;
     const treeContainer = document.getElementById('organization-tree');
     const treeNodes = treeContainer.querySelectorAll('.node-button'); // Select all node buttons
 
