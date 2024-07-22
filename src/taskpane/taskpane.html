@@ -565,7 +565,7 @@ function login() {
     redirect: "follow"
     };
 
-    fetch("https://strategnos.strategnoscloudqa.com/api/TokenAuth/Authenticate", requestOptions)
+    fetch("https://demo.strategnosportal.co.za/api/TokenAuth/Authenticate", requestOptions)
     .then(response => response.json()) // Parse response as JSON
     .then(data => {
                 document.getElementById('logout').style.display = 'block'
@@ -629,7 +629,7 @@ function getOrganizationUNits(authenticationToken){
     redirect: "follow"
     };
 
-    fetch("https://strategnos.strategnoscloudqa.com/api/services/app/OrganizationUnit/GetOrganizationTreeByTenantAndUserId", requestOptions)
+    fetch("https://demo.strategnosportal.co.za/api/services/app/OrganizationUnit/GetOrganizationTreeByTenantAndUserId", requestOptions)
     .then(response => response.json()) // Parse response as JSON
     .then(result => {
     // Call function to populate dropdown with fetched data

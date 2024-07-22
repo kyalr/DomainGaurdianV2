@@ -417,17 +417,16 @@ label {
             redirect: "follow"
         };
 
-        fetch("https://strategnos.strategnoscloudqa.com/OrganizationUnitDocuments/UploadDocument", requestOptions)
+        fetch("https://demo.strategnosportal.co.za/OrganizationUnitDocuments/UploadDocument", requestOptions)
             .then((response) => response.text())
             .then((result) => console.log(result))
             .catch((error) => console.error(error));
 
         // Return the save URL
-        return "https://strategnos.strategnoscloudqa.com/OrganizationUnitDocuments/UploadDocument";
+        return "https://demo.strategnosportal.co.za/OrganizationUnitDocuments/UploadDocument";
     }
 
     function uploadFile() {
-        debugger;
         const fileInput = document.getElementById('fileInput');
         const file = fileInput.files[0];
         if (file) {
@@ -453,7 +452,7 @@ label {
             redirect: "follow"
         };
 
-        fetch("https://strategnos.strategnoscloudqa.com/api/services/app/TenantDashboard/GetReportEmbedInfo?reportId=361", requestOptions)
+        fetch("https://demo.strategnosportal.co.za/api/services/app/TenantDashboard/GetReportEmbedInfo?reportId=151", requestOptions)
             .then((response) => {
                 if (!response.ok) {
                     // If the response status is not ok (e.g., 4xx or 5xx), throw an error
@@ -598,7 +597,7 @@ label {
 
                     // Retrieve the target visual.
                     let visual = visuals.filter(function (visual) {
-                        return visual.name === "cf056270a7ddea7cbe97";
+                        return visual.name === "e2cd66f842406a483576";
                     })[0];
 
                     // Exports visual data
@@ -683,7 +682,7 @@ label {
             redirect: "follow"
             };
 
-            fetch("https://strategnos.strategnoscloudqa.com/api/services/app/OrganizationUnitNote/CreateOrUpdateNote", requestOptions)
+            fetch("https://demo.strategnosportal.co.za/api/services/app/OrganizationUnitNote/CreateOrUpdateNote", requestOptions)
             .then((response) => response.text())
             .then((result) => {
                 console.log(result);
@@ -731,7 +730,7 @@ label {
             redirect: "follow"
         };
 
-        fetch("https://strategnos.strategnoscloudqa.com/api/services/app/Forms/SaveSurveyResults", requestOptions)
+        fetch("https://demo.strategnosportal.co.za/api/services/app/Forms/SaveSurveyResults", requestOptions)
         .then((response) => response.text())
         .then((result) => console.log(result))
         .catch((error) => console.error(error));

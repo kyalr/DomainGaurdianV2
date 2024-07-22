@@ -13,6 +13,7 @@ Office.onReady(function (info) {
   
   function checkLoggedIn() {
     // Check if the userId is stored in localStorage
+    debugger;
     userId = localStorage.getItem("userId");
     token = localStorage.getItem("SCToken")
     if (userId) {
@@ -25,7 +26,6 @@ Office.onReady(function (info) {
       
     }
     else{
-      document.getElementById("relogin").style.display = 'block';
       document.getElementById("search-input").style.display = 'none';
       document.getElementById("app-body").style.display = "flex";
       document.getElementById('reporting').style.display = 'none';
