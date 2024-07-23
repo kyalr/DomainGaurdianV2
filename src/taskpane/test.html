@@ -462,10 +462,14 @@ label {
     var comments;
     var userSurveyId;
     var surveyOrganizationUnitId
+    var formResultId;
 
     var surveyCreateVsUpdate;
     var surveyUserToken;
     var organizationUnit;
+    var reportId;
+
+    var tenantName;
 
     function closeComment(){
         document.getElementById('forms-card').style.display = 'none';
@@ -501,7 +505,9 @@ label {
         const myVariable = urlParams.get('scToken');
         StratCloudToken = urlParams.get('scToken');
         organizationUnit = urlParams.get('organizationUnit');
-        embedReport(myVariable)
+        tenantName = urlParams.get('tenantName');
+        console.log(myVariable)
+        getReport(myVariable)
         document.getElementById('embed-container').style.visibility = 'hidden'
 
     };
@@ -565,7 +571,32 @@ label {
         console.log("hit")
     }
 
-    function embedReport(myVariable) {
+
+    function getReport(myVariable){
+        const myHeaders = new Headers();
+        myHeaders.append("accept", "text/plain");
+        myHeaders.append("X-XSRF-TOKEN", "null");
+        myHeaders.append("Authorization", "Bearer " + myVariable);
+
+        const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+        };
+
+        fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/TenantDashboard/GetReports?Filter=Very`, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            let reportId = data.result.items[0].id;
+            console.log(reportId);
+            embedReport(myVariable, reportId);
+        })
+        .catch((error) => embedReport(myVariable, reportId));
+    }
+
+
+    function embedReport(myVariable, reportId) {
 
         const myHeaders = new Headers();
         myHeaders.append("accept", "text/plain");
@@ -577,7 +608,9 @@ label {
             redirect: "follow"
         };
 
-        fetch("https://demo.strategnosportal.co.za/api/services/app/TenantDashboard/GetReportEmbedInfo?reportId=151", requestOptions)
+        console.log(tenantName)
+
+        fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/TenantDashboard/GetReportEmbedInfo?reportId=${reportId}`, requestOptions)
             .then((response) => {
                 if (!response.ok) {
                     // If the response status is not ok (e.g., 4xx or 5xx), throw an error
@@ -603,7 +636,7 @@ label {
                         displayOption: models.DisplayOption.FitToPage,
                         panes: {
                             filters: {
-                                visible: false
+                                visible: true
                             },
                             pageNavigation: {
                                 visible: false
@@ -655,6 +688,20 @@ label {
                     }]
                 };
 
+                const tenantFilter = {
+                    $schema: "http://powerbi.com/product/schema#advanced",
+                    target: {
+                        table: "Query2",
+                        column: "TenancyName"
+                    },
+                    filterType: 0,
+                    logicalOperator: "And",
+                    conditions: [{
+                        operator: "StartsWith",
+                        value: tenantName
+                    }]
+                };
+
                 const surveyFilter = {
                     $schema: "http://powerbi.com/product/schema#advanced",
                     target: {
@@ -675,7 +722,7 @@ label {
                     document.getElementById('embed-container').style.visibility = 'visible'
                     document.getElementById('loading-overlay').style.display = 'none';
 
-                    report.updateFilters(models.FiltersOperations.Add, [taskFilter,surveyFilter])
+                    report.updateFilters(models.FiltersOperations.Add, [taskFilter,surveyFilter, tenantFilter])
                         .then(function() {
                             console.log("Report filter was added.");
                         })
@@ -704,6 +751,7 @@ label {
                         comments = data.dataPoints[0].identity[0].equals;
                         userSurveyId = data.dataPoints[0].identity[7].equals;
                         surveyOrganizationUnitId = data.dataPoints[0].identity[5].equals;
+                        formResultId = data.dataPoints[0].identity[10].equals;
                         
                         console.log(userSurveyId)
 
@@ -851,7 +899,7 @@ label {
             redirect: "follow"
             };
 
-            fetch("https://demo.strategnosportal.co.za/api/services/app/OrganizationUnitNote/CreateOrUpdateNote", requestOptions)
+            fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/OrganizationUnitNote/CreateOrUpdateNote`, requestOptions)
             .then((response) => response.text())
             .then((result) => {
                 console.log(result);
@@ -915,10 +963,11 @@ label {
                 myHeaders.append("Authorization", "Bearer " + StratCloudToken);
 
                 var raw = JSON.stringify({
-                "surveyId": "a31a0398-b597-4321-e343-08dc9f3c4ca5",
-                "userToken": userSurveyId,
+                "formResultId" : formResultId,
                 "organizationUnitId": surveyOrganizationUnitId,
-                "surveyResultsAsJson": JSON.stringify({
+                "formId": "a31a0398-b597-4321-e343-08dc9f3c4ca5",
+                "formUserId": userSurveyId,
+                "formResultsAsJson": JSON.stringify({
                     "reorderPoint": document.getElementById('ReorderPointInput').value,
                     "max": document.getElementById('MaxInput').value,
                     "leadTime": document.getElementById('LeadTimeInput').value,
@@ -927,8 +976,7 @@ label {
                     "outputType": document.getElementById('OutputTypeInput').value,
                     "materialCode": document.getElementById('MaterialCodeInput').value
                 }),
-                "tenantId": 14,
-                "editing": "true"
+                "existingRecord": "true"
                 });
 
                 const requestOptions = {
@@ -938,15 +986,17 @@ label {
                     redirect: "follow"
                 };
 
-                fetch("https://demo.strategnosportal.co.za/api/services/app/Forms/SaveCompletedSurveyResults", requestOptions)
+                fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/Forms/EditFormTaskResult`, requestOptions)
                 .then((response) => response.text())
                 .then((result) => 
-                    showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created or updated successfully!", 'success'
-                ))
+                    showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created or updated successfully!", 'success')
+                )
                 .catch((error) => 
-                    showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Notes feature is not enabled.", 'error')
+                    showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Result cannot be save!", 'error')
                 );
-            }else if (surveyCreateVsUpdate === 'create'){
+
+            }
+            else if (surveyCreateVsUpdate === 'create'){
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const organizationUnit = urlParams.get('organizationUnit');
@@ -959,7 +1009,7 @@ label {
                 };
 
                 // Construct the URL with the organizationUnit
-                const url = `https://demo.strategnosportal.co.za/api/services/app/SurveysAnonymous/GetSurveyToComplete?OrganizationUnitId=${organizationUnit}&Id=a31a0398-b597-4321-e343-08dc9f3c4ca5`;
+                const url = `https://${tenantName}.strategnosportal.co.za/api/services/app/SurveysAnonymous/GetSurveyToComplete?OrganizationUnitId=${organizationUnit}&Id=a31a0398-b597-4321-e343-08dc9f3c4ca5`;
 
                 fetch(url, requestOptions)
                     .then((response) => response.text())
@@ -996,20 +1046,15 @@ label {
                                 redirect: "follow"
                                 };
 
-                                fetch("https://demo.strategnosportal.co.za/api/services/app/SurveysAnonymous/SaveCompletedSurveyResults", requestOptions2)
+                                fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/SurveysAnonymous/SaveCompletedSurveyResults`, requestOptions2)
                                 .then((response) => response.text())
-                                .then((result) => console.log(result))
-                                .catch((error) => console.error(error));
+                                .then((result) => showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created or updated successfully!", 'success'))
+                                .catch((error) => showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Result cannot be save!", 'error'));
                         } else {
                             console.error('userToken is undefined or not present in the response');
                         }
                     })
-                    .catch((error) => console.error('Error:', error));
-
-
-
-
-                
+                    .catch((error) => console.error('Error:', error));                
             }
         }
     }

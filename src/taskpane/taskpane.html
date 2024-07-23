@@ -505,6 +505,7 @@ var code;
 var tenantId;
 document.getElementById('openReport').disabled = true;
 var username;
+var tenantName;
 
 document.getElementById("checkbox").addEventListener("change", function() {
         var checkboxIcon = document.getElementById("checkboxlabel").querySelectorAll("i");
@@ -622,7 +623,7 @@ checkbox.addEventListener('click', function() {
 
 function login() {
 
-    var tenantName = document.getElementById('tenantSelect').value;
+    tenantName = document.getElementById('tenantSelect').value;
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
     document.getElementById("loading-overlay").style.display = "block";
@@ -724,7 +725,6 @@ function getOrganizationUNits(authenticationToken, tenantName){
     fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/OrganizationUnit/GetOrganizationTreeByTenantAndUserId`, requestOptions)
     .then(response => response.json()) // Parse response as JSON
     .then(result => {
-        console.log(result)
     // Call function to populate dropdown with fetched data
         const organizationTree = generateOrganizationTree(result);
         const treeContainer = document.getElementById('organization-tree');
@@ -740,7 +740,7 @@ function getOrganizationUNits(authenticationToken, tenantName){
 function embedPowerBIReport() {
 
     const scToken = localStorage.getItem("SCToken");
-    const myWindow = window.open(`test.html?scToken=${encodeURIComponent(scToken)}&nodeId=${encodeURIComponent(code)}&organizationUnit=${encodeURIComponent(NodeId)}`, "", "width=1000px,height=600px");
+    const myWindow = window.open(`test.html?tenantName=${encodeURIComponent(tenantName)}&scToken=${encodeURIComponent(scToken)}&nodeId=${encodeURIComponent(code)}&organizationUnit=${encodeURIComponent(NodeId)}`, "", "width=1000px,height=600px");
     document.getElementById("loading-overlay").style.display = "none";
 
 }
