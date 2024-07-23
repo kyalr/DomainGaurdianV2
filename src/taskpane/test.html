@@ -571,7 +571,6 @@ label {
         console.log("hit")
     }
 
-
     function getReport(myVariable){
         const myHeaders = new Headers();
         myHeaders.append("accept", "text/plain");
@@ -594,7 +593,6 @@ label {
         })
         .catch((error) => embedReport(myVariable, reportId));
     }
-
 
     function embedReport(myVariable, reportId) {
 
@@ -1073,7 +1071,7 @@ label {
         document.getElementById('comment2Input').value = '';
     }
 
-document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
     const inputs = [
         document.getElementById('MaterialCodeInput'),
         document.getElementById('ReorderPointInput'),

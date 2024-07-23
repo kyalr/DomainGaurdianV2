@@ -34,7 +34,7 @@ p {
 }
 
 body {
-    font-family: 'Sequel Sans Light', sans-serif;
+    font-family: 'impact';
     text-align: center;
     background-image: url('https://kyalr.github.io/DomainGaurdianV2/assets/StrategnosHorse.jpg'); /* Replace with your image path */
     background-size: cover;
@@ -155,6 +155,7 @@ input[type="submit"]:hover {
     text-align: left;
     background-color: #555555; /* Dark background color */
     color: #ffffff; /* Light text color */
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 .node-button:hover {
@@ -208,24 +209,22 @@ input[type="submit"]:hover {
 }
 
 .gradient-background {
-            background: linear-gradient(0deg, #9ba7c4 0%, #0d111a 80%);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
-        }
+    background: linear-gradient(0deg, #9ba7c4 0%, #0d111a 80%);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+}
 
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 
 .context-menu ul li a:hover {
     background-color: #555555; /* Darker hover background */
@@ -380,20 +379,21 @@ input[type="submit"]:hover {
 }
 
 .input-container {
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-        .input-container input {
-            flex: 1;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-        .input-container i {
-            margin-left: 10px;
-            color: white;
-        }
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
 
+.input-container input {
+    flex: 1;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.input-container i {
+    margin-left: 10px;
+    color: white;
+}
 
 </style>
         
@@ -496,8 +496,7 @@ input[type="submit"]:hover {
 
     <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.18.0/dist/powerbi.min.js"></script>
 
-    <script>
-
+<script>
 
 let userId;
 var NodeId;
@@ -516,15 +515,14 @@ document.getElementById("checkbox").addEventListener("change", function() {
         checkboxIcon[1].style.display = this.checked ? "inline-block" : "none";
     });
     
-
     document.addEventListener('DOMContentLoaded', function() {
     const usernameInput = document.getElementById('username');
 
-
     usernameInput.addEventListener('blur', function() {
+        document.getElementById('username').style.borderColor = '#444444'
         const username = usernameInput.value.trim();
         document.getElementById('loadIcon').style.display = 'block';
-        if (username) {
+        if (username && username != '') {
             const requestOptions = {
                 method: 'GET',
                 headers: {
@@ -547,13 +545,21 @@ document.getElementById("checkbox").addEventListener("change", function() {
                 })
                 .catch((error) => console.error('Fetch error:', error));
         }
+        else{
+            document.getElementById('username').classList.add('input-error');
+            document.getElementById('username').style.borderColor = '#ff6b6b94'
+            document.getElementById('username').placeholder = 'User cannot be empty!'
+            document.getElementById('username').classList.add('shake');
+            document.getElementById('loadIcon').style.display = 'none';
+        }
     });
 
     function populateSelect(data) {
         const selectElement = document.getElementById('tenantSelect');
         selectElement.innerHTML = ''; // Clear existing options
         console.log(data.result.length)
-        if (data.success && data.result.length != 0) {
+        const username = document.getElementById('username');
+        if (data.success && data.result.length != 0 && username != '') {
             data.result.forEach(optionText => {
                 const option = document.createElement('option');
                 option.value = optionText;
@@ -620,7 +626,6 @@ checkbox.addEventListener('click', function() {
     }
 });
 
-
 function login() {
 
     tenantName = document.getElementById('tenantSelect').value;
@@ -628,25 +633,23 @@ function login() {
     var password = document.getElementById("password").value;
     document.getElementById("loading-overlay").style.display = "block";
 
-
     const authenticationSuccess = null;
     var authenticationToken = null;
 
     var isLoggedIn;
 
-
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({
-    "userNameOrEmailAddress": username,
-    "password": password,
-    "twoFactorVerificationCode": "string",
-    "rememberClient": true,
-    "twoFactorRememberClientToken": "string",
-    "singleSignIn": true,
-    "returnUrl": "string",
-    "captchaResponse": "string"
+        "userNameOrEmailAddress": username,
+        "password": password,
+        "twoFactorVerificationCode": "string",
+        "rememberClient": true,
+        "twoFactorRememberClientToken": "string",
+        "singleSignIn": true,
+        "returnUrl": "string",
+        "captchaResponse": "string"
     });
 
     const requestOptions = {
@@ -668,33 +671,30 @@ function login() {
                     document.getElementById('warning').style.display = 'none'
                     authenticationToken = data.result.accessToken
                     localStorage.setItem("SCToken", authenticationToken);
+                    localStorage.setItem('tenantName', tenantName)
                     getOrganizationUNits(authenticationToken, tenantName);
                     document.getElementById('login-section').style.display = 'none';
                     document.getElementById("contentWrapper").style.display = "block"
                 }
-                else{
+                else
+                {
                     console.log("hit")
                 }
-                
-                
-        
         })
-        .catch(error => {console.error(error);
+        .catch(error => {
+            
+            console.error(error);
             document.getElementById("loading-overlay").style.display = "none";
             showNotification("Incorrect Details!", 'error')
-
 
             document.getElementById("username").classList.add('shake');
             document.getElementById("password").classList.add('shake');
 
             document.getElementById('username').style.borderColor = '#ff6b6b94';
             document.getElementById('password').style.borderColor = '#ff6b6b94';
-
             
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
-
-            
 
             // Remove shake animation after it's done
             setTimeout(() => {
@@ -864,10 +864,6 @@ function filterOrganizationTree(searchTerm) {
         node.style.display = 'none';
     }
 });
-}
-
-function openAllNodes(){
-    this.document.get
 }
 
 function showNotification(message, type) {
