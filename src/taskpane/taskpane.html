@@ -405,8 +405,8 @@ input[type="submit"]:hover {
 .toggle-button-label {
     display: flex;
     align-items: center;
-    width: 40px;  /* Reduced width */
-    height: 20px; /* Reduced height */
+    width: 35px;  /* Reduced width */
+    height: 18px; /* Reduced height */
     background-color: #ccc;
     border-radius: 50px;
     cursor: pointer;
@@ -422,8 +422,8 @@ input[type="submit"]:hover {
     position: absolute;
     top: 2px;   /* Adjusted top position */
     left: 2px;  /* Adjusted left position */
-    width: 16px;  /* Reduced width */
-    height: 16px; /* Reduced height */
+    width: 14px;  /* Reduced width */
+    height: 14px; /* Reduced height */
     background-color: #fff;
     border-radius: 50%;
     transition: transform 0.3s ease;
@@ -434,7 +434,97 @@ input[type="submit"]:hover {
 }
 
 .toggle-button-checkbox:checked + .toggle-button-label .toggle-button-switch {
-    transform: translateX(20px); /* Adjusted transform distance */
+    transform: translateX(15px); /* Adjusted transform distance */
+}
+
+.icon-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex; /* Use Flexbox to align items */
+    align-items: center; /* Center items vertically */
+    border-radius: 5px; /* Rounded corners */
+    padding: 5px 10px; /* Padding around the content */
+}
+
+.settings-icon-spin {
+    font-size: 18px; /* Adjust icon size as needed */
+    color: white; /* Icon color */
+    margin-right: 8px; /* Space between icon and label */
+    display: flex;
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.settings-icon-spin:hover {
+    color: #D2B08D; /* Change color on hover */
+    animation: spin 3s linear;
+}
+
+.settings-label {
+    font-size: 12px; /* Adjust label size as needed */
+    color: white; /* Label color */
+    display: flex;
+    align-items: center; /* Center label text vertically */
+}
+
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%; /* Adjust width as needed */
+    height: 100%;
+    background: linear-gradient(180deg, rgba(51,51,58,1) 0%, rgba(51,51,58,1) 26%, rgba(161,162,171,0.7931547619047619) 70%, rgba(236,237,248,0) 100%);
+    color: #fff; /* Text color */
+    transform: translateX(100%); /* Initially hide the overlay */
+    transition: transform 0.3s ease-in-out; /* Smooth slide effect */
+    z-index: 1000; /* Ensure overlay is above other elements */
+}
+
+.settings-overlay-content {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto; /* Scroll if content overflows */
+}
+
+.close-btn {
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-form label {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.settings-form input {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.treediv{
+    transition: transform 0.3s ease-in-out; /* Smooth slide effect */
+}
+
+.treediv.slide-out {
+    transform: translateX(-300px); /* Adjust width to match the overlay */
 }
 
 
@@ -464,7 +554,7 @@ input[type="submit"]:hover {
                 <div class="input-container">
                         <input placeholder="Username or mail *" type="text" id="username" name="username"></input>
                         <i style="display: none;" id="loadIcon" class="fa-solid fa-spinner fa-spin fa-xl"></i>
-                    </div>
+                </div>
 
                     <input placeholder="Password *" type="password" id="password" name="password">
                     <button class="cta-button" id="loginButton" onclick="login()">Login</button>
@@ -533,6 +623,35 @@ input[type="submit"]:hover {
         </label>
     </div>
 
+    <!-- Gear Icon and Label -->
+    <div id="settingsButton" class="icon-container">
+        <div class="settings-icon-spin">
+            <i class="fa-solid fa-gear"></i>
+        </div>
+    </div>
+
+    <!-- Settings Overlay -->
+    <div id="settingsOverlay" class="settings-overlay">
+        <div class="settings-overlay-content">
+            <span class="close-btn" id="closeOverlay">&times;</span>
+            <h2>Configuration Settings</h2>
+            <div class="settings-form">
+                <!-- Example Input -->
+                <input type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
+                
+                <div style="display: flex;">
+                    <!-- Domain Checks Checkbox -->
+                    <label for="domainChecks">Domain Checks:</label>
+                    <input type="checkbox" id="domainChecks" name="domainChecks">
+                    <br>
+                    <!-- Email Rule Checkbox -->
+                    <label for="emailRule">Email Rule:</label>
+                    <input type="checkbox" id="emailRule" name="emailRule">
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>   
@@ -564,6 +683,9 @@ document.getElementById("checkbox").addEventListener("change", function() {
     });
     
     document.addEventListener('DOMContentLoaded', function() {
+
+        checkLoggedIn();
+
     const usernameInput = document.getElementById('username');
 
     usernameInput.addEventListener('blur', function() {
@@ -641,6 +763,47 @@ document.getElementById("checkbox").addEventListener("change", function() {
     toggleButton.addEventListener("change", () => {
         localStorage.setItem('toggleState', toggleButton.checked);
     });
+
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsOverlay = document.getElementById('settingsOverlay');
+    const closeOverlay = document.getElementById('closeOverlay');
+
+
+    settingsButton.addEventListener('click', function() {
+        debugger;
+        settingsOverlay.style.transform = 'translateX(0)'; // Show the overlay
+        const userId = localStorage.getItem('userId');
+        const treeDiv = document.getElementById('treediv')
+
+        if(userId){
+            document.getElementById('treediv').style.display = 'none';
+        }
+        else{
+            document.getElementById('login-section').style.display = 'none';
+        }
+
+    });
+
+    closeOverlay.addEventListener('click', function() {
+        settingsOverlay.style.transform = 'translateX(100%)'; // Hide the overlay
+
+        if(userId){
+            document.getElementById('treediv').style.display = 'block';
+            
+        }
+        else{
+            document.getElementById('login-section').style.display = 'block';
+        }
+
+    });
+
+    // Optional: Hide overlay when clicking outside of it
+    document.addEventListener('click', function(event) {
+        if (!settingsOverlay.contains(event.target) && !settingsButton.contains(event.target)) {
+            settingsOverlay.style.transform = 'translateX(100%)';
+        }
+    });
+
 });
 
 
@@ -938,6 +1101,38 @@ function showNotification(message, type) {
     }
 
 document.getElementById('search-input').addEventListener('input', handleSearchInput);
+
+function checkLoggedIn() {
+    // Check if the userId is stored in localStorage
+    userId = localStorage.getItem("userId");
+    token = localStorage.getItem("SCToken")
+    tenantName = localStorage.getItem("tenantName")
+    
+
+    if (userId) {
+      document.getElementById("loading-overlay").style.display = "block";
+      document.getElementById("app-body").style.display = "flex";
+      document.getElementById('reporting').style.display = 'block'
+      document.getElementById("login-section").style.display = 'none'
+      document.getElementById("reportWarning").style.display = 'none'
+      document.getElementById('logout').style.display = 'block'
+      getOrganizationUNits(token, tenantName);
+      
+    }
+    else{
+      document.getElementById("search-input").style.display = 'none';
+      document.getElementById("app-body").style.display = "flex";
+      document.getElementById('reporting').style.display = 'none';
+      document.getElementById('warning').style.display = 'none';
+      document.getElementById('reportWarning').style.display = 'none';
+      document.getElementById('logout').style.display = 'none';
+      document.getElementById("contentWrapper").style.display = "none";
+      document.getElementById("password").style.display = 'none';
+      document.getElementById("loginButton").style.display = 'none';
+      document.getElementById("tenantSelect").style.display = 'none';
+    }
+}
+
 
 </script>
     
