@@ -15,6 +15,7 @@ Office.onReady(function (info) {
     // Check if the userId is stored in localStorage
     userId = localStorage.getItem("userId");
     token = localStorage.getItem("SCToken")
+    
     if (userId) {
       document.getElementById("app-body").style.display = "flex";
       document.getElementById('reporting').style.display = 'block'

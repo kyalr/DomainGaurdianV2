@@ -12,10 +12,7 @@
     <script type="text/javascript" src="taskpane.js"></script>
     <script src="https://kit.fontawesome.com/8f86fe6637.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-
     <script src="https://cdn.syncfusion.com/ej2/24.1.41/dist/ej2.min.js" type="text/javascript"></script>
-
-
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>
 
@@ -395,6 +392,52 @@ input[type="submit"]:hover {
     color: white;
 }
 
+.toggle-button-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+.toggle-button-checkbox {
+    display: none;
+}
+
+.toggle-button-label {
+    display: flex;
+    align-items: center;
+    width: 40px;  /* Reduced width */
+    height: 20px; /* Reduced height */
+    background-color: #ccc;
+    border-radius: 50px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-button-label .toggle-button-inner {
+    display: none;
+}
+
+.toggle-button-label .toggle-button-switch {
+    position: absolute;
+    top: 2px;   /* Adjusted top position */
+    left: 2px;  /* Adjusted left position */
+    width: 16px;  /* Reduced width */
+    height: 16px; /* Reduced height */
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.toggle-button-checkbox:checked + .toggle-button-label {
+    background-color: #D2B08D; /* Green background for active state */
+}
+
+.toggle-button-checkbox:checked + .toggle-button-label .toggle-button-switch {
+    transform: translateX(20px); /* Adjusted transform distance */
+}
+
+
 </style>
         
 </head>
@@ -404,7 +447,6 @@ input[type="submit"]:hover {
     <header >
         <div class="header-container">
             <img id="DigitalSolutions" src = "https://kyalr.github.io/DomainGaurdianV2/assets/Consillience.png">
-            <!-- <h1 class="ms-font-su">Welcome to Domain Guardian</h1> -->
             <button class="logout-button" id="logout" onclick="logout()">
             <i class="fa fa-sign-out"></i>
             </button>
@@ -415,24 +457,20 @@ input[type="submit"]:hover {
    
     <main id="app-body" class="ms-welcome__main" style="display: none;">
 
-
-
         <div style="width: 100%; height: 1000px; padding-left: 20px;"><div >
-
+            
             <div id="login-section">
-                    <select id="tenantSelect" placeholder="Tenant *" class="form-control" ></select>
-                    <div class="input-container">
+                <select id="tenantSelect" placeholder="Tenant *" class="form-control" ></select>
+                <div class="input-container">
                         <input placeholder="Username or mail *" type="text" id="username" name="username"></input>
                         <i style="display: none;" id="loadIcon" class="fa-solid fa-spinner fa-spin fa-xl"></i>
                     </div>
+
                     <input placeholder="Password *" type="password" id="password" name="password">
                     <button class="cta-button" id="loginButton" onclick="login()">Login</button>
                     <p id="notification" class="notification"></p>
-
                 <p id="warning" style="color: rgb(253, 145, 145);">Incorrect Password!</p>
-
             </div>
-
 
             <div id = "treediv">
                 <div class="fontpassword">
@@ -447,9 +485,7 @@ input[type="submit"]:hover {
                             <em style="color: white;">Timesheets </em><em style="font-size: 12px;color: white;" id="timesheetAck">(click here to bill your time)</em>
                         </label>
                     </div>
-                    <!-- Other content -->
                 </div>
-
                 <div id="organization-tree"></div>
             </div><br>
 
@@ -488,6 +524,15 @@ input[type="submit"]:hover {
         </ul>
     </div>
 
+    <!-- Toggle Button -->
+    <div class="toggle-button-container">
+        <input type="checkbox" id="toggle-button" class="toggle-button-checkbox" checked>
+        <label for="toggle-button" class="toggle-button-label">
+            <span class="toggle-button-inner"></span>
+            <span class="toggle-button-switch"></span>
+        </label>
+    </div>
+
 </body>
 
 </html>   
@@ -502,9 +547,12 @@ let userId;
 var NodeId;
 var code;
 var tenantId;
-document.getElementById('openReport').disabled = true;
+
 var username;
 var tenantName;
+var OnOff;
+
+document.getElementById('openReport').disabled = true;
 
 document.getElementById("checkbox").addEventListener("change", function() {
         var checkboxIcon = document.getElementById("checkboxlabel").querySelectorAll("i");
@@ -581,6 +629,18 @@ document.getElementById("checkbox").addEventListener("change", function() {
 
         }
     }
+
+    const toggleButton = document.getElementById("toggle-button");
+
+    const savedState = localStorage.getItem('toggleState');
+    if(savedState !== null){
+        toggleButton.checked = savedState === 'true';
+    }
+
+    // Add event listener to detect changes
+    toggleButton.addEventListener("change", () => {
+        localStorage.setItem('toggleState', toggleButton.checked);
+    });
 });
 
 

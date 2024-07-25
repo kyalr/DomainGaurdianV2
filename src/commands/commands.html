@@ -19,34 +19,65 @@
 </html>
 
 <script>
-function onItemSendHandler(event) {
-  getAllRecipients()
-    .then((uniqueDomains) => {
-      // Display the email domains of the recipients as a comma-separated string.
-      let domainsString = Array.from(uniqueDomains).join("\n");      
-      event.completed({
-        allowEvent: false,
-        cancelLabel: "Don't Send",
-        commandId: "",
-        contextData: JSON.stringify({ a: "aValue", b: "bValue" }),
-        errorMessage: domainsString,
-        sendModeOverride: Office.MailboxEnums.SendModeOverride.PromptUser,          
-      });
-    })  
 
-    const currentTime = new Date().getTime();
-    const milliseconds = 3 * 60 * 1000;
-    const timeDelay = new Date(currentTime + milliseconds);
-      
-      Office.context.mailbox.item.delayDeliveryTime.setAsync(timeDelay, (asyncResult) => {
-        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-          console.log(asyncResult.error.message);
-          return;
+var OnOff
+
+async function onItemSendHandler(event) {
+    try {
+        const savedState = localStorage.getItem('toggleState');
+        console.log(savedState);
+
+        let allowEvent;
+        let delayTime;
+
+        if (savedState === "false") {
+            allowEvent = true;
+            delayTime = 0;
+        } else {
+            allowEvent = false;
+            delayTime = 3;
         }
-        console.log("Message delivery has been scheduled.");
-      }); 
-    
+
+        const uniqueDomains = await getAllRecipients();
+        let domainsString = Array.from(uniqueDomains).join("\n");
+
+        const currentTime = new Date().getTime();
+        const milliseconds = delayTime * 60 * 1000;
+        const timeDelay = new Date(currentTime + milliseconds);
+
+        await new Promise((resolve, reject) => {
+            Office.context.mailbox.item.delayDeliveryTime.setAsync(timeDelay, (asyncResult) => {
+                if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                    console.log(asyncResult.error.message);
+                    reject(asyncResult.error.message);
+                } else {
+                    console.log("Message delivery has been scheduled.");
+                    resolve();
+                }
+            });
+        });
+
+        event.completed({
+            allowEvent: allowEvent,
+            cancelLabel: "Don't Send",
+            commandId: "",
+            contextData: JSON.stringify({ a: "aValue", b: "bValue" }),
+            errorMessage: domainsString,
+            sendModeOverride: Office.MailboxEnums.SendModeOverride.PromptUser,
+        });
+
+    } catch (error) {
+        console.error(error);
+        event.completed({
+            allowEvent: false,
+            errorMessage: 'An error occurred: ' + error,
+            sendModeOverride: Office.MailboxEnums.SendModeOverride.PromptUser,
+        });
+    }
 }
+
+    
+
 
 async function getAllRecipients() {
   return new Promise((resolve, reject) => {
