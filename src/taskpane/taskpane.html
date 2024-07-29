@@ -1001,12 +1001,19 @@ function getOrganizationUNits(authenticationToken, tenantName){
 }
 
 function embedPowerBIReport() {
-
     const scToken = localStorage.getItem("SCToken");
-    const myWindow = window.open(`test.html?tenantName=${encodeURIComponent(tenantName)}&scToken=${encodeURIComponent(scToken)}&nodeId=${encodeURIComponent(code)}&organizationUnit=${encodeURIComponent(NodeId)}`, "", "width=1000px,height=600px");
+    const url = `test.html?tenantName=${encodeURIComponent(tenantName)}&scToken=${encodeURIComponent(scToken)}&nodeId=${encodeURIComponent(code)}&organizationUnit=${encodeURIComponent(NodeId)}`;
+    const myWindow = window.open(url, "", "fullscreen=yes");
+
     document.getElementById("loading-overlay").style.display = "none";
 
+    // Some browsers might need a slight delay to allow full screen mode
+    setTimeout(() => {
+        myWindow.moveTo(0, 0);
+        myWindow.resizeTo(screen.width, screen.height);
+    }, 100);
 }
+
 
 function generateOrganizationTree(data, parentId = null) {
 
