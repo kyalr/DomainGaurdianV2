@@ -140,23 +140,32 @@ input[type="submit"]:hover {
     padding: 0;
 }
 
-/* Style for node label button */
 .node-button {
-    display: block;
-    padding: 10px;
-    border: 1px solid #444444; /* Dark border color */
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
     width: 100%;
+    background: none;
+    border: none;
+    padding: 10px;
     text-align: left;
-    background-color: #555555; /* Dark background color */
-    color: #ffffff; /* Light text color */
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: #fff; /* Adjust text color as needed */
+    background-color: #4a4a4a; /* Adjust background color as needed */
+    border-radius: 5px; /* Optional: for rounded corners */
+    margin-bottom: 5px; /* Space between buttons */
+    box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    color: red;
 }
 
 .node-button:hover {
     background-color: #33333A;
+    transform: scale(1.03);
 }
 
 /* Indentation based on level */
@@ -167,42 +176,13 @@ input[type="submit"]:hover {
 /* Different levels of indentation */
 .tree-node > li > ul {
     margin-left: 1px;
-    border-left: 1px solid #444444; /* Dark border color */
+    border-left: 1px solid #b3b3b37a; /* Dark border color */
     padding-left: 15px;
 }
 
 /* Collapse/Expand functionality */
 .tree-node > li > ul.collapsed {
     display: none;
-}
-
-/* Context menu styles */
-.context-menu {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    background-color: #333333; /* Dark background color */
-    border: 1px solid #444444; /* Dark border color */
-    padding: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.context-menu ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-.context-menu ul li {
-    margin: 5px 0;
-}
-
-.context-menu ul li a {
-    text-decoration: none;
-    color: #cccccc; /* Light text color */
-    padding: 0px;
-    display: block;
-    text-align: left;
 }
 
 .gradient-background {
@@ -223,9 +203,7 @@ input[type="submit"]:hover {
     }
 }
 
-.context-menu ul li a:hover {
-    background-color: #555555; /* Darker hover background */
-}
+
 
 .selected {
     background-color: #D2B08D; /* Blue background color */
@@ -253,10 +231,6 @@ input[type="submit"]:hover {
     background-color: #555555; /* Darker background on hover */
 }
 
-.node-icon {
-    background-color: red;
-}
-
 .header-container {
     display: flex;
     align-items: center;
@@ -282,11 +256,6 @@ input[type="submit"]:hover {
     content: '\f274';
     position: absolute;
     right: 6px;
-}
-
-#openReport:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
 }
 
 .notification {
@@ -459,7 +428,7 @@ input[type="submit"]:hover {
 
 .settings-icon-spin:hover {
     color: #D2B08D; /* Change color on hover */
-    animation: spin 3s linear;
+    animation: spin 0.8s linear;
 }
 
 .settings-label {
@@ -515,8 +484,9 @@ input[type="submit"]:hover {
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.5); }
+    100% { transform: rotate(360deg) scale(1); }
 }
 
 .treediv{
@@ -525,6 +495,64 @@ input[type="submit"]:hover {
 
 .treediv.slide-out {
     transform: translateX(-300px); /* Adjust width to match the overlay */
+}
+
+.ellipsis-button {
+    background: none;
+    border: none;
+    padding: 0 5px;
+    font-size: 13px;
+    color: #ffffff; /* Adjust color as needed */
+    margin-left: auto;
+    cursor: pointer;
+
+}
+
+
+.iconSpacing{
+    margin-right: 8px;
+}
+
+/* Context menu styling */
+.context-menu {
+    display: none; /* Hide menu by default */
+    position: absolute;
+    top: 100%; /* Position below the button */
+    left: 0;
+    background: #333; /* Background color of the menu */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for the menu */
+    z-index: 1000; /* Ensure it appears above other content */
+    font-size: 10px;
+}
+
+/* Menu items styling */
+.context-menu ul {
+    list-style: none; /* Remove default list styling */
+    padding: 0;
+    margin: 0;
+}
+
+.context-menu li {
+    margin: 0;
+}
+
+.context-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: #ffffff; /* Text color */
+    text-decoration: none; /* Remove underline */
+    cursor: pointer;
+}
+
+.context-menu a:hover {
+    background: #444; /* Highlight color on hover */
+}
+
+.ellipsis-button:hover {
+    transform: scale(1.5); /* Flip and slightly enlarge */
+    display: block; /* Display menu on hover */
+    cursor: pointer;
 }
 
 
@@ -580,7 +608,6 @@ input[type="submit"]:hover {
             </div><br>
 
             <div id="reporting">
-                <button class="cta-button" disabled title="Please select a unit from the list above" onclick="embedPowerBIReport()" id="openReport">Open Report</button>
                 <div id="embed-container" style="height:200px;width: 100%; padding-top: 10px;"></div>
                 <p id="reportWarning" style="color: rgb(253, 145, 145);">The report cannot be displayed!</p>
             </div>
@@ -606,11 +633,11 @@ input[type="submit"]:hover {
         </div>
     </main>
 
-    <!-- Context menu popup -->
-    <div id="context-menu" class="context-menu">
+    <div class="context-menu" id="contextMenu">
         <ul>
-            <li><a href="#" id="menu-option-1">Add Task</a></li>
-            <!-- Add more menu options as needed -->
+            <li><a onclick="embedPowerBIReport()">Open Report</a></li>
+            <li><a >Timesheets</a></li>
+            <li><a >Option 3</a></li>
         </ul>
     </div>
 
@@ -639,7 +666,7 @@ input[type="submit"]:hover {
                 <!-- Example Input -->
                 <input type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
                 
-                <div style="display: flex;">
+                <div>
                     <!-- Domain Checks Checkbox -->
                     <label for="domainChecks">Domain Checks:</label>
                     <input type="checkbox" id="domainChecks" name="domainChecks">
@@ -671,7 +698,7 @@ var username;
 var tenantName;
 var OnOff;
 
-document.getElementById('openReport').disabled = true;
+
 
 document.getElementById("checkbox").addEventListener("change", function() {
         var checkboxIcon = document.getElementById("checkboxlabel").querySelectorAll("i");
@@ -684,7 +711,7 @@ document.getElementById("checkbox").addEventListener("change", function() {
     
     document.addEventListener('DOMContentLoaded', function() {
 
-        checkLoggedIn();
+    checkLoggedIn();
 
     const usernameInput = document.getElementById('username');
 
@@ -770,10 +797,18 @@ document.getElementById("checkbox").addEventListener("change", function() {
 
 
     settingsButton.addEventListener('click', function() {
-        debugger;
+
         settingsOverlay.style.transform = 'translateX(0)'; // Show the overlay
         const userId = localStorage.getItem('userId');
-        const treeDiv = document.getElementById('treediv')
+        const treeDiv = document.getElementById('treediv');
+
+        const delayTime = localStorage.getItem('delayTime');
+        const domainChecks = localStorage.getItem('domainChecks');
+        const emailRule = localStorage.getItem('emailRule');
+
+        document.getElementById('delayTime').value = delayTime;
+        document.getElementById('domainChecks').value = domainChecks;
+        document.getElementById('emailRule').value = emailRule;
 
         if(userId){
             document.getElementById('treediv').style.display = 'none';
@@ -787,6 +822,15 @@ document.getElementById("checkbox").addEventListener("change", function() {
     closeOverlay.addEventListener('click', function() {
         settingsOverlay.style.transform = 'translateX(100%)'; // Hide the overlay
 
+        const delayTime = document.getElementById('delayTime').value;
+        const domainChecks = document.getElementById('domainChecks').value;
+        const emailRule = document.getElementById('emailRule').value;
+
+        localStorage.setItem('delayTime', delayTime);
+        localStorage.setItem('domainChecks', domainChecks);
+        localStorage.setItem('emailRule', emailRule);
+                
+
         if(userId){
             document.getElementById('treediv').style.display = 'block';
             
@@ -797,18 +841,13 @@ document.getElementById("checkbox").addEventListener("change", function() {
 
     });
 
-    // Optional: Hide overlay when clicking outside of it
-    document.addEventListener('click', function(event) {
-        if (!settingsOverlay.contains(event.target) && !settingsButton.contains(event.target)) {
-            settingsOverlay.style.transform = 'translateX(100%)';
-        }
-    });
-
 });
 
 
 function logout(){
-    localStorage.clear()
+    localStorage.removeItem('authenticationToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('tenantName');
     Office.context.ui.closeContainer();
 }
 
@@ -892,6 +931,7 @@ function login() {
                     localStorage.setItem("userId", userId);
                     document.getElementById('reporting').style.display = 'block'
                     document.getElementById('warning').style.display = 'none'
+                    document.getElementById('logout').style.display = 'block';
                     authenticationToken = data.result.accessToken
                     localStorage.setItem("SCToken", authenticationToken);
                     localStorage.setItem('tenantName', tenantName)
@@ -995,6 +1035,7 @@ function generateOrganizationTree(data, parentId = null) {
 
         const icon = document.createElement('i');
         icon.setAttribute("class", getIconClassesForNodeType(nodeType))
+        icon.classList.add('iconSpacing')
 
 
         button.innerHTML = '';
@@ -1028,9 +1069,44 @@ function generateOrganizationTree(data, parentId = null) {
         button.appendChild(document.createTextNode(" " + currentItem.displayName));
         node.appendChild(button);
         tree.appendChild(node);
+
+        // Create ellipsis button
+        const ellipsisButton = document.createElement('i');
+        ellipsisButton.classList.add('ellipsis-button');
+        ellipsisButton.classList.add('fa', 'fa-ellipsis-vertical'); 
+
+
+        ellipsisButton.addEventListener('click', function(event) {
+            event.stopPropagation(); // Prevent the click from propagating to the document
+            handleUnitSelection(event); // Ensure unit is selected
+
+            // Get button's position and dimensions
+            const buttonRect = ellipsisButton.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+            // Position context menu below the button
+            contextMenu.style.top = `${buttonRect.bottom + scrollTop}px`;
+            contextMenu.style.left = `${buttonRect.left + scrollLeft - 50}px`;
+
+            // Toggle the context menu visibility
+            contextMenu.style.display = contextMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', function() {
+            contextMenu.style.display = 'none'; // Hide menu when clicking outside
+        });
+
+        // Append ellipsis button to the node button
+        button.appendChild(ellipsisButton);
     }
     };
     return tree;
+}
+
+function openContextMenu(currentItem){
+    console.log(currentItem)
+    document.getElementById('context-menu').style.display = 'flex';
 }
 
 function handleUnitSelection(event) {
@@ -1040,7 +1116,7 @@ function handleUnitSelection(event) {
         });
 
         // Add selected class to the clicked button
-        const clickedButton = event.target;
+        const clickedButton = event.target.closest('.node-button');
         const buttonId = clickedButton.getAttribute('data-id');
         const userId = clickedButton.getAttribute('userId');
         const folderCode = clickedButton.getAttribute('folderCode');
@@ -1048,7 +1124,6 @@ function handleUnitSelection(event) {
         clickedButton.classList.add('selected');
         localStorage.setItem("buttonId", buttonId)
         localStorage.setItem("folderCode", folderCode)
-        document.getElementById('openReport').disabled = false;
         
 }
 
@@ -1108,7 +1183,6 @@ function checkLoggedIn() {
     token = localStorage.getItem("SCToken")
     tenantName = localStorage.getItem("tenantName")
     
-
     if (userId) {
       document.getElementById("loading-overlay").style.display = "block";
       document.getElementById("app-body").style.display = "flex";

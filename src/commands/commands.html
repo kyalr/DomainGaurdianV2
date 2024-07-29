@@ -35,7 +35,8 @@ async function onItemSendHandler(event) {
             delayTime = 0;
         } else {
             allowEvent = false;
-            delayTime = 3;
+            delayTime = localStorage.getItem('delayTime');
+            console.log(delayTime);
         }
 
         const uniqueDomains = await getAllRecipients();
