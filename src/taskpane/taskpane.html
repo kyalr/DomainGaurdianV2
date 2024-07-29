@@ -555,6 +555,44 @@ input[type="submit"]:hover {
     cursor: pointer;
 }
 
+.form-wrapper {
+    flex: 0 0 calc(50% - 8px); /* Two forms in a row */
+    background-color: #4e4e4e; /* Dark background color */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0, 0, 0); /* Adjusted shadow color */
+    margin-bottom: 20px; /* Margin between forms */
+    color: black;
+}
+
+.modern-form {
+    /* Basic form styles */
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 5%;
+    display: flex; /* Use flexbox for horizontal layout */
+    align-items: center; /* Center items vertically */
+}
+
+.form-control {
+    margin-top: 5px;
+    flex: 2; /* Take up more space than label */
+    width: 100%; /* Full width input */
+    padding: 5px;
+    font-size: 10px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #444444; /* Dark input background */
+    color: white; /* Light text color */
+}
+
+
+.form-control:focus {
+    outline: none;
+    box-shadow: 0 0 10px #D2B08D; /* Change the glow color */
+}
 
 </style>
         
@@ -661,20 +699,17 @@ input[type="submit"]:hover {
     <div id="settingsOverlay" class="settings-overlay">
         <div class="settings-overlay-content">
             <span class="close-btn" id="closeOverlay">&times;</span>
-            <h2>Configuration Settings</h2>
             <div class="settings-form">
-                <!-- Example Input -->
-                <input type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
-                
-                <div>
-                    <!-- Domain Checks Checkbox -->
-                    <label for="domainChecks">Domain Checks:</label>
-                    <input type="checkbox" id="domainChecks" name="domainChecks">
-                    <br>
-                    <!-- Email Rule Checkbox -->
-                    <label for="emailRule">Email Rule:</label>
-                    <input type="checkbox" id="emailRule" name="emailRule">
-                </div>
+                    <!-- First Form -->
+                    <div class="form-wrapper">
+                        <form id="taskForm" class="modern-form">
+                            <div class="form-group">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
+                            </div>
+                        </form>
+                    </div>
             </div>
         </div>
     </div>
