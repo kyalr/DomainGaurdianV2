@@ -570,13 +570,25 @@ input[type="submit"]:hover {
     width: 100%;
 }
 
-.form-group {
 
-    align-items: center; /* Center items vertically */
+
+.icon-header-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.icon-header-group i {
+    margin-right: 10px; /* Adjust as needed */
+    color: #D2B08D;
+}
+
+.icon-header-group h3 {
+    margin: 0;
 }
 
 .form-control {
-    margin-top: 5px;
     flex: 2; /* Take up more space than label */
     width: 100%; /* Full width input */
     padding: 5px;
@@ -591,6 +603,10 @@ input[type="submit"]:hover {
 .form-control:focus {
     outline: none;
     box-shadow: 0 0 10px #D2B08D; /* Change the glow color */
+}
+
+h3{
+    color: #D2B08D;
 }
 
 </style>
@@ -698,25 +714,45 @@ input[type="submit"]:hover {
     <div id="settingsOverlay" class="settings-overlay">
         <div class="settings-overlay-content">
             <span class="close-btn" id="closeOverlay">&times;</span>
-            <div class="settings-form">
-                    <!-- First Form -->
-                    <div class="form-wrapper">
-                        <form id="taskForm" class="modern-form">
-                            <div class="form-group">
-                                <img style="width: 100%" src="https://kyalr.github.io/DomainGaurdianV2/assets/GreekBackground.png" alt="Loading..." />
-                            </div>
-                            <div class="form-group">
-                                <h3>SET UP A DELAY</h3>
-                            </div>
-                            <div class="form-group">
-                                <p>Catch last-minute mistakes, typos, or second thoughts before your email sends. Enjoy peace of mind with every message.</p>
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
-                            </div>
-                        </form>
-                    </div>
-            </div>
+                <div class="settings-form">
+                        <!-- First Form -->
+                        <div class="form-wrapper">
+                            <form id="taskForm" class="modern-form">
+                                <div class="form-group">
+                                    <img style="width: 100%" src="https://kyalr.github.io/DomainGaurdianV2/assets/Horse.png" alt="Loading..." />
+                                </div>
+                                <div style="color:#D2B08D;" class="icon-header-group">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <h3>SET UP A DELAY</h3>
+                                </div>
+                                <div class="form-group">
+                                    <p>Catch last-minute mistakes, typos, or second thoughts before your email sends. Enjoy peace of mind with every message.</p>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- First Form -->
+                        <div class="form-wrapper">
+                            <form id="taskForm" class="modern-form">
+                                <div class="form-group">
+                                    <img style="width: 100%" src="https://kyalr.github.io/DomainGaurdianV2/assets/GreekBackground.png" alt="Loading..." />
+                                </div>
+                                <div class="icon-header-group">
+                                    <i style="color:#D2B08D ;" class="fa-solid fa-user-shield"></i>
+                                    <h3>DOMAIN GAURDIAN</h3>
+                                </div>
+                                <div class="form-group">
+                                    <p>Display the destination domain before your email sends. Double-check before you hit "send" for peace of mind every time.</p>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
+                                </div>
+                            </form>
+                        </div>
+                </div>
         </div>
     </div>
 
