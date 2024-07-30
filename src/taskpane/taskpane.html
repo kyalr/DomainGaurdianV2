@@ -40,9 +40,8 @@ body {
     background-attachment: fixed;
     padding: 10px;
     line-height: 1.2;
+    overflow: hidden; /* Prevents scrolling */
 }
-
-
 
 .cta-button {
     display: inline-block;
@@ -365,6 +364,7 @@ input[type="submit"]:hover {
     position: fixed;
     bottom: 20px;
     right: 20px;
+    z-index: 3;
 }
 
 .toggle-button-checkbox {
@@ -414,6 +414,7 @@ input[type="submit"]:hover {
     align-items: center; /* Center items vertically */
     border-radius: 5px; /* Rounded corners */
     padding: 5px 10px; /* Padding around the content */
+    z-index: 3;
 }
 
 .settings-icon-spin {
@@ -448,7 +449,7 @@ input[type="submit"]:hover {
     color: #fff; /* Text color */
     transform: translateX(100%); /* Initially hide the overlay */
     transition: transform 0.3s ease-in-out; /* Smooth slide effect */
-    z-index: 1000; /* Ensure overlay is above other elements */
+    z-index: 2; /* Ensure overlay is above other elements */
 }
 
 .settings-overlay-content {
@@ -610,6 +611,30 @@ h3{
     color: #D2B08D;
 }
 
+.modern-form.disabled {
+  opacity: 0.5;
+  pointer-events: none; /* Disable all interactions */
+  user-select: none; /* Prevent text selection */
+}
+
+.form-item {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 10px; /* Space between form items */
+}
+
+.form-item p {
+  margin: 0;
+  margin-right: 10px; /* Space between label and input */
+}
+
+.form-item .form-control {
+  width: 150px; /* Set the width of the input */
+  padding: 5px;
+  font-size: 0.9rem; /* Slightly smaller font size for the input */
+}
+
+
 </style>
         
 </head>
@@ -730,14 +755,22 @@ h3{
                                     <p>Catch last-minute mistakes, typos, or second thoughts before your email sends. Enjoy peace of mind with every message.</p>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
+                                    <div class="form-item">
+                                        <p>Delay by: </p>
+                                        <input class="form-control" type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
+                                    </div>
+                                    <input type="checkbox" id="toggleDelay" class="toggle-button-checkbox" >
+                                    <label for="toggleDelay" class="toggle-button-label">
+                                        <span class="toggle-button-inner"></span>
+                                        <span class="toggle-button-switch"></span>
+                                    </label>
                                 </div>
                             </form>
                         </div>
 
                         <!-- First Form -->
                         <div class="form-wrapper">
-                            <form id="taskForm" class="modern-form">
+                            <form id="taskForm2" class="modern-form">
                                 <div class="form-group">
                                     <img style="width: 100%; margin-bottom: 5px; border-radius: 4px;" src="https://kyalr.github.io/DomainGaurdianV2/assets/GreekBackground.png" alt="Loading..." />
                                 </div>
@@ -749,10 +782,15 @@ h3{
                                     <p>Display the destination domain before your email sends. Double-check before you hit "send" for peace of mind every time.</p>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" type="number" id="delayTime" name="delayTime" min="0" placeholder="Email delay time (in minutes)">
+                                    <input type="checkbox" id="toggleDomain" class="toggle-button-checkbox">
+                                    <label for="toggleDomain" class="toggle-button-label">
+                                        <span class="toggle-button-inner"></span>
+                                        <span class="toggle-button-switch"></span>
+                                    </label>
                                 </div>
                             </form>
                         </div>
+
                 </div>
         </div>
     </div>
@@ -858,16 +896,56 @@ document.getElementById("checkbox").addEventListener("change", function() {
     }
 
     const toggleButton = document.getElementById("toggle-button");
+    const toggleDomain = document.getElementById("toggleDomain");
+    const toggleDelay = document.getElementById("toggleDelay")
 
     const savedState = localStorage.getItem('toggleState');
     if(savedState !== null){
         toggleButton.checked = savedState === 'true';
+        updateToggles(); 
     }
 
     // Add event listener to detect changes
     toggleButton.addEventListener("change", () => {
         localStorage.setItem('toggleState', toggleButton.checked);
+        updateToggles(); 
     });
+
+    // Add event listener to detect changes
+    toggleDomain.addEventListener("change", () => {
+        toggleDomain.checked;
+    });
+
+    // Add event listener to detect changes
+    toggleDelay.addEventListener("change", () => {
+        toggleDelay.checked;
+    });
+
+    // Function to update the state of the other toggles based on toggleButton
+    function updateToggles() {
+        const isMainToggleChecked = toggleButton.checked;
+        toggleDomain.disabled = !isMainToggleChecked;
+        toggleDelay.disabled = !isMainToggleChecked;
+
+        const card = document.getElementById('taskForm')
+        const card2 = document.getElementById('taskForm2')
+
+        // Optionally, uncheck the other toggles if the main toggle is unchecked
+        if (!isMainToggleChecked) {
+            toggleDomain.checked = false;
+            toggleDelay.checked = false;
+
+            localStorage.setItem('domainChecks', false);
+            localStorage.setItem('emailRule', false);
+
+            card.classList.add('disabled');
+            card2.classList.add('disabled');
+        }
+        else{
+            card.classList.remove('disabled');
+            card2.classList.remove('disabled');
+        }
+    }
 
     const settingsButton = document.getElementById('settingsButton');
     const settingsOverlay = document.getElementById('settingsOverlay');
@@ -880,13 +958,17 @@ document.getElementById("checkbox").addEventListener("change", function() {
         const userId = localStorage.getItem('userId');
         const treeDiv = document.getElementById('treediv');
 
-        const delayTime = localStorage.getItem('delayTime');
-        const domainChecks = localStorage.getItem('domainChecks');
-        const emailRule = localStorage.getItem('emailRule');
+        const toggleDelaySavedState = localStorage.getItem('emailRule');
+        const toggleDomainSavedState = localStorage.getItem('domainChecks');
 
-        document.getElementById('delayTime').value = delayTime;
-        document.getElementById('domainChecks').value = domainChecks;
-        document.getElementById('emailRule').value = emailRule;
+        const toggleDelay = document.getElementById('toggleDelay');
+        const toggleDomain = document.getElementById('toggleDomain');
+
+        toggleDelay.checked = toggleDelaySavedState === 'true';
+        toggleDomain.checked = toggleDomainSavedState === 'true';
+
+        document.getElementById('delayTime').value = localStorage.getItem('delayTime');
+
 
         if(userId){
             document.getElementById('treediv').style.display = 'none';
@@ -898,17 +980,17 @@ document.getElementById("checkbox").addEventListener("change", function() {
     });
 
     closeOverlay.addEventListener('click', function() {
+
         settingsOverlay.style.transform = 'translateX(100%)'; // Hide the overlay
 
         const delayTime = document.getElementById('delayTime').value;
-        const domainChecks = document.getElementById('domainChecks').value;
-        const emailRule = document.getElementById('emailRule').value;
+        const toggleDelay = document.getElementById('toggleDelay').checked;
+        const toggleDomain = document.getElementById('toggleDomain').checked;
 
         localStorage.setItem('delayTime', delayTime);
-        localStorage.setItem('domainChecks', domainChecks);
-        localStorage.setItem('emailRule', emailRule);
-                
-
+        localStorage.setItem('domainChecks', toggleDomain);
+        localStorage.setItem('emailRule', toggleDelay);
+                        
         if(userId){
             document.getElementById('treediv').style.display = 'block';
             
@@ -972,7 +1054,7 @@ function login() {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
     document.getElementById("loading-overlay").style.display = "block";
-
+    document.body.style.overflow = 'auto';
     const authenticationSuccess = null;
     var authenticationToken = null;
 
