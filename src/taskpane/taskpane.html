@@ -563,7 +563,7 @@ input[type="submit"]:hover {
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgb(0, 0, 0); /* Adjusted shadow color */
-    margin-bottom: 20px; /* Margin between forms */
+    margin-bottom: 10px; /* Margin between forms */
     color: black;
 }
 
@@ -571,8 +571,6 @@ input[type="submit"]:hover {
     /* Basic form styles */
     width: 100%;
 }
-
-
 
 .icon-header-group {
     display: flex;
@@ -600,7 +598,6 @@ input[type="submit"]:hover {
     background-color: #444444; /* Dark input background */
     color: white; /* Light text color */
 }
-
 
 .form-control:focus {
     outline: none;
@@ -744,23 +741,6 @@ h3{
 
                         <!-- First Form -->
                         <div class="form-wrapper">
-                            <form id="taskForm2" class="modern-form">
-                                <div class="form-group">
-                                    <img style="width: 100%; margin-bottom: 5px; border-radius: 4px;" src="https://kyalr.github.io/DomainGaurdianV2/assets/StrategnosHero.jpg" alt="Loading..." />
-                                </div>
-                                <div class="icon-header-group">
-                                    <i style="color:#D2B08D ;" class="fa-solid fa-user-shield"></i>
-                                    <h3>Want to Learn More?</h3>
-                                </div>
-                                <div class="form-group">
-                                    <p>If you're interested in exploring additional services or have any questions, we'd love to hear from you!</p>
-                                    <a href="https://www.strategnos.com/">www.strategnos.com</a>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- First Form -->
-                        <div class="form-wrapper">
                             <form id="taskForm" class="modern-form">
                                 <div class="form-group">
                                     <img style="width: 100%; margin-bottom: 5px; border-radius: 4px;" src="https://kyalr.github.io/DomainGaurdianV2/assets/dev.jpg" alt="Loading..." />
@@ -831,6 +811,11 @@ var tenantId;
 var username;
 var tenantName;
 var OnOff;
+
+function strategnos(){
+    const url = 'www.strategnos.com'
+    const myWindow = window.open(url, "", "fullscreen=yes");
+}
 
 
 
