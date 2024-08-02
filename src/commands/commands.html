@@ -24,26 +24,38 @@ var OnOff
 
 async function onItemSendHandler(event) {
     try {
+        debugger;
         const savedState = localStorage.getItem('toggleState');
-        console.log(savedState);
+        const domainChecks = localStorage.getItem('domainChecks');
+        const emailRule = localStorage.getItem('emailRule')
+        const adjustDelayTime = localStorage.getItem('delayTime')
 
-        let allowEvent;
         let delayTime;
+        let allowEvent;
 
         if (savedState === "false") {
-            allowEvent = true;
-            delayTime = 0;
+          // Main toggle is off
+          allowEvent = true;
+          delayTime = 0;
+        } else if (savedState === "true" && domainChecks === "true" && emailRule === "false") {
+          // Main is on, domain is on, but email rule is off
+          allowEvent = false;
+          delayTime = 0;
+        } else if (savedState === "true" && domainChecks === "false" && emailRule === "true") {
+          // Main is on, domain is off, but email rule is on
+          allowEvent = true;
+          delayTime = parseInt(adjustDelayTime, 10) || 0;
         } else {
-            allowEvent = false;
-            delayTime = localStorage.getItem('delayTime');
-            console.log(delayTime);
+          // Fallback to handle any other unexpected cases
+          allowEvent = false;
+          delayTime = parseInt(adjustDelayTime, 10) || 0;
         }
 
         const uniqueDomains = await getAllRecipients();
         let domainsString = Array.from(uniqueDomains).join("\n");
 
         const currentTime = new Date().getTime();
-        const milliseconds = delayTime * 60 * 1000;
+        const milliseconds = (delayTime * 60) * 1000;
         const timeDelay = new Date(currentTime + milliseconds);
 
         await new Promise((resolve, reject) => {
@@ -70,7 +82,7 @@ async function onItemSendHandler(event) {
     } catch (error) {
         console.error(error);
         event.completed({
-            allowEvent: false,
+            allowEvent: true,
             errorMessage: 'An error occurred: ' + error,
             sendModeOverride: Office.MailboxEnums.SendModeOverride.PromptUser,
         });

@@ -15,625 +15,7 @@
     <script src="https://cdn.syncfusion.com/ej2/24.1.41/dist/ej2.min.js" type="text/javascript"></script>
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>
-
-    <style>
-h1 {
-    color:#222222; /* Light text color */
-    margin-bottom: 10px;
-    font-size: 1px;
-    color: white;
-}
-
-p {
-    color: white; /* Lighter text color */
-    max-width: 600px;
-    margin: 0 auto 20px;
-}
-
-body {
-    font-family: 'impact';
-    text-align: center;
-    background-image: url('https://kyalr.github.io/DomainGaurdianV2/assets/StrategnosHorse.jpg'); /* Replace with your image path */
-    background-size: cover;
-    background-position: calc(50% - 55px) center; 
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    padding: 10px;
-    line-height: 1.2;
-    overflow: hidden; /* Prevents scrolling */
-}
-
-.cta-button {
-    display: inline-block;
-    padding: 5px 20px;
-    background-color: #D2B08D;
-    color: black;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s;
-    width: 100%;
-}
-
-.cta-button:hover {
-    background-color: #ECEDF8;
-    color: #33333A;
-}
-
-.ms-font-su {
-    font-size: 18px;
-    font-weight: bold;
-    display: inline-block;
-    margin-left: 15px;
-    color: #ffffff; /* Light text color */
-    background: linear-gradient(to right, #ECEDF8, #D2B08D); /* Dark blue to gold gradient */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.ms-font-xl {
-    font-size: 18px;
-    color: #ffffff; /* Light text color */
-}
-
-body {
-    font-family: Arial, sans-serif;
-}
-
-.container {
-    width: 250px;
-    margin: 0 auto;
-    margin-top: 100px;
-}
-
-input[type="text"],input[type="select"],
-input[type="password"],
-input[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    display: inline-block;
-    border: 1px solid #444444; /* Dark border color */
-    box-sizing: border-box;
-    background-color: #33333A; /* Dark input background */
-    color: #ffffff; /* Light text color */
-}
-
-input[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-input[type="submit"]:hover {
-    background-color: #45a049;
-}
-
-.loading-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(7, 7, 28, 0.8); /* Semi-transparent black */
-    z-index: 999; /* Ensure it's on top of other elements */
-}
-
-.loading-spinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.tree {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-}
-
-/* Style for tree nodes */
-.tree-node {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-.node-button {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    width: 100%;
-    background: none;
-    border: none;
-    padding: 10px;
-    text-align: left;
-    color: #fff; /* Adjust text color as needed */
-    background-color: #4a4a4a; /* Adjust background color as needed */
-    border-radius: 5px; /* Optional: for rounded corners */
-    margin-bottom: 5px; /* Space between buttons */
-    box-sizing: border-box; /* Ensure padding is included in the width */
-}
-
-.button-content {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    color: red;
-}
-
-.node-button:hover {
-    background-color: #33333A;
-    transform: scale(1.03);
-    color: #D2B08D;
-}
-
-/* Indentation based on level */
-.tree-node > li {
-    margin-left: 0px;
-}
-
-/* Different levels of indentation */
-.tree-node > li > ul {
-    margin-left: 1px;
-    border-left: 1px solid #b3b3b37a; /* Dark border color */
-    padding-left: 15px;
-}
-
-/* Collapse/Expand functionality */
-.tree-node > li > ul.collapsed {
-    display: none;
-}
-
-.gradient-background {
-    background: linear-gradient(0deg, #9ba7c4 0%, #0d111a 80%);
-    background-size: 400% 400%;
-    animation: gradientAnimation 15s ease infinite;
-}
-
-@keyframes gradientAnimation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-
-
-.selected {
-    background-color: #D2B08D; /* Blue background color */
-    color: white; /* White text color */
-    border: 1px solid #2f3030; /* Darker blue border */
-    /* Add any other styles to indicate selection */
-}
-
-.logout-button {
-    display: inline-block;
-    background-color: #666666; /* Darker background color */
-    color: #fff; /* White text color */
-    border: none;
-    border-radius: 4px;
-    font-size: 10px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 10px; /* Adjust margin as needed */
-    padding-bottom: 2px;
-    padding-top: 2px;
-}
-
-.logout-button:hover {
-    background-color: #555555; /* Darker background on hover */
-}
-
-.header-container {
-    display: flex;
-    align-items: center;
-}
-
-#checkboxContainer {
-    display: inline-block;
-    text-align: left;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    width: 100%;
-    margin-right: 15px;
-}
-
-#checkboxlabel:hover {
-    cursor: pointer;
-    background-color: #74c5fc;
-    border-radius: 8px;
-}
-
-.search:after{
-    font-family: 'FontAwesome';
-    content: '\f274';
-    position: absolute;
-    right: 6px;
-}
-
-.notification {
-    visibility: hidden;
-    width: 200px; /* Match the width of the .cta-button */
-    background-color: #444444; /* Dark background color */
-    color: #ffffff; /* Light text color */
-    text-align: center;
-    border-radius: 1px; /* Match the border-radius of the .cta-button */
-    padding: 5px 20px; /* Match the padding of the .cta-button */
-    margin-top: 10px; /* Space between the button and the notification */
-    display: inline-block; /* Ensure it takes up the same space as the button */
-}
-
-.notification.error {
-    background-color: #ecedf800; /* Error background color */
-    color:  #ecedf800; /* Light text color */
-    border-radius: 5px;
-    animation: shake 1s;
-}
-
-.input-error::placeholder {
-    color:  #ff6b6b94;/* Transparent red placeholder text color */
-}
-
-/* Shake animation class */
-.shake {
-    animation: shake 0.5s;
-}
-
-#labels{
-    color: white;
-}
-
-.notification.show {
-    visibility: visible;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 90% { transform: translateX(-5px); }
-    20%, 80% { transform: translateX(5px); }
-    30%, 70% { transform: translateX(-3px); }
-    40%, 60% { transform: translateX(3px); }
-    50% { transform: translateX(0); }
-}
-
-@keyframes fadein {
-    from {bottom: 0; opacity: 0;} 
-    to {bottom: 65%; opacity: 1;}
-}
-
-@keyframes fadeout {
-    from {bottom: 65%; opacity: 1;} 
-    to {bottom: 0; opacity: 0;}
-}
-
-#DigitalSolutions{
-    height: 52px;
-    display: inline-block;
-    margin-left: 10px;
-}
-
-.rotating-image {
-    animation: rotate 5s linear infinite;
-}
-
-@keyframes rotate {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.form-control {
-    width: 100%;
-    padding: 5px;
-    margin: 5px 0;
-    display: inline-block;
-    border: 1px solid #444444; /* Dark border color */
-    box-sizing: border-box;
-    background-color: #33333A; /* Dark input background */
-    color: #ffffff; /* Light text color */
-}
-
-.input-container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.input-container input {
-    flex: 1;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-.input-container i {
-    margin-left: 10px;
-    color: white;
-}
-
-.toggle-button-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 3;
-}
-
-.toggle-button-checkbox {
-    display: none;
-}
-
-.toggle-button-label {
-    display: flex;
-    align-items: center;
-    width: 35px;  /* Reduced width */
-    height: 18px; /* Reduced height */
-    background-color: #ccc;
-    border-radius: 50px;
-    cursor: pointer;
-    position: relative;
-    transition: background-color 0.3s ease;
-}
-
-.toggle-button-label .toggle-button-inner {
-    display: none;
-}
-
-.toggle-button-label .toggle-button-switch {
-    position: absolute;
-    top: 2px;   /* Adjusted top position */
-    left: 2px;  /* Adjusted left position */
-    width: 14px;  /* Reduced width */
-    height: 14px; /* Reduced height */
-    background-color: #fff;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
-}
-
-.toggle-button-checkbox:checked + .toggle-button-label {
-    background-color: #D2B08D; /* Green background for active state */
-}
-
-.toggle-button-checkbox:checked + .toggle-button-label .toggle-button-switch {
-    transform: translateX(15px); /* Adjusted transform distance */
-}
-
-.icon-container {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    display: flex; /* Use Flexbox to align items */
-    align-items: center; /* Center items vertically */
-    border-radius: 5px; /* Rounded corners */
-    padding: 5px 10px; /* Padding around the content */
-    z-index: 3;
-}
-
-.settings-icon-spin {
-    font-size: 18px; /* Adjust icon size as needed */
-    color: white; /* Icon color */
-    margin-right: 8px; /* Space between icon and label */
-    display: flex;
-    align-items: center; /* Center icon vertically */
-    justify-content: center; /* Center icon horizontally */
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.settings-icon-spin:hover {
-    color: #D2B08D; /* Change color on hover */
-    animation: spin 0.8s linear;
-}
-
-.settings-label {
-    font-size: 12px; /* Adjust label size as needed */
-    color: white; /* Label color */
-    display: flex;
-    align-items: center; /* Center label text vertically */
-}
-
-.settings-overlay {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%; /* Adjust width as needed */
-    height: 100%;
-    background: linear-gradient(180deg, rgba(51,51,58,1) 0%, rgba(51,51,58,1) 26%, rgba(161,162,171,0.7931547619047619) 70%, rgba(236,237,248,0) 100%);
-    color: #fff; /* Text color */
-    transform: translateX(100%); /* Initially hide the overlay */
-    transition: transform 0.3s ease-in-out; /* Smooth slide effect */
-    z-index: 2; /* Ensure overlay is above other elements */
-}
-
-.settings-overlay-content {
-    padding: 20px;
-    height: 100%;
-    overflow-y: auto; /* Scroll if content overflows */
-}
-
-.close-btn {
-    font-size: 18px;
-    color: #fff;
-    cursor: pointer;
-    position: absolute;
-    top: 5px;
-    margin-bottom: 15px;
-    right: 25px;
-}
-
-.settings-form {
-    display: flex;
-    flex-direction: column;
-}
-
-.settings-form label {
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-.settings-form input {
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(180deg) scale(1.5); }
-    100% { transform: rotate(360deg) scale(1); }
-}
-
-.treediv{
-    transition: transform 0.3s ease-in-out; /* Smooth slide effect */
-}
-
-.treediv.slide-out {
-    transform: translateX(-300px); /* Adjust width to match the overlay */
-}
-
-.ellipsis-button {
-    background: none;
-    border: none;
-    padding: 0 5px;
-    font-size: 13px;
-    color: #ffffff; /* Adjust color as needed */
-    margin-left: auto;
-    cursor: pointer;
-
-}
-
-
-.iconSpacing{
-    margin-right: 8px;
-}
-
-/* Context menu styling */
-.context-menu {
-    display: none; /* Hide menu by default */
-    position: absolute;
-    top: 100%; /* Position below the button */
-    left: 0;
-    background: #333; /* Background color of the menu */
-    border-radius: 4px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for the menu */
-    z-index: 1000; /* Ensure it appears above other content */
-    font-size: 10px;
-}
-
-/* Menu items styling */
-.context-menu ul {
-    list-style: none; /* Remove default list styling */
-    padding: 0;
-    margin: 0;
-}
-
-.context-menu li {
-    margin: 0;
-}
-
-.context-menu a {
-    display: block;
-    padding: 10px 15px;
-    color: #ffffff; /* Text color */
-    text-decoration: none; /* Remove underline */
-    cursor: pointer;
-}
-
-.context-menu a:hover {
-    background: #444; /* Highlight color on hover */
-}
-
-.ellipsis-button:hover {
-    transform: scale(1.5); /* Flip and slightly enlarge */
-    display: block; /* Display menu on hover */
-    cursor: pointer;
-}
-
-.form-wrapper {
-    flex: 0 0 calc(50% - 8px); /* Two forms in a row */
-    background-color: #4e4e4e; /* Dark background color */
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgb(0, 0, 0); /* Adjusted shadow color */
-    margin-bottom: 10px; /* Margin between forms */
-    color: black;
-}
-
-.modern-form {
-    /* Basic form styles */
-    width: 100%;
-}
-
-.icon-header-group {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-
-.icon-header-group i {
-    margin-right: 10px; /* Adjust as needed */
-    color: #D2B08D;
-}
-
-.icon-header-group h3 {
-    margin: 0;
-}
-
-.form-control {
-    flex: 2; /* Take up more space than label */
-    width: 100%; /* Full width input */
-    padding: 5px;
-    font-size: 10px;
-    border-radius: 4px;
-    box-sizing: border-box;
-    background-color: #444444; /* Dark input background */
-    color: white; /* Light text color */
-}
-
-.form-control:focus {
-    outline: none;
-    box-shadow: 0 0 10px #D2B08D; /* Change the glow color */
-}
-
-h3{
-    color: #D2B08D;
-}
-
-.modern-form.disabled {
-  opacity: 0.5;
-  pointer-events: none; /* Disable all interactions */
-  user-select: none; /* Prevent text selection */
-}
-
-.form-item {
-  display: flex;
-  align-items: baseline;
-  margin-bottom: 10px; /* Space between form items */
-}
-
-.form-item p {
-  margin: 0;
-  margin-right: 10px; /* Space between label and input */
-}
-
-.form-item .form-control {
-  width: 150px; /* Set the width of the input */
-  padding: 5px;
-  font-size: 0.9rem; /* Slightly smaller font size for the input */
-}
-
-
-</style>
+    <link rel="stylesheet" href="taskpane.css"/>
         
 </head>
 
@@ -737,7 +119,7 @@ h3{
     <!-- Settings Overlay -->
     <div id="settingsOverlay" class="settings-overlay">
         <div class="settings-overlay-content">
-            <div style="margin-bottom: 20px;"><span class="close-btn" id="closeOverlay"><i class="fa-solid fa-circle-xmark"></i></span></div>
+            <div style="margin-bottom: 15px;"><span class="close-btn" id="closeOverlay"><i id='closeIcon' class="fa-solid fa-circle-xmark"></i></span></div>
                 <div class="settings-form">
 
                         <!-- First Form -->
@@ -812,6 +194,8 @@ var tenantId;
 var username;
 var tenantName;
 var OnOff;
+
+let settingsChanged = false;
 
 function strategnos(){
     const url = 'www.strategnos.com'
@@ -903,6 +287,8 @@ document.getElementById("checkbox").addEventListener("change", function() {
     const toggleDomain = document.getElementById("toggleDomain");
     const toggleDelay = document.getElementById("toggleDelay")
 
+
+
     const savedState = localStorage.getItem('toggleState');
     if(savedState !== null){
         toggleButton.checked = savedState === 'true';
@@ -918,12 +304,17 @@ document.getElementById("checkbox").addEventListener("change", function() {
     // Add event listener to detect changes
     toggleDomain.addEventListener("change", () => {
         toggleDomain.checked;
+        settingsChanged = true;
+        updateSaveIcon();
     });
 
     // Add event listener to detect changes
     toggleDelay.addEventListener("change", () => {
         toggleDelay.checked;
+        settingsChanged = true;
+        updateSaveIcon();
     });
+
 
     // Function to update the state of the other toggles based on toggleButton
     function updateToggles() {
@@ -948,6 +339,17 @@ document.getElementById("checkbox").addEventListener("change", function() {
         else{
             card.classList.remove('disabled');
             card2.classList.remove('disabled');
+        }    
+    }
+
+    function updateSaveIcon(){
+        // Function to update the icon
+        if (settingsChanged) {
+            closeIcon.classList.remove('fa-solid','fa-circle-xmark'); // Replace with actual class name for close icon
+            closeIcon.classList.add('fa-solid','fa-floppy-disk'); // Replace with actual class name for save icon
+        } else{
+            closeIcon.classList.remove('fa-solid','fa-floppy-disk'); // Replace with actual class name for close icon
+            closeIcon.classList.add('fa-solid','fa-circle-xmark'); // Replace with actual class name for save icon
         }
     }
 
@@ -986,7 +388,8 @@ document.getElementById("checkbox").addEventListener("change", function() {
     closeOverlay.addEventListener('click', function() {
 
         settingsOverlay.style.transform = 'translateX(100%)'; // Hide the overlay
-
+        settingsChanged = false;
+        updateSaveIcon();
         const delayTime = document.getElementById('delayTime').value;
         const toggleDelay = document.getElementById('toggleDelay').checked;
         const toggleDomain = document.getElementById('toggleDomain').checked;
