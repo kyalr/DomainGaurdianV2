@@ -5,6 +5,7 @@ Office.onReady(function (info) {
     if (info.host === Office.HostType.Outlook) {
 
       item = Office.context.mailbox.item;
+      document.getElementById("body").style.display = "flex";
 
       
       
