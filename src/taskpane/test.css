@@ -1,0 +1,421 @@
+
+body {
+    font-family: 'Sequel Sans Light', sans-serif;
+    text-align: center;
+    background: linear-gradient(0deg, #9ba7c4 10%, #0d111a 70%);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+    padding: 10px;
+    line-height: 1.2;
+    overflow: auto;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.input-error {
+    border-color: #ff6b6b;/* Transparent red placeholder text color */
+}
+
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 90% { transform: translateX(-5px); }
+    20%, 80% { transform: translateX(5px); }
+    30%, 70% { transform: translateX(-3px); }
+    40%, 60% { transform: translateX(3px); }
+    50% { transform: translateX(0); }
+}
+
+
+.loading-overlay {
+    border-radius: 5px;
+    position: absolute;
+    display: block;
+    width: 98%;
+    height: 95%;
+    max-width: 98%; /* Ensure it doesn't exceed parent width */
+    max-height: 95%; /* Ensure it doesn't exceed parent height */
+    background-color: rgba(7, 7, 28, 0.527); /* Semi-transparent black */
+    z-index: 999; /* Ensure it's on top of other elements */
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Correct the centering offset */
+}
+
+
+.form-container {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between forms */
+    max-width: 100%; /* Maximum width of form container */
+    height: 100%; /* Ensure it takes up the full height of its parent */
+    position: relative; /* Ensure this container is the reference for absolute positioning */
+    overflow: hidden; /* Prevent overflow of the content */
+}
+
+.form-wrapper {
+    position: relative;
+    overflow: auto;
+    background-color: #4e4e4e07; /* Dark background color */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0, 0, 0); /* Adjusted shadow color */
+    margin-bottom: 20px; /* Margin between forms */
+    color: black;
+    height: 500px;
+}
+
+.resizable-divider {
+    width: 3px;
+    cursor: ew-resize;
+
+}
+
+.resizable-divider:hover {
+    cursor: ew-resize;
+}
+
+.modern-form {
+    /* Basic form styles */
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 5%;
+    display: flex; /* Use flexbox for horizontal layout */
+    align-items: center; /* Center items vertically */
+}
+
+label {
+    margin-top: 10px;
+    flex: 1; /* Take up all available space */
+    color: white; /* Light text color */
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 6;
+}
+.form-control {
+    margin-top: 5px;
+    flex: 2; /* Take up more space than label */
+    width: 100%; /* Full width input */
+    padding: 5px;
+    font-size: 10px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #444444; /* Dark input background */
+    color: white; /* Light text color */
+}
+
+.textarea {
+    resize: vertical; /* Allow vertical resizing of textarea */
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    gap: 5px; /* Add space between buttons */
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 5px 20px;
+    background-color: #D2B08D;
+    color: black;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    width: 100%; /* Change width to auto */
+    margin: 1px; /* Add some margin for spacing between buttons */
+}
+
+.cta-button:hover {
+    background-color: #ECEDF8;
+    color: #33333A;
+}
+
+.hidden {
+    display: none !important; /* Hide the form using class */
+}
+
+.notification {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #444444; /* Dark background color */
+    color: #ffffff; /* Light text color */
+    text-align: center;
+    padding: 8px;
+    position: fixed;
+    z-index: 1;
+    right: 20px; /* Changed from left: 80% to right: 20px */
+    bottom: 20px;
+    font-size: 12px;
+}
+
+.notification.success {
+    background-color: #1bc5bdab; /* Success background color */
+    color: #ffffff; /* Light text color */
+    border-radius: 8px;
+}
+
+.notification.error {
+    background-color: #ff6b6b; /* Error background color */
+    color: #ffffff; /* Light text color */
+    border-radius: 8px;
+}
+
+.notification.show {
+    visibility: visible;
+    animation: fadein 0.5s, fadeout 0.5s 3.5s;
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 0;} 
+    to {bottom: 0; opacity: 0;}
+}
+
+#DigitalSolutions{
+    height: 52px;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+
+.header-container {
+    display: flex;
+    align-items: center;
+}
+
+.rotating-image {
+    animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.cardInput {
+    display: none;
+    background-color:  #ecedf813;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(1, 0, 0, 0.603);
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.cardInput1 {
+    display: flex;
+    background-color:  #ecedf813;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(1, 0, 0, 0.603);
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.cardPowerBi{
+    height: 100%;
+    background-color: #4444443d;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+    display: block;
+}
+
+.form-control:focus {
+    outline: none;
+    box-shadow: 0 0 10px #D2B08D; /* Change the glow color */
+}
+
+.error-container {
+    display: none;
+    background: #fff;
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* Center items horizontally */
+    text-align: center;
+}
+
+.error-content {
+    max-width: 100%;
+    
+}
+
+.error-code {
+    font-size: 72px;
+    color: #ff6b6b;
+}
+
+.error-message {
+    font-size: 15px;
+    color: #333;
+}
+
+.error-header {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Add space between the icon and the h1 */
+}
+
+#newLineItemButton{
+    display: none;
+    margin-bottom: 10px;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    transition: width 0.2s;
+    min-width: 50px;
+    overflow: hidden;
+}
+
+#card1 {
+    background-color: #ffcccb00;
+}
+
+#card2 {
+    background-color: #add8e600;
+}
+
+.resizer {
+    width: 0.5px;
+    cursor: ew-resize;
+    background-color: #666;
+    position: relative;
+    z-index: 1;
+}
+
+.report-container {
+    margin-top: 20px;
+}
+.report {
+    display: flex;
+    align-items: center;
+    background-color: #34495e;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.report i {
+    margin-right: 10px;
+}
+.report .name {
+    flex-grow: 1;
+}
+.report .actions {
+    margin-left: auto;
+}
+.report .actions i {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.node-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%; /* Full width to ensure space distribution */
+    padding: 10px;
+    border: none;
+    background-color: #4a4a4a; /* Adjust background color as needed */
+    color: #fff; /* White text for contrast */
+    cursor: pointer;
+    margin-bottom: 5px; /* Add space between buttons */
+    border-radius: 5px; /* Rounded corners for a modern look */
+}
+
+.node-button i {
+    font-size: 16px;
+}
+
+.node-button span {
+    flex-grow: 1; /* Allow the text to take up remaining space */
+    text-align: left; /* Align text to the left */
+    margin: 0 8px; /* Space between text and icons */
+    padding-left: 8px; /* Adjust padding to fine-tune spacing */
+}
+
+.node-button i:first-child {
+    margin-right: 0px; /* Adjust the space between the left icon and text */
+}
+
+.node-button i:last-child {
+    margin-left: 8px; /* Space between the right icon and text */
+}
+
+i:last-child:hover {
+    animation: pulse 0.6s infinite alternate; /* Pulse animation */
+    color: #1bc5bdab;
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.15); /* Slight scale increase */
+    }
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    color: red;
+}
+
+.node-button:hover {
+    background-color: #33333A;
+    transform: scale(1.03);
+    color: #D2B08D;
+}
+
+.iconSpacing{
+    margin-right: 8px;
+}
+
+.selected {
+    background-color: #D2B08D; /* Blue background color */
+    color: white; /* White text color */
+    border: 1px solid #2f3030; /* Darker blue border */
+    /* Add any other styles to indicate selection */
+}

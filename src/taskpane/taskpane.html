@@ -569,6 +569,7 @@ function getOrganizationUNits(authenticationToken, tenantName){
 
 function embedPowerBIReport() {
     const scToken = localStorage.getItem("SCToken");
+    const nodeID = localStorage.getItem("buttonId");
     const url = `test.html?tenantName=${encodeURIComponent(tenantName)}&scToken=${encodeURIComponent(scToken)}&nodeId=${encodeURIComponent(code)}&organizationUnit=${encodeURIComponent(NodeId)}`;
     const myWindow = window.open(url, "", "fullscreen=yes");
 
@@ -652,6 +653,15 @@ function generateOrganizationTree(data, parentId = null) {
 
         ellipsisButton.addEventListener('click', function(event) {
             event.stopPropagation(); // Prevent the click from propagating to the document
+
+            NodeId = currentItem.id;
+            code = currentItem.code;
+
+
+            ellipsisButton.setAttribute('data-id', currentItem.id); 
+            ellipsisButton.setAttribute('userId', userId)
+            ellipsisButton.setAttribute('folderCode', currentItem.folderCode)
+
             handleUnitSelection(event); // Ensure unit is selected
 
             // Get button's position and dimensions
@@ -684,6 +694,7 @@ function openContextMenu(currentItem){
 }
 
 function handleUnitSelection(event) {
+
         // Remove selected class from all buttons
         document.querySelectorAll('.node-button').forEach(button => {
             button.classList.remove('selected');
@@ -694,7 +705,7 @@ function handleUnitSelection(event) {
         const buttonId = clickedButton.getAttribute('data-id');
         const userId = clickedButton.getAttribute('userId');
         const folderCode = clickedButton.getAttribute('folderCode');
-        console.log(folderCode)
+        console.log(buttonId)
         clickedButton.classList.add('selected');
         localStorage.setItem("buttonId", buttonId)
         localStorage.setItem("folderCode", folderCode)
