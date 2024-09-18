@@ -19,7 +19,7 @@
     <link href="https://cdn.syncfusion.com/ej2/24.1.41/material.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="test.css"/>
+    <link href="test.css" rel="stylesheet" />
 
 </head>
 
@@ -34,21 +34,48 @@
           <br>
     </header>
 
+
     <div class="form-container">
         <!-- First Form -->
-        <div class="form-wrapper" id="first-form" style="width: 18%;">
+        <div class="form-wrapper" id="first-form" style="width: 18%; ">
             <div id="reportList" class="report-container"></div>
         </div>
+        <div id="staticCard" class="card-container" >
+            
+            <form id="taskForm" class="modern-form">
+                <div class="form-group">
+                    <label >Work Order Number: </label>
+                    <label id="WOLabel" class="label-box"></label>
+                </div>
+                <div class="form-group">
+                    <label >Work Order Description: </label>
+                    <label id="DESCLabel" class="label-box"></label>
+                </div>
+                <div class="form-group">
+                    <label for="commentInput">Comments:</label>
+                    <textarea id="comment2Input" class="form-control textarea" rows="6"></textarea>
+                </div>
+                <div class="button-container">
+                    <button id="submitComment" class="cta-button" onclick="getSurveyToComplete(event)">Save</button>
+                </div>
+            </form>
+           
+
+        </div> <!-- New Card -->
+        <button id="toggle-flyout" class="toggle-flyout-button"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
         <!-- Resizable Divider -->
         <div class="resizable-divider" id="divider"></div>
         <!-- Second Form (for comments) -->
-        <div class="form-wrapper" id="second-form" style="width: 81%;">
+        <div class="form-wrapper" id="second-form" >
             <div id="loading-overlay" class="loading-overlay">
                 <div class="loading-spinner">
-                    <img class="rotating-image" style=" height: 60px;" src="https://kyalr.github.io/DomainGaurdianV2/assets/ConsilienceIcon.png" alt="Loading..." />
+                    <img class="rotating-image" style="height: 60px;" src="https://kyalr.github.io/DomainGaurdianV2/assets/ConsilienceIcon.png" alt="Loading..." />
                 </div>
             </div>
-            <div id="embed-container" style="height: 100%;"></div>
+            <div id="embed-container" style="height: 100%;">
+
+                <label id="SelectReport"><i class="fa-solid fa-person-military-pointing fa-bounce"></i> Please select a Report ...</label>
+            </div>
             <div class="error-container" id="error-container">
                 <div class="error-content">
                     <div class="error-header">
@@ -60,117 +87,8 @@
             </div>
         </div>
     </div>
-
-
-    <div id="reporting">
-        <div class="cardInput" id="forms-card">
-            <div class="form-container" id="forms">
-                <!-- First Form -->
-                <div class="form-wrapper">
-                    <form id="taskForm" class="modern-form">
-                        <div class="form-group">
-                            <label for="taskNameInput">Task Name:</label>
-                            <input type="text" id="taskNameInput" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="startDateInput">Start Date:</label>
-                            <input type="datetime-local" id="startDateInput" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="endDateInput">End Date:</label>
-                            <input type="datetime-local" id="endDateInput" class="form-control">
-                        </div>
-                    </form>
-                </div>
-            
-                <!-- Second Form (for comments) -->
-                <div class="form-wrapper">
-                    <form id="commentForm" class="modern-form">
-                        <div class="form-group">
-                            <label for="commentInput">Comments:</label>
-                            <textarea id="commentInput" class="form-control textarea" rows="6"></textarea>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="button-container">
-                <button id="submitComment" class="cta-button" onclick="createOrUpdateNote()">Save</button>
-                <button style="background-color: #ECEDF8;" id="closeComment" class="cta-button" onclick="closeComment()">Cancel</button>
-            </div>
-        </div>
-        
-        <div class="cardInput" id="survey-card">
-            <div class="form-container" id="forms">
-                <!-- First Form -->
-                <div class="form-wrapper">
-                    <form id="taskForm" class="modern-form">
-                        <div class="form-group">
-                            <label for="taskNameInput">Material Code:</label>
-                            <input type="text" id="MaterialCodeInput" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="endDateInput">Reorder Point:</label>
-                            <input type="number" id="ReorderPointInput" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="endDateInput">Lead Time:</label>
-                            <input type="number" id="LeadTimeInput" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="endDateInput">Max:</label>
-                            <input type="number" id="MaxInput" class="form-control" required>
-                        </div>
     
-                    </form>
-                </div>
             
-                <!-- Second Form (for comments) -->
-                <div class="form-wrapper">
-                    <form id="commentForm" class="modern-form">
-                        <div class="form-group">
-                            <label for="endDateInput">MRP Type:</label>
-                            <select id="MRPTypeInput" class="form-control" required>
-                                <option value="VB">VB</option>
-                                <option value="ZP">ZP</option>
-                                <option value="ND">ND</option>
-                                <option value="PD">PD</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="endDateInput">Output Type:</label>
-                            <select id="OutputTypeInput" class="form-control" required>
-                                <option value="Lead Time Change">Lead Time Change</option>
-                                <option value="MRP Change">MRP Change</option>
-                                <option value="Inventory Level Adjustments">Inventory Level Adjustments</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="commentInput">Comments:</label>
-                            <textarea id="comment2Input" class="form-control textarea" rows="6"></textarea>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="button-container">
-                <button id="submitComment" class="cta-button" onclick="updateSurveyResult()">Save</button>
-                <button style="background-color: #ECEDF8;" id="closeComment" class="cta-button" onclick="closeSurvey()">Cancel</button>
-            </div>
-        </div>
-
-        <div class="button-container">
-            <button id="newLineItemButton" class="cta-button" onclick="createNewLineItem()"><i class="fa-regular fa-square-plus"></i> New line Item</button>
-        </div>
-
-        <div style="width: 100%; height: 1000px; padding-left: 20px;">
-            <div>
-                <div>
-                    <h1 style="padding-left: 20px;"></h1>
-                    <div id="spreadsheet" style="height: 1000px;"></div>
-                </div>
-            </div>
-        </div>
-
-
 
         <p id="notification" class="notification"></p>
 </body>
@@ -180,9 +98,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.18.0/dist/powerbi.min.js"></script>
 
+<script async defer crossorigin="anonymous"src="https://connect.facebook.net/en_US/sdk.js"></script>
+
 <script>
 
     models = window['powerbi-client'].models;
+
+
 
     var StratCloudToken;
     var taskName;
@@ -193,52 +115,34 @@
     var noteId;
     var notesEnabled;
 
-    var materialCode;
-    var reorderPoint;
-    var leadTime;
-    var max;
-    var mrpType;
-    var outputType;
-    var comments;
-    var userSurveyId;
-    var surveyOrganizationUnitId
-    var formResultId;
+    var WO;
+    var DESC;
+    var Plnt;
+    var Type;
+    var CRTD;
+    var BasicStart;
+    var Schedule;
+    var ReqDate;
+    var ABC;
+    var PRI;
+    var comment;
+    var CommentID;
 
     var surveyCreateVsUpdate;
     var surveyUserToken;
     var organizationUnit;
     var reportId;
+    var formResultId;
+    var userSurveyId;
 
     var tenantName;
 
-    function closeComment(){
-        document.getElementById('forms-card').style.display = 'none';
-    }
-
-    function closeSurvey(){
-        document.getElementById('survey-card').style.display = 'none';
-        document.getElementById('newLineItemButton').style.display = 'block';
-
-        const inputs = [
-            document.getElementById('MaterialCodeInput'),
-            document.getElementById('ReorderPointInput'),
-            document.getElementById('LeadTimeInput'),
-            document.getElementById('MaxInput'),
-            document.getElementById('MRPTypeInput'),
-            document.getElementById('OutputTypeInput'),
-            document.getElementById('comment2Input')
-        ];
-
-        inputs.forEach(input => {
-            input.classList.remove('shake', 'input-error');
-        });
+    document.getElementById('toggle-flyout').addEventListener('click', function() {
+        const formWrapper = document.getElementById('first-form');
+        formWrapper.classList.toggle('flyout-visible');
+    });
 
 
-    }
-
-    function check(){
-        console.log(surveyCreateVsUpdate)
-    }
 
     window.onload = function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -246,6 +150,9 @@
         StratCloudToken = urlParams.get('scToken');
         organizationUnit = urlParams.get('organizationUnit');
         tenantName = urlParams.get('tenantName');
+
+        document.getElementById("SelectReport").style.display = 'none'
+
         getAvailableReportsForNode()
 
     };
@@ -270,43 +177,10 @@
         console.log(spreadsheet.workbookSaveModule.saveJSON.toString())
     }
 
-    function uploadDocToSC(spreadsheet) {
+    function editModeSwitch(){
+        // Switch to edit mode.
+        report.switchMode("edit");
 
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer " + StratCloudToken);
-
-        const formdata = new FormData();
-        formdata.append("data", "{\"organizationUnitId\":89}");
-        formdata.append("uploadedFile[]", spreadsheet);
-
-        const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: formdata,
-            redirect: "follow"
-        };
-
-        fetch("https://demo.strategnosportal.co.za/OrganizationUnitDocuments/UploadDocument", requestOptions)
-            .then((response) => response.text())
-            .then((result) => console.log(result))
-            .catch((error) => console.error(error));
-
-        // Return the save URL
-        return "https://demo.strategnosportal.co.za/OrganizationUnitDocuments/UploadDocument";
-    }
-
-    function uploadFile() {
-        const fileInput = document.getElementById('fileInput');
-        const file = fileInput.files[0];
-        if (file) {
-            uploadDocToSC(file);
-        } else {
-            console.error('No file selected');
-        }
-    }
-
-    function beforeSaving(){
-        console.log("hit")
     }
 
 
@@ -355,7 +229,7 @@
                         displayOption: models.DisplayOption.FitToPage,
                         panes: {
                             filters: {
-                                visible: true
+                                visible: false
                             },
                             pageNavigation: {
                                 visible: false
@@ -391,8 +265,6 @@
 
                 // Embed the report and display it within the div container.
                 report = powerbi.embed(embedContainer, config);
-
-
 
                 const taskFilter = {
                     $schema: "http://powerbi.com/product/schema#advanced",
@@ -442,127 +314,51 @@
                     document.getElementById('embed-container').style.visibility = 'visible'
                     embedContainer.style.display = 'block';
                     document.getElementById('loading-overlay').style.display = 'none';
+                    
 
-                    report.updateFilters(models.FiltersOperations.Add, [taskFilter,surveyFilter, tenantFilter])
-                        .then(function() {
-                            console.log("Report filter was added.");
-                        })
-                        .catch(function(errors) {
-                            console.log(errors);
-                        });
                 });
 
                 // report.on will add an event listener.
                 report.on("dataSelected", function (event) {
                     let data = event.detail;
-                    if(data.visual.name === '6e717e20e3465899e056'){
+                    if(data.visual.name === 'ecac59bf8de8f69b052e'){
 
                         surveyCreateVsUpdate = 'update';
-                        document.getElementById('survey-card').style.display = 'block';
-                        document.getElementById('newLineItemButton').style.display = 'none';
 
                         console.log(data)
                         
-                        reorderPoint = data.dataPoints[0].identity[8].equals;
-                        mrpType = data.dataPoints[0].identity[4].equals;
-                        max = data.dataPoints[0].identity[3].equals;
-                        outputType = data.dataPoints[0].identity[6].equals;
-                        leadTime = data.dataPoints[0].identity[1].equals;
-                        materialCode = data.dataPoints[0].identity[2].equals;
-                        comments = data.dataPoints[0].identity[0].equals;
-                        userSurveyId = data.dataPoints[0].identity[7].equals;
-                        surveyOrganizationUnitId = data.dataPoints[0].identity[5].equals;
-                        formResultId = data.dataPoints[0].identity[10].equals;
-                        
-                        console.log(userSurveyId)
+                        WO = data.dataPoints[0].identity[0].equals;
+                        DESC = data.dataPoints[0].identity[1].equals;
+                        Plnt = data.dataPoints[0].identity[2].equals;
+                        Type = data.dataPoints[0].identity[3].equals;
+                        CRTD = data.dataPoints[0].identity[4].equals;
+                        BasicStart = data.dataPoints[0].identity[5].equals;
+                        Schedule = data.dataPoints[0].identity[6].equals;
+                        ReqDate = data.dataPoints[0].identity[7].equals;
+                        ABC = data.dataPoints[0].identity[8].equals;
+                        PRI = data.dataPoints[0].identity[9].equals;                     
+                        CommentID = data.dataPoints[0].identity[10].equals;
 
-                        document.getElementById('MaterialCodeInput').value = materialCode;
-                        document.getElementById('ReorderPointInput').value = Number(reorderPoint);
-                        document.getElementById('LeadTimeInput').value = Number(leadTime);
-                        document.getElementById('MaxInput').value = Number(max);
-                        document.getElementById('MRPTypeInput').value = mrpType;
-                        document.getElementById('OutputTypeInput').value = outputType;
-                        document.getElementById('comment2Input').value = comments;
+                        document.getElementById('WOLabel').innerHTML = WO;
+                        document.getElementById('DESCLabel').innerHTML = DESC;
+                        // document.getElementById('Plnt').value = Plnt;
+                        // document.getElementById('Type').value = Type;
+                        // document.getElementById('CRTD').value = CRTD;
+                        // document.getElementById('BasicStart').value = BasicStart;
+                        // document.getElementById('Schedule').value = Schedule;
+                        // document.getElementById('ReqDate').value = Date(ReqDate);
+                        // document.getElementById('ABC').value = Number(ABC);
+                        // document.getElementById('PRI').value = Number(PRI);
+                        // document.getElementById('comment2Input').value = comment;
 
-
-
-                    }else{
-                    taskName = data.dataPoints[0].identity[0].equals;
-                    taskStartDate = data.dataPoints[0].identity[1].equals;
-                    taskEndDate = data.dataPoints[0].identity[2].equals;
-                    note = data.dataPoints[0].identity[3].equals;
-                    noteOrganizationUnitID = data.dataPoints[0].identity[4].equals;
-                    noteId = data.dataPoints[0].identity[5].equals;
-                    notesEnabled = data.dataPoints[0].identity[6].equals;
-
-                    // Convert to Date object
-                    const StartDate = new Date(taskStartDate);
-                    const EndDate = new Date(taskEndDate);
-
-                    // Format date as YYYY-MM-DDTHH:MM
-                    const formattedStartDate = StartDate.toISOString().slice(0, 16);
-                    const formattedEndDate = EndDate.toISOString().slice(0, 16);
-
-                    document.getElementById("taskNameInput").value = taskName;
-                    document.getElementById("startDateInput").value = formattedStartDate;
-                    document.getElementById("endDateInput").value = formattedEndDate;
-                    document.getElementById('commentInput').value = note;
-
-                    var form = document.getElementById('forms-card');
-                    form.style.display = 'block';
-
-                    var submitButton = document.getElementById('submitComment');
-                    submitButton.style.display = 'block';
                     }
-
+                    else{
+                        console.log("Wrong Visual")
+                    }
                 });
-
-                report.on("commandTriggered", async function (event) {
-
-                    const pages = await report.getPages();
-
-                    // Retrieve the page that contain the visual. For the sample report it will be the active page
-                    let page = pages.filter(function (page) {
-                        return page.isActive
-                    })[0];
-
-                    page.updateFilters(models.FiltersOperations.Add, [filter]);
-                    console.log("Page filter was added.");
-
-                    const visuals = await page.getVisuals();
-
-                    console.log(visuals)
-
-                    // Retrieve the target visual.
-                    let visual = visuals.filter(function (visual) {
-                        return visual.name === "e2cd66f842406a483576";
-                    })[0];
-
-                    // Exports visual data
-                    const result = await visual.exportData();
-
-                    console.log(result)
-
-                    // Assuming result.data is a CSV string
-                    const csvData = result.data;
-
-                    Papa.parse(csvData, {
-                        header: true,  // Treat the first row as headers
-                        complete: function (results) {
-                            // 'results.data' now contains the parsed JSON data
-                            const jsonData = results.data;
-                            console.log(jsonData)
-
-                            // You can do something with the JSON data here
-                            openSpreadsheet(jsonData);
-
-                        }
-                    });
-                })
-                
-
+              
                 report.on("buttonClicked", async function (event) {
-                    if (event.detail.title === "Refresh") {
+                    if (event.detail.id === "640f93e21b59db33a1db") {
                         try {
                             await report.refresh();
                             console.log("Refreshed");
@@ -589,54 +385,6 @@
             });
     }
 
-    function createOrUpdateNote(){
-        console.log(notesEnabled)
-
-        var currentdate = new Date(); 
-        var datetime = currentdate.getDate() + "/"
-                        + (currentdate.getMonth()+1)  + "/" 
-                        + currentdate.getFullYear() + " @ "  
-                        + currentdate.getHours() + ":"  
-                        + currentdate.getMinutes() + ":" 
-                        + currentdate.getSeconds();
-        console.log(datetime)
-
-        if(notesEnabled === "App.Notes"){
-        
-            const myHeaders = new Headers();
-            myHeaders.append("accept", "*/*");
-            myHeaders.append("Content-Type", "application/json-patch+json");
-            myHeaders.append("X-XSRF-TOKEN", "null");
-            myHeaders.append("Authorization", "Bearer " + StratCloudToken);
-
-            const raw = JSON.stringify({
-            "organizationUnitId": noteOrganizationUnitID,
-            "createOrUpdateNote": {
-                "notes": document.getElementById("commentInput").value,
-                "id": noteId
-            }
-            });
-
-            const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: raw,
-            redirect: "follow"
-            };
-
-            fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/OrganizationUnitNote/CreateOrUpdateNote`, requestOptions)
-            .then((response) => response.text())
-            .then((result) => {
-                console.log(result);
-                showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Note created or updated successfully!", 'success');
-            })
-            .catch((error) => console.error(error));
-        }
-            else{
-                console.log("Notes feature is not enabled", 'error')
-                showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Notes feature is not enabled.", 'error');
-            }
-    }
     
     function showNotification(message, type) {
             const notification = document.getElementById('notification');
@@ -649,176 +397,68 @@
         }, 3000);
     }
 
-    function updateSurveyResult(){
+    function getSurveyToComplete(event) {
+    // Prevent the default form submission
+    debugger;
+    event.preventDefault();
 
-        const inputs = [
-            document.getElementById('MaterialCodeInput'),
-            document.getElementById('ReorderPointInput'),
-            document.getElementById('LeadTimeInput'),
-            document.getElementById('MaxInput'),
-            document.getElementById('MRPTypeInput'),
-            document.getElementById('OutputTypeInput'),
-            document.getElementById('comment2Input')
-        ];
+    const myHeaders = new Headers();
+    myHeaders.append("accept", "text/plain");
+    myHeaders.append("X-XSRF-TOKEN", "null");
 
-        let isValid = true;
+    const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow"
+    };
 
-        inputs.forEach(input => {
-            if (input.value.trim() === '') {
-                input.classList.add('shake', 'input-error');
-                isValid = false;
-            } else {
-                input.classList.remove('shake', 'input-error');
-            }
-        });
-        
+    fetch("https://demo.strategnosportal.co.za/api/services/app/SurveysAnonymous/GetSurveyToComplete?OrganizationUnitId=6407&Id=a0e46748-d563-4617-460a-08dcd231b5bf", requestOptions)
+    .then((response) => response.text())
+    .then((result) => {
+        // Parse the result as JSON
+        const data = JSON.parse(result);
+        const surveyUserToken = data.result.userToken;
+        updateSurveyResult(surveyUserToken)
+    })
+    .catch((error) => console.error(error));
+}
 
-        // Check if any input is empty
-        if (!isValid) {
-            console.log('hit')
-        }
-        else{
-            if(surveyCreateVsUpdate === 'update'){
-                console.log(comments)
 
-                const myHeaders = new Headers();
-                myHeaders.append("accept", "*/*");
-                myHeaders.append("Content-Type", "application/json-patch+json");
-                myHeaders.append("X-XSRF-TOKEN", "null");
-                myHeaders.append("Authorization", "Bearer " + StratCloudToken);
 
-                var raw = JSON.stringify({
-                "formResultId" : formResultId,
-                "organizationUnitId": surveyOrganizationUnitId,
-                "formId": "a31a0398-b597-4321-e343-08dc9f3c4ca5",
-                "formUserId": userSurveyId,
-                "formResultsAsJson": JSON.stringify({
-                    "reorderPoint": document.getElementById('ReorderPointInput').value,
-                    "max": document.getElementById('MaxInput').value,
-                    "leadTime": document.getElementById('LeadTimeInput').value,
-                    "mrpType": document.getElementById('MRPTypeInput').value,
-                    "comment": document.getElementById('comment2Input').value,
-                    "outputType": document.getElementById('OutputTypeInput').value,
-                    "materialCode": document.getElementById('MaterialCodeInput').value
-                }),
-                "existingRecord": "true"
-                });
 
-                const requestOptions = {
-                    method: "POST",
-                    headers: myHeaders,
-                    body: raw,
-                    redirect: "follow"
-                };
+function updateSurveyResult(surveyUserToken){
+    debugger;
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-                fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/Forms/EditFormTaskResult`, requestOptions)
-                .then((response) => response.text())
-                .then((result) => 
-                    showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created or updated successfully!", 'success')
-                )
-                .catch((error) => 
-                    showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Result cannot be save!", 'error')
-                );
+    const raw = JSON.stringify({
+    "surveyId": "a0e46748-d563-4617-460a-08dcd231b5bf",
+    "userToken": surveyUserToken,
+    "organizationUnitId": organizationUnit,
+    "surveyResultsAsJson": JSON.stringify({
+        "ID": CommentID,
+        "Comment": document.getElementById('comment2Input').value
+    }),
+    "tenantId": 14
+    });
 
-            }
-            else if (surveyCreateVsUpdate === 'create'){
+    const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+    };
 
-                const urlParams = new URLSearchParams(window.location.search);
-                const organizationUnit = urlParams.get('organizationUnit');
-
-                console.log(organizationUnit);
-
-                const requestOptions = {
-                    method: "GET",
-                    redirect: "follow"
-                };
-
-                // Construct the URL with the organizationUnit
-                const url = `https://${tenantName}.strategnosportal.co.za/api/services/app/SurveysAnonymous/GetSurveyToComplete?OrganizationUnitId=${organizationUnit}&Id=a31a0398-b597-4321-e343-08dc9f3c4ca5`;
-
-                fetch(url, requestOptions)
-                    .then((response) => response.text())
-                    .then((result) => {
-                        const jsonResult = JSON.parse(result); // Parse the text as JSON
-                        if (jsonResult && jsonResult.result && jsonResult.result.userToken) {
-                            const surveyUserToken = jsonResult.result.userToken; 
-                            console.log(surveyUserToken)
-                            // Extract the userToken
-                                //SECOND CALL
-                                const myHeaders = new Headers();
-                                myHeaders.append("Content-Type", "application/json");
-
-                                const raw = JSON.stringify({
-                                "surveyId": "a31a0398-b597-4321-e343-08dc9f3c4ca5",
-                                "userToken": surveyUserToken,
-                                "organizationUnitId": Number(organizationUnit),
-                                "surveyResultsAsJson": JSON.stringify({
-                                    "reorderPoint": document.getElementById('ReorderPointInput').value,
-                                    "max": document.getElementById('MaxInput').value,
-                                    "leadTime": document.getElementById('LeadTimeInput').value,
-                                    "mrpType": document.getElementById('MRPTypeInput').value,
-                                    "comment": document.getElementById('comment2Input').value,
-                                    "outputType": document.getElementById('OutputTypeInput').value,
-                                    "materialCode": document.getElementById('MaterialCodeInput').value
-                                }),
-                                "tenantId": 14
-                                });
-
-                                const requestOptions2 = {
-                                method: "POST",
-                                headers: myHeaders,
-                                body: raw,
-                                redirect: "follow"
-                                };
-
-                                fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/SurveysAnonymous/SaveCompletedSurveyResults`, requestOptions2)
-                                .then((response) => response.text())
-                                .then((result) => showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created or updated successfully!", 'success'))
-                                .catch((error) => showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Result cannot be save!", 'error'));
-                        } else {
-                            console.error('userToken is undefined or not present in the response');
-                        }
-                    })
-                    .catch((error) => console.error('Error:', error));                
-            }
-        }
-    }
-
-    function createNewLineItem() {
-        surveyCreateVsUpdate = 'create'
-        document.getElementById('survey-card').style.display = 'block';
-        document.getElementById('newLineItemButton').style.display = 'none';
-        
-        document.getElementById('MaterialCodeInput').value = '';
-        document.getElementById('ReorderPointInput').value = '';
-        document.getElementById('LeadTimeInput').value = '';
-        document.getElementById('MaxInput').value = '';
-        document.getElementById('MRPTypeInput').value = '';
-        document.getElementById('OutputTypeInput').value = '';
-        document.getElementById('comment2Input').value = '';
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-    const inputs = [
-        document.getElementById('MaterialCodeInput'),
-        document.getElementById('ReorderPointInput'),
-        document.getElementById('LeadTimeInput'),
-        document.getElementById('MaxInput'),
-        document.getElementById('MRPTypeInput'),
-        document.getElementById('OutputTypeInput'),
-        document.getElementById('comment2Input')
-    ];
-
-        inputs.forEach(input => {
-            input.addEventListener('input', () => {
-                if (input.value.trim() !== '') {
-                        input.classList.remove('shake', 'input-error');
-                }
-                });
-            });
-        });
-
-        
+    fetch("https://demo.strategnosportal.co.za/api/services/app/SurveysAnonymous/SaveCompletedSurveyResults", requestOptions)
+    .then((response) => response.text())
+    .then((result) => 
+        showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created successfully!", 'success')
+        )
+        .catch((error) => 
+            showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Result cannot be save!", 'error')
+        );
+}
+            
 
 function stopResize() {
     isResizing = false;
@@ -868,10 +508,17 @@ function getAvailableReportsForNode() {
                     reportList.appendChild(reportElement);
                     reportElement.setAttribute('data-id', report.id);
                     reportElement.addEventListener('click', handleUnitSelection);
+
+                    // Ensure the form is always visible on load with slow animation
+                    const formWrapper = document.getElementById('first-form');
+                    formWrapper.classList.add('flyout-visible', 'slow-transition');
+
+                    document.getElementById("SelectReport").style.display = 'block'
                 }
             });
         })
         .catch((error) => console.error(error));
+
 }
 
         const divider = document.getElementById('divider');
@@ -913,6 +560,7 @@ function getAvailableReportsForNode() {
             button.classList.remove('selected');
         });
 
+
         // Add selected class to the clicked button
         const clickedButton = event.target.closest('.node-button');
         const buttonId = clickedButton.getAttribute('data-id');
@@ -926,6 +574,9 @@ function getAvailableReportsForNode() {
         powerbi.reset(embedContainer);
 
         embedReport(StratCloudToken, buttonId)
+
+        const formWrapper = document.getElementById('first-form');
+        formWrapper.classList.toggle('flyout-visible');
             
     }
 

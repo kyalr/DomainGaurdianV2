@@ -63,7 +63,7 @@ body {
 .form-container {
     display: flex; /* Use flexbox for layout */
     justify-content: space-between; /* Space between forms */
-    max-width: 100%; /* Maximum width of form container */
+    width: 100%; /* Maximum width of form container */
     height: 100%; /* Ensure it takes up the full height of its parent */
     position: relative; /* Ensure this container is the reference for absolute positioning */
     overflow: hidden; /* Prevent overflow of the content */
@@ -71,15 +71,97 @@ body {
 
 .form-wrapper {
     position: relative;
-    overflow: auto;
-    background-color: #4e4e4e07; /* Dark background color */
+    overflow: hidden;
+    background-color: #4e4e4e07;
     padding: 10px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgb(0, 0, 0); /* Adjusted shadow color */
-    margin-bottom: 20px; /* Margin between forms */
+    box-shadow: 0 2px 4px rgb(0, 0, 0);
+    margin-bottom: 20px;
     color: black;
-    height: 500px;
+    height: 800px;
+    transition: transform 0.3s ease-in-out; /* Smooth animation */
+    z-index: 10; /* Ensure it is above other elements */
+    /* Remove the transform so the form doesn't shift unexpectedly */
 }
+
+#reportList {
+    width: 100%; /* Ensure the report list takes up the full width */
+}
+
+#first-form {
+    width: 18%; /* Ensure the first form keeps its fixed width */
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-101%); /* Initially hide the flyout */
+    background-color: #33333A;
+
+}
+
+#staticCard {
+    background-color: #b5f54e00;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0, 0, 0);
+    color: rgb(221, 44, 44);
+    height: 800px;
+}
+
+
+#first-form.flyout-visible {
+    transform: translateX(0); /* Slide in the flyout */
+}
+
+#second-form {
+    width: 81.5% !important; /* Start with full width */
+    transition: width 0.8s ease-in-out;
+}
+
+.form-wrapper.flyout-visible ~ #second-form {
+    width: calc(100% - 18.5%) !important; /* Adjust width when flyout is visible */
+}
+
+.resizable-divider {
+    width: 3px;
+    cursor: ew-resize;
+}
+
+.form-wrapper.flyout-visible {
+    transform: translateX(0);
+    z-index: 11; /* Ensure flyout is above other elements */
+    pointer-events: auto;
+}
+
+.toggle-flyout-button {
+    position: absolute;
+    left: 5px;
+    top: 92%;
+    background-color: #D2B08D;
+    color: black;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 18;
+    pointer-events: auto;
+}
+
+
+/* Static Card Styling */
+.card-container {
+    background-color: #a53535;
+    color: white;
+    height: 100%;
+    padding: 10px;
+    position: absolute; /* Position it absolutely within the parent */
+    top: 0;
+    width: 18%; /* Same width as the flyout */
+    z-index: 1; /* Lower z-index to stay behind the flyout */
+}
+
+
+.toggle-flyout-button:hover {
+    background-color: #0056b3;
+}
+
 
 .resizable-divider {
     width: 3px;
@@ -98,9 +180,21 @@ body {
 
 .form-group {
     margin-bottom: 5%;
-    display: flex; /* Use flexbox for horizontal layout */
-    align-items: center; /* Center items vertically */
+    text-align: left;
+    font-size: 13px;
+    align-items: left; /* Center items vertically */
 }
+.label-box {
+    display: block;
+    padding: 10px;
+    background-color: #e0e0e049;
+    border: 0.5px solid #ccc;
+    border-radius: 5px;
+    font-weight: normal;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
 
 label {
     margin-top: 10px;
@@ -158,12 +252,12 @@ label {
     background-color: #444444; /* Dark background color */
     color: #ffffff; /* Light text color */
     text-align: center;
-    padding: 8px;
+    padding: 10px;
     position: fixed;
     z-index: 1;
     right: 20px; /* Changed from left: 80% to right: 20px */
     bottom: 20px;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .notification.success {
@@ -297,6 +391,20 @@ label {
     height: 100%;
 }
 
+#embed-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+}
+
+#SelectReport {
+    font-size: 22px;
+    color: #cccccc;
+    display: none;
+}
+
 .card {
     display: flex;
     justify-content: center;
@@ -309,7 +417,7 @@ label {
 }
 
 #card1 {
-    background-color: #ffcccb00;
+    background-color: #ffcccb;
 }
 
 #card2 {
@@ -325,7 +433,9 @@ label {
 }
 
 .report-container {
-    margin-top: 20px;
+    position: relative;
+    z-index: 12; /* Ensure reports are above flyout */
+    pointer-events: auto; /* Ensure reports are interactable */
 }
 .report {
     display: flex;
@@ -353,14 +463,17 @@ label {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%; /* Full width to ensure space distribution */
+    width: 100%;
     padding: 10px;
     border: none;
-    background-color: #4a4a4a; /* Adjust background color as needed */
-    color: #fff; /* White text for contrast */
+    background-color: #4a4a4a;
+    color: #fff;
     cursor: pointer;
-    margin-bottom: 5px; /* Add space between buttons */
-    border-radius: 5px; /* Rounded corners for a modern look */
+    margin-bottom: 5px;
+    border-radius: 5px;
+    position: relative;
+    z-index: 13; /* Make sure buttons are on top */
+    pointer-events: auto; /* Ensure buttons are clickable */
 }
 
 .node-button i {

@@ -176,6 +176,8 @@
         </div>
     </div>
 
+
+
 </body>
 
 </html>   
@@ -183,6 +185,8 @@
     <script src="https://unpkg.com/powerbi-client"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.18.0/dist/powerbi.min.js"></script>
+
+    <script async defer crossorigin="anonymous"src="https://connect.facebook.net/en_US/sdk.js"></script>
 
 <script>
 
@@ -201,7 +205,6 @@ function strategnos(){
     const url = 'www.strategnos.com'
     const myWindow = window.open(url, "", "fullscreen=yes");
 }
-
 
 
 document.getElementById("checkbox").addEventListener("change", function() {
@@ -482,10 +485,10 @@ function login() {
     });
 
     const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow"
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
     };
 
     fetch(`https://${tenantName}.strategnosportal.co.za/api/TokenAuth/Authenticate`, requestOptions)
@@ -550,7 +553,7 @@ function getOrganizationUNits(authenticationToken, tenantName){
     method: "GET",
     headers: myHeaders,
     redirect: "follow"
-    };
+};
 
     fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/OrganizationUnit/GetOrganizationTreeByTenantAndUserId`, requestOptions)
     .then(response => response.json()) // Parse response as JSON
@@ -692,6 +695,8 @@ function openContextMenu(currentItem){
     console.log(currentItem)
     document.getElementById('context-menu').style.display = 'flex';
 }
+
+
 
 function handleUnitSelection(event) {
 

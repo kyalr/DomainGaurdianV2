@@ -52,7 +52,7 @@
     "html-webpack-plugin": "^5.5.0",
     "https-browserify": "^1.0.0",
     "office-addin-cli": "^1.5.5",
-    "office-addin-debugging": "^5.0.12",
+    "office-addin-debugging": "^5.1.4",
     "office-addin-dev-certs": "^1.11.3",
     "office-addin-lint": "^2.2.5",
     "office-addin-manifest": "^1.12.3",

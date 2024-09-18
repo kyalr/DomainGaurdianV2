@@ -24,7 +24,6 @@ var OnOff
 
 async function onItemSendHandler(event) {
     try {
-      debugger;
         // Fetch all required data from localStorage at once
         const { savedState, domainChecks, emailRule, adjustDelayTime } = {
             savedState: localStorage.getItem('toggleState'),
@@ -36,26 +35,56 @@ async function onItemSendHandler(event) {
         let delayTime;
         let allowEvent = true;
 
-        // Determine allowEvent and delayTime based on conditions
-        if (savedState === "true") {
-            if (domainChecks === "true" && emailRule === "false") {
-                allowEvent = false;
-                delayTime = 0
-            } else if (domainChecks === "false" && emailRule === "true") {
-                allowEvent = true;
-                delayTime = parseInt(adjustDelayTime);
-            } else if (domainChecks === "true" && emailRule === "true") {
-                allowEvent = false;
-                delayTime = parseInt(adjustDelayTime);
-            } else {
-                allowEvent = true;
-                delayTime = 0;
-            }
-        } else{
-            allowEvent = true;
-            delayTime = 0;
-        }
+          Office.context.mailbox.item.delayDeliveryTime.getAsync((asyncResult) => {
+          if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+            console.log(asyncResult.error.message);
+            return;
+          }
 
+          const deliveryDate = asyncResult.value;
+
+
+        debugger;
+
+        if (deliveryDate === 0) {
+          console.log("Your message will be delivered immediately when you select Send.");
+          // No schedule is set, proceed to determine delayTime based on conditions
+          if (savedState === "true") {
+              if (domainChecks === "true" && emailRule === "false") {
+                  allowEvent = false;
+                  delayTime = 0;
+              } else if (domainChecks === "false" && emailRule === "true") {
+                  allowEvent = true;
+                  delayTime = parseInt(adjustDelayTime);
+              } else if (domainChecks === "true" && emailRule === "true") {
+                  allowEvent = false;
+                  delayTime = parseInt(adjustDelayTime);
+              } else {
+                  allowEvent = true;
+                  delayTime = 0;
+              }
+          } else {
+              allowEvent = true;
+              delayTime = 0;
+          }
+      } else {
+          debugger;
+          // Schedule exists, perform domain checks without changing delayTime
+          if (savedState === "true") {
+              if (domainChecks === "true" && emailRule === "false") {
+                  allowEvent = false;
+              } else if (domainChecks === "false" && emailRule === "true") {
+                  allowEvent = true;
+              } else if (domainChecks === "true" && emailRule === "true") {
+                  allowEvent = false;
+              } else {
+                  allowEvent = true;
+              }
+          } else {
+              allowEvent = true;
+          }
+      }
+    });
 
         console.log(delayTime);
 
