@@ -23,6 +23,7 @@
 var OnOff
 
 async function onItemSendHandler(event) {
+debugger;
     try {
         // Fetch all required data from localStorage at once
         const { savedState, domainChecks, emailRule, adjustDelayTime } = {
@@ -43,6 +44,7 @@ async function onItemSendHandler(event) {
 
           const deliveryDate = asyncResult.value;
 
+          console.log(domainChecks)
 
         debugger;
 

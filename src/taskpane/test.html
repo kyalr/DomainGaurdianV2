@@ -33,8 +33,7 @@
           </div>
           <br>
     </header>
-
-
+    
     <div class="form-container">
         <!-- First Form -->
         <div class="form-wrapper" id="first-form" style="width: 18%; ">
@@ -43,22 +42,10 @@
         <div id="staticCard" class="card-container" >
             
             <form id="taskForm" class="modern-form">
-                <div class="form-group">
-                    <label >Work Order Number: </label>
-                    <label id="WOLabel" class="label-box"></label>
-                </div>
-                <div class="form-group">
-                    <label >Work Order Description: </label>
-                    <label id="DESCLabel" class="label-box"></label>
-                </div>
-                <div class="form-group">
-                    <label for="commentInput">Comments:</label>
-                    <textarea id="comment2Input" class="form-control textarea" rows="6"></textarea>
-                </div>
-                <div class="button-container">
-                    <button id="submitComment" class="cta-button" onclick="getSurveyToComplete(event)">Save</button>
-                </div>
-            </form>
+
+                
+
+        </form>
            
 
         </div> <!-- New Card -->
@@ -87,10 +74,24 @@
             </div>
         </div>
     </div>
-    
+        <button onclick="getAllFormsForNode()">Build Survey</button>
+    <form id="dynamicForm"></form>
             
 
         <p id="notification" class="notification"></p>
+
+
+        <div id="formPopup" class="modal">
+            <div class="modal-content">
+                <label style="align-items: left; font-size: 20px;">Select a Survey</label>
+                <span class="close">&times;</span>
+
+              <div id="formButtonsContainer">
+                <!-- Buttons will be dynamically added here -->
+              </div>
+            </div>
+          </div>
+          
 </body>
 
 </html>
@@ -142,6 +143,215 @@
         formWrapper.classList.toggle('flyout-visible');
     });
 
+    // Function to create form inputs based on the type
+    function createInput(field) {
+        
+        let input;
+
+        if (field.type === 'text' && field.inputType === 'date') {
+            // Date input
+            input = document.createElement('input');
+            input.type = 'date';
+        } else if (field.type === 'dropdown') {
+            // Dropdown (select element)
+            input = document.createElement('select');
+            field.choices.forEach(choice => {
+                const option = document.createElement('option');
+                if (typeof choice === 'string') {
+                    option.value = choice;
+                    option.text = choice;
+                } else {
+                    option.value = choice.value;
+                    option.text = choice.text;
+                }
+                input.appendChild(option);
+            });
+        } else {
+            // Default to a text input
+            input = document.createElement('input');
+            input.type = 'text';
+        }
+
+        // Add required attribute if applicable
+        if (field.isRequired) {
+            input.required = true;
+        }
+
+        input.name = field.name;
+        input.placeholder = field.title;
+        return input;
+    }
+
+    function getAllFormsForNode() {
+        const myHeaders = new Headers();
+        myHeaders.append("accept", "text/plain");
+        myHeaders.append("X-XSRF-TOKEN", "null");
+        myHeaders.append("Authorization", "Bearer " + StratCloudToken);
+
+        const requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow"
+        };
+
+        fetch(`https://demo.strategnosportal.co.za/api/services/app/Forms/GetFormsByOrganizationUnitIdAndChildren?organizationUnitId=${organizationUnit}`, requestOptions)
+            .then(response => response.json()) // Parse JSON
+            .then(result => {
+                if (result.success) {
+                    displayFormsPopup(result.result); // Call function to display the pop-up
+                } else {
+                    console.error('Error fetching forms:', result.error);
+                }
+            })
+            .catch(error => console.error('API call failed:', error));
+    }
+
+    function displayFormsPopup(forms) {
+        // Get the modal
+        const modal = document.getElementById("formPopup");
+        const formButtonsContainer = document.getElementById("formButtonsContainer");
+
+        // Clear any existing buttons
+        formButtonsContainer.innerHTML = "";
+
+        forms.forEach(form => {
+        const button = document.createElement('button');
+        button.className = "node-button";
+
+        // Create the icon element
+        const icon = document.createElement('i');
+        icon.className = "fa-regular fa-pen-to-square"; // Add the Font Awesome icon classes
+
+        // Create a span for the text
+        const buttonText = document.createElement('span');
+        buttonText.textContent = form.name;
+
+        // Append icon and text to the button
+        button.appendChild(icon);
+        button.appendChild(buttonText);
+
+        // Set button onclick event
+        button.onclick = function() {
+            handleFormSelection(form.id); // Function to handle the form selection
+        };
+
+    formButtonsContainer.appendChild(button);
+    });
+
+        // Display the modal
+        modal.style.display = "block";
+
+        // Close modal when the 'x' is clicked
+        const closeButton = document.getElementsByClassName("close")[0];
+        closeButton.onclick = function() {
+            modal.style.display = "none";
+        };
+
+        // Close modal if user clicks outside of the modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+    }
+
+
+    function handleFormSelection(formId) {
+        console.log('Selected form ID:', formId);
+        const modal = document.getElementById("formPopup");
+        const formWrapper = document.getElementById('first-form');
+        const myHeaders = new Headers();
+        myHeaders.append("accept", "application/json"); // Expecting JSON response
+        myHeaders.append("X-XSRF-TOKEN", "null");
+        myHeaders.append("Authorization", "Bearer " + StratCloudToken);
+
+        const requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow"
+        };
+
+        fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/Forms/GetFormBlueprint?formId=${formId}`, requestOptions)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Automatically parse JSON
+        })
+        .then((data) => {
+            // Handle the API response structure
+            if (data.success) {
+                const surveyData = data.result;  // Extract the actual data from result
+                buildSurvey(surveyData);  // Assuming buildSurvey expects this structure
+                modal.style.display = "none";
+                if (formWrapper.classList.contains('flyout-visible')) {
+                    formWrapper.classList.remove('flyout-visible');  // Close the form if it's open
+                }
+            } else {
+                console.error('Error in the response:', data.error);
+            }
+        })
+        .catch((error) => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    function buildSurvey(result) {
+        const surveyBlueprint = result;
+
+        const form = document.getElementById('taskForm'); // Get the form element
+        form.innerHTML = ''; 
+
+        console.log(surveyBlueprint);
+
+        surveyBlueprint.pages.forEach(page => {
+            page.elements.forEach(element => {
+                // Only create the input if visible is true or null
+                if (element.visible !== false) {
+                    // Create a div with the form-group class
+                    const formGroup = document.createElement('div');
+                    formGroup.className = 'form-group';
+
+                    // Create the label
+                    const label = document.createElement('label');
+                    label.textContent = element.title;
+                    label.className = 'form-label'; // Apply the form-label class
+                    label.id = element.title + 'label';
+
+                    // Create the input
+                    const input = createInput(element);
+                    input.className = 'form-control'; // Apply the form-control class
+                    input.id = element.title;
+                    
+                    // Append label and input to the form group
+                    formGroup.appendChild(label);
+                    formGroup.appendChild(input);
+
+                    // Append the form group to the form
+                    form.appendChild(formGroup);
+                }
+            });
+        });
+
+
+        // Append the button container after the form content
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
+        const button = document.createElement('button');
+        button.id = 'submitComment';
+        button.className = 'cta-button';
+        button.textContent = 'Save';
+        button.onclick = (event) => updateSurveyResult(event);
+
+        // Append button to button container
+        buttonContainer.appendChild(button);
+
+        // Finally append the button container to the form
+        form.appendChild(buttonContainer);
+       
+
+    }
+
 
 
     window.onload = function () {
@@ -151,9 +361,9 @@
         organizationUnit = urlParams.get('organizationUnit');
         tenantName = urlParams.get('tenantName');
 
-        document.getElementById("SelectReport").style.display = 'none'
+        document.getElementById("SelectReport").style.display = 'none';
 
-        getAvailableReportsForNode()
+        getAvailableReportsForNode();
 
     };
 
@@ -339,17 +549,9 @@
                         PRI = data.dataPoints[0].identity[9].equals;                     
                         CommentID = data.dataPoints[0].identity[10].equals;
 
-                        document.getElementById('WOLabel').innerHTML = WO;
-                        document.getElementById('DESCLabel').innerHTML = DESC;
-                        // document.getElementById('Plnt').value = Plnt;
-                        // document.getElementById('Type').value = Type;
-                        // document.getElementById('CRTD').value = CRTD;
-                        // document.getElementById('BasicStart').value = BasicStart;
-                        // document.getElementById('Schedule').value = Schedule;
-                        // document.getElementById('ReqDate').value = Date(ReqDate);
-                        // document.getElementById('ABC').value = Number(ABC);
-                        // document.getElementById('PRI').value = Number(PRI);
-                        // document.getElementById('comment2Input').value = comment;
+                        document.getElementById('Work Order Number').value = WO;
+
+
 
                     }
                     else{
@@ -397,49 +599,26 @@
         }, 3000);
     }
 
-    function getSurveyToComplete(event) {
-    // Prevent the default form submission
-    debugger;
-    event.preventDefault();
 
-    const myHeaders = new Headers();
-    myHeaders.append("accept", "text/plain");
-    myHeaders.append("X-XSRF-TOKEN", "null");
+function getTokenForSurvey(){
 
-    const requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-    redirect: "follow"
-    };
-
-    fetch("https://demo.strategnosportal.co.za/api/services/app/SurveysAnonymous/GetSurveyToComplete?OrganizationUnitId=6407&Id=a0e46748-d563-4617-460a-08dcd231b5bf", requestOptions)
-    .then((response) => response.text())
-    .then((result) => {
-        // Parse the result as JSON
-        const data = JSON.parse(result);
-        const surveyUserToken = data.result.userToken;
-        updateSurveyResult(surveyUserToken)
-    })
-    .catch((error) => console.error(error));
 }
 
 
-
-
-function updateSurveyResult(surveyUserToken){
+function updateSurveyResult(event){
     debugger;
+    event.preventDefault();
     const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("accept", "*/*");
+    myHeaders.append("Content-Type", "application/json-patch+json");
+    myHeaders.append("X-XSRF-TOKEN", "null");
 
     const raw = JSON.stringify({
-    "surveyId": "a0e46748-d563-4617-460a-08dcd231b5bf",
-    "userToken": surveyUserToken,
-    "organizationUnitId": organizationUnit,
+    "verifiedToken":"IsqlwEw4CVUMY0GzA5zgD/43Dv5e9zKKqYr/TLJHbiLFraaDf8Q/CgyL+H6pjH2cyJ+/nw5eQHeCPGjvjNyJ0T9hbUQnjlu/7hlo7eHwgFR3UXhK7YoVFqoDNVU9hLueQa+93f9rI2Y1rUS0bFTkl1oBjRZfGklx+ANhrqV53QwFBa+ICrCAGp11ZoIRgraT/b1F8t4wqTIH24dcKvHODix3F+PIo/yZSUKGo8Gpl6gvTVmB0NBsLUNOl2wQZ3ilWc+89+TmWv5ky8xdzQpaKbgxTqPzC4gOVo6nDvELyealaEev1pXHQBxURXZ97zrO3KNC3LiEUhFLrq3IOkixBA==",
     "surveyResultsAsJson": JSON.stringify({
         "ID": CommentID,
-        "Comment": document.getElementById('comment2Input').value
+        "Comment": document.getElementById('Comment').value
     }),
-    "tenantId": 14
     });
 
     const requestOptions = {
@@ -449,7 +628,7 @@ function updateSurveyResult(surveyUserToken){
         redirect: "follow"
     };
 
-    fetch("https://demo.strategnosportal.co.za/api/services/app/SurveysAnonymous/SaveCompletedSurveyResults", requestOptions)
+    fetch("https://demo.strategnosportal.co.za/api/services/app/SurveysToken/SaveCompletedSurveyResults", requestOptions)
     .then((response) => response.text())
     .then((result) => 
         showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created successfully!", 'success')

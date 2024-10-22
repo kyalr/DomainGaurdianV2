@@ -21,7 +21,7 @@ body {
     background-attachment: fixed;
     padding: 10px;
     line-height: 1.2;
-    overflow: hidden; /* Prevents scrolling */
+    overflow: auto; /* Prevents scrolling */
 }
 
 .cta-button {

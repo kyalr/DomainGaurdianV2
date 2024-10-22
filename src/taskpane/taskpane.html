@@ -574,7 +574,8 @@ function embedPowerBIReport() {
     const scToken = localStorage.getItem("SCToken");
     const nodeID = localStorage.getItem("buttonId");
     const url = `test.html?tenantName=${encodeURIComponent(tenantName)}&scToken=${encodeURIComponent(scToken)}&nodeId=${encodeURIComponent(code)}&organizationUnit=${encodeURIComponent(NodeId)}`;
-    const myWindow = window.open(url, "", "fullscreen=yes");
+    const myWindow = window.open(url, "", "width=" + screen.width + ",height=" + screen.height);
+    myWindow.moveTo(0, 0);
 
     document.getElementById("loading-overlay").style.display = "none";
 
