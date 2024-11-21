@@ -9,6 +9,12 @@ Office.onReady(function (info) {
     Office.actions.associate("onAppointmentSendHandler", saveAppointment);
     Office.actions.associate("onAppointmentComposeHandler", setTimesheets);
   }
+  if (Office.context.host !== Office.HostType.Outlook) {
+    console.error("This code is not running in Outlook.");
+    return;
+}
+
+
 });
 
 

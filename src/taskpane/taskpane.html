@@ -34,6 +34,7 @@
    
     <main id="app-body" class="ms-welcome__main" style="display: none;">
 
+
         <div style="width: 100%; height: 1000px; padding-left: 20px;"><div >
             
             <div id="login-section">
@@ -96,7 +97,6 @@
         <ul>
             <li><a onclick="embedPowerBIReport()">Open Report</a></li>
             <li><a >Timesheets</a></li>
-            <li><a >Option 3</a></li>
         </ul>
     </div>
 
@@ -540,6 +540,7 @@ function login() {
 }
           
 function getOrganizationUNits(authenticationToken, tenantName){
+    debugger;
     document.body.classList.add('gradient-background');
     const img = document.getElementById('DigitalSolutions');
     img.style.width = '90%'
@@ -797,6 +798,7 @@ function checkLoggedIn() {
       document.getElementById("tenantSelect").style.display = 'none';
     }
 }
+
 
 
 </script>

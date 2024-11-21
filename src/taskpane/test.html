@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html>
+
+
 
 <head>
     <meta charset="UTF-8" />
@@ -20,6 +20,7 @@
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="test.css" rel="stylesheet" />
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 
 </head>
 
@@ -33,10 +34,11 @@
           </div>
           <br>
     </header>
-    
+
     <div class="form-container">
         <!-- First Form -->
         <div class="form-wrapper" id="first-form" style="width: 18%; ">
+
             <div id="reportList" class="report-container"></div>
         </div>
         <div id="staticCard" class="card-container" >
@@ -44,9 +46,7 @@
             <form id="taskForm" class="modern-form">
 
                 
-
         </form>
-           
 
         </div> <!-- New Card -->
         <button id="toggle-flyout" class="toggle-flyout-button"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
@@ -54,6 +54,13 @@
         <div class="resizable-divider" id="divider"></div>
         <!-- Second Form (for comments) -->
         <div class="form-wrapper" id="second-form" >
+            <button class="fullscreen-button" id="fullscreen-btn">⛶</button>
+            <label class="switch" id="modeSwitch" style="display: none;">
+                <input type="checkbox" id="toggleSwitch" onclick="toggleMode()">
+                <span class="slider">
+                    <span class="slider-text" data-on="Edit" data-off="View"></span>
+                </span>
+            </label>
             <div id="loading-overlay" class="loading-overlay">
                 <div class="loading-spinner">
                     <img class="rotating-image" style="height: 60px;" src="https://kyalr.github.io/DomainGaurdianV2/assets/ConsilienceIcon.png" alt="Loading..." />
@@ -74,7 +81,12 @@
             </div>
         </div>
     </div>
-        <button onclick="getAllFormsForNode()">Build Survey</button>
+
+    <button class="floating-btn" onclick="getAllFormsForNode()">
+        <i class="fa fa-plus"></i> <!-- Font Awesome Icon -->
+      </button>
+
+      
     <form id="dynamicForm"></form>
             
 
@@ -91,6 +103,10 @@
               </div>
             </div>
           </div>
+
+
+
+
           
 </body>
 
@@ -138,6 +154,62 @@
 
     var tenantName;
 
+    var Action;
+    var ActionDescription;
+    var agreedActionDate;
+    var actionId;
+    var actionStatus;
+
+    var validatedSurveyToken;
+    var selectedFormId;
+    var currentUser;
+
+    var visualNameForExport;
+
+    function toggleMode() {
+    const toggleSwitch = document.getElementById("toggleSwitch");
+    if (toggleSwitch.checked) {
+        report.switchMode("edit");
+        console.log("Edit mode enabled");
+    } else {
+        report.switchMode("view");
+        console.log("View mode enabled");
+    }
+}
+
+
+
+    Office.onReady(async (info) => {
+            if (info.host === Office.HostType.Outlook) {
+                console.log("Office is ready in the new window");
+
+                // Now you can access the mailbox item
+                let item = Office.context.mailbox.item;
+
+                // Example: Reading the subject of the email
+                console.log("Email Subject:", item.subject);
+            }
+        });
+
+        async function addExportedDataToEmail() {
+            // You would typically use the same logic here to fetch data and then add to email body
+            // For demonstration, let's assume you have some data to add to the body
+            const dataToAdd = "This is some data to add to the email body.";
+
+            // Check if the item is an email
+            if (Office.context.mailbox.item.itemType === Office.MailboxEnums.ItemType.Message) {
+                Office.context.mailbox.item.body.setAsync(dataToAdd, { coercionType: Office.CoercionType.Text }, (result) => {
+                    if (result.status === Office.AsyncResultStatus.Succeeded) {
+                        console.log("Data successfully added to email body.");
+                    } else {
+                        console.log("Failed to add data to email body:", result.error);
+                    }
+                });
+            } else {
+                console.log("Not a message item. Cannot add data to the body.");
+            }
+        }
+
     document.getElementById('toggle-flyout').addEventListener('click', function() {
         const formWrapper = document.getElementById('first-form');
         formWrapper.classList.toggle('flyout-visible');
@@ -145,42 +217,71 @@
 
     // Function to create form inputs based on the type
     function createInput(field) {
-        
-        let input;
+    
+    let input;
 
-        if (field.type === 'text' && field.inputType === 'date') {
-            // Date input
-            input = document.createElement('input');
-            input.type = 'date';
-        } else if (field.type === 'dropdown') {
-            // Dropdown (select element)
-            input = document.createElement('select');
-            field.choices.forEach(choice => {
-                const option = document.createElement('option');
-                if (typeof choice === 'string') {
-                    option.value = choice;
-                    option.text = choice;
-                } else {
-                    option.value = choice.value;
-                    option.text = choice.text;
-                }
-                input.appendChild(option);
-            });
-        } else {
-            // Default to a text input
-            input = document.createElement('input');
-            input.type = 'text';
-        }
-
-        // Add required attribute if applicable
-        if (field.isRequired) {
-            input.required = true;
-        }
-
-        input.name = field.name;
-        input.placeholder = field.title;
-        return input;
+    if (field.type === 'text' && field.inputType === 'date') {
+        // Date input
+        input = document.createElement('input');
+        input.type = 'date';
+    } 
+    else if (field.type === 'text' && field.inputType === 'datetime-local') {
+        // Date and time input
+        input = document.createElement('input');
+        input.type = 'datetime-local'; // HTML5 datetime input
     }
+    else if (field.type === 'text' && field.inputType === 'color') {
+        // Color input (color picker)
+        input = document.createElement('input');
+        input.type = 'color'; // HTML5 color input
+    }
+    else if (field.type === 'dropdown') {
+        // Dropdown (select element)
+        input = document.createElement('select');
+        field.choices.forEach(choice => {
+            const option = document.createElement('option');
+            if (typeof choice === 'string') {
+                option.value = choice;
+                option.text = choice;
+            } else {
+                option.value = choice.value;
+                option.text = choice.text;
+            }
+            input.appendChild(option);
+        });
+    } else if (field.name.toLowerCase() === 'comment') {
+        // Create a textarea for comments
+        input = document.createElement('textarea');
+        input.rows = 4;  // Set default rows
+        input.style.resize = 'vertical';  // Allow vertical resizing
+    } else if (field.type === 'boolean') {
+        // Create a dropdown for Yes/No
+        input = document.createElement('select');
+        
+        const yesOption = document.createElement('option');
+        yesOption.value = 'true';
+        yesOption.textContent = field.labelTrue || "Yes";
+        input.appendChild(yesOption);
+
+        const noOption = document.createElement('option');
+        noOption.value = 'false';
+        noOption.textContent = field.labelFalse || "No";
+        input.appendChild(noOption);}
+     else {
+        // Default to a text input
+        input = document.createElement('input');
+        input.type = 'text';
+    }
+
+    // Add required attribute if applicable
+    if (field.isRequired) {
+        input.required = true;
+    }
+
+    input.name = field.name;
+    input.placeholder = field.title;
+    return input;
+}
 
     function getAllFormsForNode() {
         const myHeaders = new Headers();
@@ -194,7 +295,7 @@
             redirect: "follow"
         };
 
-        fetch(`https://demo.strategnosportal.co.za/api/services/app/Forms/GetFormsByOrganizationUnitIdAndChildren?organizationUnitId=${organizationUnit}`, requestOptions)
+        fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/Forms/GetFormsByOrganizationUnitIdAndChildren?organizationUnitId=${organizationUnit}`, requestOptions)
             .then(response => response.json()) // Parse JSON
             .then(result => {
                 if (result.success) {
@@ -206,8 +307,80 @@
             .catch(error => console.error('API call failed:', error));
     }
 
+    function getTokenForSelectedForm(event){
+        debugger;
+        event.preventDefault();
+        const myHeaders = new Headers();
+        myHeaders.append("accept", "text/plain");
+        myHeaders.append("Content-Type", "application/json-patch+json");
+        myHeaders.append("X-XSRF-TOKEN", "null");
+        myHeaders.append("Authorization", "Bearer " + StratCloudToken);
+       
+
+        const raw = JSON.stringify({
+        "resultId": null,
+        "surveyId": selectedFormId,
+        "type": 1,
+        "behaviour": 3,
+        "expiresAfterNSeconds": "86400",
+        "organizationUnitId": organizationUnit
+        });
+
+        const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+        };
+
+        fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/SurveysToken/Create`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+            if (result.success) {
+                let surveyToken;
+                surveyToken = result.result;
+                validateTokenForSelectedForm(surveyToken)
+            }
+            else {
+                console.error("First API call failed", result);
+            }
+        })
+        .catch((error) => console.error(error));
+    }
+
+    function validateTokenForSelectedForm(surveyToken){
+        const myHeaders = new Headers();
+        myHeaders.append("accept", "text/plain");
+        myHeaders.append("Content-Type", "application/json-patch+json");
+        myHeaders.append("X-XSRF-TOKEN", "null");
+
+        const raw = JSON.stringify({
+        "token": surveyToken,
+        "userId": null
+        });
+
+        const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+        };
+
+        fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/SurveysToken/Validate`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+            console.log(result.result.token);
+            validatedSurveyToken = result.result.token;
+            updateSurveyResult(validatedSurveyToken);
+        })
+        .catch((error) => console.error(error));
+    }
+
+
+
     function displayFormsPopup(forms) {
         // Get the modal
+        console.log(forms)
         const modal = document.getElementById("formPopup");
         const formButtonsContainer = document.getElementById("formButtonsContainer");
 
@@ -232,7 +405,10 @@
 
         // Set button onclick event
         button.onclick = function() {
+            debugger;
+            selectedFormId = '';
             handleFormSelection(form.id); // Function to handle the form selection
+            localStorage.setItem("SelectedFormId", form.id)
         };
 
     formButtonsContainer.appendChild(button);
@@ -258,6 +434,7 @@
 
     function handleFormSelection(formId) {
         console.log('Selected form ID:', formId);
+        selectedFormId = formId;
         const modal = document.getElementById("formPopup");
         const formWrapper = document.getElementById('first-form');
         const myHeaders = new Headers();
@@ -297,61 +474,88 @@
     }
 
     function buildSurvey(result) {
-        const surveyBlueprint = result;
+    const surveyBlueprint = result;
 
-        const form = document.getElementById('taskForm'); // Get the form element
-        form.innerHTML = ''; 
+    const form = document.getElementById('taskForm'); // Get the form element
+    form.innerHTML = ''; 
 
-        console.log(surveyBlueprint);
+    console.log(surveyBlueprint);
 
-        surveyBlueprint.pages.forEach(page => {
-            page.elements.forEach(element => {
-                // Only create the input if visible is true or null
-                if (element.visible !== false) {
-                    // Create a div with the form-group class
-                    const formGroup = document.createElement('div');
-                    formGroup.className = 'form-group';
+    surveyBlueprint.pages.forEach(page => {
+        page.elements.forEach(element => {
+            // Only create the input if visible is true or null
+            if (element.visible !== false) {
+                // Create a div with the form-group class
+                const formGroup = document.createElement('div');
+                formGroup.className = 'form-group';
 
-                    // Create the label
-                    const label = document.createElement('label');
-                    label.textContent = element.title;
-                    label.className = 'form-label'; // Apply the form-label class
-                    label.id = element.title + 'label';
+                // Create the label
+                const label = document.createElement('label');
+                label.textContent = element.title;
+                label.className = 'form-label'; // Apply the form-label class
+                label.id = element.title + 'label';
 
-                    // Create the input
-                    const input = createInput(element);
-                    input.className = 'form-control'; // Apply the form-control class
-                    input.id = element.title;
-                    
-                    // Append label and input to the form group
-                    formGroup.appendChild(label);
-                    formGroup.appendChild(input);
+                // Create the input
+                const input = createInput(element);
+                input.className = 'form-control'; // Apply the form-control class
+                input.id = element.title;
+                
+                // Append label and input to the form group
+                formGroup.appendChild(label);
+                formGroup.appendChild(input);
 
-                    // Append the form group to the form
-                    form.appendChild(formGroup);
-                }
-            });
+                // Append the form group to the form
+                form.appendChild(formGroup);
+            }
         });
+    });
+
+    // Append the button container after the form content
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+
+    // Create the Save button
+    const saveButton = document.createElement('button');
+    saveButton.id = 'submitComment';
+    saveButton.className = 'cta-button';
+
+    // Create the Save icon
+    const saveIcon = document.createElement('i');
+    saveIcon.className = 'fa-regular fa-floppy-disk'; // Icon class for save
+    saveButton.appendChild(saveIcon); // Append the icon to the button
+
+    // Add text to the button after the icon
+    saveButton.appendChild(document.createTextNode(' Save'));
+    saveButton.onclick = (event) => getTokenForSelectedForm(event); // Change to your save function
+
+    // Create the Clear button
+    const clearButton = document.createElement('button');
+    clearButton.id = 'clearInputs';
+    clearButton.className = 'cta-button';
+
+    // Create the Save icon
+    const clearIcon = document.createElement('i');
+    clearIcon.className = "fa-solid fa-eraser"; // Icon class for save
+    clearButton.appendChild(clearIcon); // Append the icon to the button
+
+    clearButton.appendChild(document.createTextNode(' Clear'));
+    clearButton.onclick = (event) => {
+        // Clear all inputs in the form
+        event.preventDefault();
+        const inputs = form.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.value = ''; // Clear the input value
+        });
+    };
+
+    // Append both buttons to button container
+    buttonContainer.appendChild(saveButton);
+    buttonContainer.appendChild(clearButton);
 
 
-        // Append the button container after the form content
-        const buttonContainer = document.createElement('div');
-        buttonContainer.className = 'button-container';
-        const button = document.createElement('button');
-        button.id = 'submitComment';
-        button.className = 'cta-button';
-        button.textContent = 'Save';
-        button.onclick = (event) => updateSurveyResult(event);
-
-        // Append button to button container
-        buttonContainer.appendChild(button);
-
-        // Finally append the button container to the form
-        form.appendChild(buttonContainer);
-       
-
-    }
-
+    // Finally append the button container to the form
+    form.appendChild(buttonContainer);
+}
 
 
     window.onload = function () {
@@ -364,6 +568,7 @@
         document.getElementById("SelectReport").style.display = 'none';
 
         getAvailableReportsForNode();
+        getCurrentLoginInfo();
 
     };
 
@@ -405,7 +610,7 @@
             redirect: "follow"
         };
 
-        console.log(tenantName)
+
 
         fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/TenantDashboard/GetReportEmbedInfo?reportId=${reportId}`, requestOptions)
             .then((response) => {
@@ -434,7 +639,8 @@
                     embedUrl: embedUrl,
                     tokenType: 1,
                     id: reportId,
-                    permissions: models.Permissions.all,
+                    permissions: models.Permissions.All,
+                    viewMode: models.ViewMode.view,
                     settings: {
                         displayOption: models.DisplayOption.FitToPage,
                         panes: {
@@ -442,7 +648,7 @@
                                 visible: false
                             },
                             pageNavigation: {
-                                visible: false
+                                visible: true
                             }
                         },
                         bars: {
@@ -458,7 +664,7 @@
                                     icon: 'ALT',
                                     extend: {
                                         visualOptionsMenu: {
-                                            title: "Export to Spreadsheet"
+                                            title: "Export to Email"
                                         }
                                     }
                                 }
@@ -466,6 +672,8 @@
                             
                     }
                 };
+
+
                 
                 const urlParams = new URLSearchParams(window.location.search);
                 const nodeId = urlParams.get('nodeId');
@@ -476,54 +684,14 @@
                 // Embed the report and display it within the div container.
                 report = powerbi.embed(embedContainer, config);
 
-                const taskFilter = {
-                    $schema: "http://powerbi.com/product/schema#advanced",
-                    target: {
-                        table: "Query2",
-                        column: "Code"
-                    },
-                    filterType: 0,
-                    logicalOperator: "And",
-                    conditions: [{
-                        operator: "StartsWith",
-                        value: nodeIdNumber
-                    }]
-                };
-
-                const tenantFilter = {
-                    $schema: "http://powerbi.com/product/schema#advanced",
-                    target: {
-                        table: "Query2",
-                        column: "TenancyName"
-                    },
-                    filterType: 0,
-                    logicalOperator: "And",
-                    conditions: [{
-                        operator: "StartsWith",
-                        value: tenantName
-                    }]
-                };
-
-                const surveyFilter = {
-                    $schema: "http://powerbi.com/product/schema#advanced",
-                    target: {
-                        table: "Query1",
-                        column: "Code"
-                    },
-                    filterType: 0,
-                    logicalOperator: "And",
-                    conditions: [{
-                        operator: "StartsWith",
-                        value: nodeIdNumber
-                    }]
-                };
-
 
                 // Apply the filter once the report is loaded
                 report.on("loaded", function() {    
                     document.getElementById('embed-container').style.visibility = 'visible'
                     embedContainer.style.display = 'block';
                     document.getElementById('loading-overlay').style.display = 'none';
+                    document.getElementById('fullscreen-btn').style.display = 'block';
+                    document.getElementById("modeSwitch").style.display = "inline-block";
                     
 
                 });
@@ -531,36 +699,98 @@
                 // report.on will add an event listener.
                 report.on("dataSelected", function (event) {
                     let data = event.detail;
-                    if(data.visual.name === 'ecac59bf8de8f69b052e'){
 
-                        surveyCreateVsUpdate = 'update';
+                    if(data.visual.name === 'ecac59bf8de8f69b052e' || data.visual.name === '927a5a72a5fbc34ebe65' || data.visual.name === "b8172d6fda60ae0cb807"){
 
-                        console.log(data)
+                        surveyCreateVsUpdate = 'create';
+                               
+                    
+                            if(data.visual.name === "927a5a72a5fbc34ebe65"){
+                                CommentID = data.dataPoints[0].values[0].formattedValue;
+                                document.getElementById('Work Order Number').value = WO;
+                                WO = data.dataPoints[0].identity[0].equals;
+                                DESC = data.dataPoints[0].identity[1].equals;
+                                Plnt = data.dataPoints[0].identity[2].equals;
+                                Type = data.dataPoints[0].identity[3].equals;
+                                CRTD = data.dataPoints[0].identity[4].equals;
+                                BasicStart = data.dataPoints[0].identity[5].equals;
+                                Schedule = data.dataPoints[0].identity[6].equals;
+                                ReqDate = data.dataPoints[0].identity[7].equals;
+                                ABC = data.dataPoints[0].identity[8].equals;
+                                PRI = data.dataPoints[0].identity[9].equals;      
+                            }
+                            else if(data.visual.name === "b8172d6fda60ae0cb807"){
+                                CommentID = data.dataPoints[0].identity[3].equals;
+                                document.getElementById('Work Order Number').value = CommentID;
+                            }
+
+                        console.log(CommentID)
                         
-                        WO = data.dataPoints[0].identity[0].equals;
-                        DESC = data.dataPoints[0].identity[1].equals;
-                        Plnt = data.dataPoints[0].identity[2].equals;
-                        Type = data.dataPoints[0].identity[3].equals;
-                        CRTD = data.dataPoints[0].identity[4].equals;
-                        BasicStart = data.dataPoints[0].identity[5].equals;
-                        Schedule = data.dataPoints[0].identity[6].equals;
-                        ReqDate = data.dataPoints[0].identity[7].equals;
-                        ABC = data.dataPoints[0].identity[8].equals;
-                        PRI = data.dataPoints[0].identity[9].equals;                     
-                        CommentID = data.dataPoints[0].identity[10].equals;
-
-                        document.getElementById('Work Order Number').value = WO;
 
 
+                        
 
+                    }
+                    else if (data.visual.name === 'b3f3f31a308ce0d94399'){
+                        console.log(data)
+                        surveyCreateVsUpdate = "update"
+
+                        agreedActionDate = data.dataPoints[0].identity[0].equals;
+                        Action = data.dataPoints[0].identity[1].equals;
+                        ActionDescription = data.dataPoints[0].identity[2].equals;
+                        agreedActionDate = data.dataPoints[0].identity[3].equals;
+                        actionStatus = data.dataPoints[0].identity[4].equals;
+                        formResultId = data.dataPoints[0].identity[5].equals;
+
+                        document.getElementById('Action').value = Action;
+                        document.getElementById('Action Description').value = ActionDescription;
+                        document.getElementById('Agreed Action Date').value = agreedActionDate;
+                        document.getElementById('Status').value = actionStatus;
+                        
+                        
                     }
                     else{
                         console.log("Wrong Visual")
                     }
                 });
-              
+
+                report.on("commandTriggered", async function (event) {
+                    let commandDetails = event.detail;
+                    console.log("Event - commandTriggered:\n", commandDetails);
+                    visualNameForExport = commandDetails.visual.name;
+
+                    // Retrieve the page collection and get the visuals for the active page.
+                    try {
+                        const pages = await report.getPages();
+
+                        // Retrieve the page that contain the visual. For the sample report it will be the active page
+                        let page = pages.filter(function (page) {
+                            return page.isActive
+                        })[0];
+
+                        const visuals = await page.getVisuals();
+
+                        // Retrieve the target visual.
+                        let visual = visuals.filter(function (visual) {
+                            return visual.name === visualNameForExport;
+                        })[0];
+
+                        const result = await visual.exportData(models.ExportDataType.Summarized);
+                        console.log(result.data);
+
+                        copyToClipboard(result.data)
+
+
+
+                    }
+                    catch (errors) {
+                        console.log(errors);
+                    }
+
+                })
+
                 report.on("buttonClicked", async function (event) {
-                    if (event.detail.id === "640f93e21b59db33a1db") {
+
                         try {
                             await report.refresh();
                             console.log("Refreshed");
@@ -568,10 +798,7 @@
                         catch (errors) {
                             console.log(errors);
                         }
-                    }
-                    else if (event.detail.title === "Edit") {
-                        report.switchMode("edit");
-                    }
+
                 });
                 
             }).catch((error) => {
@@ -581,11 +808,70 @@
                 embedContainer.style.display = 'none'
                 console.error('There was a problem with the fetch operation:', error);
                 document.getElementById('loading-overlay').style.display = 'none';
+                document.getElementById('fullscreen-btn').style.display = 'block';
                 document.getElementById('error-container').style.display = 'flex';
+                
+                
 
 
             });
     }
+
+    function createTableHTML(data) {
+        const rows = data.split('\n').map(row => row.split(','));
+            let table = `<table style="border-collapse: collapse; width: auto; table-layout: auto;">`;
+            rows.forEach((row, index) => {
+                table += `<tr>`;
+                row.forEach(cell => {
+                    const tag = index === 0 ? 'th' : 'td'; // Header for the first row
+                    const headerStyle = index === 0 
+                        ? 'background-color: #add8e6; padding: 4px; font-size: 12px;' // Smaller header style
+                        : 'padding: 4px; font-size: 14px;'; // Normal row style
+                    table += `<${tag} style="border: 1px solid #dddddd; text-align: left; ${headerStyle}">${cell.trim()}</${tag}>`;
+                });
+                table += `</tr>`;
+            });
+            table += `</table>`;
+            return table;
+        }
+
+        function copyToClipboard(data) {
+            const tableHTML = createTableHTML(data);
+            const tempElement = document.createElement('div');
+            tempElement.innerHTML = tableHTML;
+            document.body.appendChild(tempElement);
+            
+            // Create a range and select the table
+            const range = document.createRange();
+            range.selectNode(tempElement);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+
+            // Copy to clipboard
+            document.execCommand('copy');
+            console.log("Table copied to clipboard!");
+
+            saveTableDataToLocalStorage(data);
+
+            // Clean up
+            document.body.removeChild(tempElement);
+            window.getSelection().removeAllRanges();
+        }
+
+        function saveTableDataToLocalStorage(data) {
+            try {
+                // Assuming 'data' is an array of arrays (rows of the table)
+                localStorage.setItem('tableData', data);
+                console.log("Table data saved to local storage!");
+            } catch (error) {
+                console.error("Failed to save table data to local storage:", error);
+            }
+        }
+
+        function openCommandsPage() {
+            const url = 'commands.html'; // Adjust the path as needed
+            window.open(url, '_blank'); // Opens commands.html in a new tab
+        }
 
     
     function showNotification(message, type) {
@@ -600,44 +886,127 @@
     }
 
 
-function getTokenForSurvey(){
-
-}
 
 
-function updateSurveyResult(event){
-    debugger;
-    event.preventDefault();
+
+function updateSurveyResult(validatedSurveyToken){
+    console.log(CommentID)
     const myHeaders = new Headers();
     myHeaders.append("accept", "*/*");
     myHeaders.append("Content-Type", "application/json-patch+json");
     myHeaders.append("X-XSRF-TOKEN", "null");
+    myHeaders.append("Authorization", "Bearer " + StratCloudToken);
+
+    showNotification("<i class='fa-solid fa-spinner fa-spin'></i>", 'loading')
+
+    if(CommentID === undefined){
+        showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Please select a work order", 'error')
+    }
+    else{
+
+        let raw;
+
+        if (surveyCreateVsUpdate == "update") {
+            // Perform your update logic here, e.g., call a different function
+            handleSurveyUpdate(selectedFormId);
+            return; // Exit the current function after handling the update
+        }
+
+        if(selectedFormId == "62c4f4a3-f46f-4a9a-6681-08dcf19962c1" & surveyCreateVsUpdate == "create"){
+            raw = JSON.stringify({
+            "verifiedToken": validatedSurveyToken,
+            "surveyResultsAsJson": JSON.stringify({
+                    "WorkOrderNumber": WO,
+                    "Id": CommentID,
+                    "Comment": document.getElementById('Comment').value
+                }),
+            });
+        } else if (selectedFormId == "36bc4055-83ca-4e55-8839-08dcf3f168f9" & surveyCreateVsUpdate == "create"){
+            raw = JSON.stringify({
+            "verifiedToken": validatedSurveyToken,
+            "surveyResultsAsJson": JSON.stringify({
+                    "Action": document.getElementById('Action').value,
+                    "AgreedActionDate": document.getElementById('Agreed Action Date').value,
+                    "question1": document.getElementById('Action Description').value,
+                    "Id": CommentID,
+                    "Status": document.getElementById('Status').value,
+                    "ResponsiblePerson": currentUser
+                }),
+            });
+        }
+        else if (selectedFormId == "a31a0398-b597-4321-e343-08dc9f3c4ca5" & surveyCreateVsUpdate == "create"){
+            raw = JSON.stringify({
+            "verifiedToken": validatedSurveyToken,
+            "surveyResultsAsJson": JSON.stringify({
+                    "reorderPoint": document.getElementById('Re-Order Point').value,
+                    "max":document.getElementById('Max').value,
+                    "leadTime": document.getElementById('Lead Time').value,
+                    "mrpType": document.getElementById('MRP Type').value,
+                    "outputType": document.getElementById('Ouput Type').value,
+                    "Id": CommentID
+                }),
+            });
+        }
+
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/SurveysToken/SaveCompletedSurveyResults`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+            if(result.success){
+                console.log(result.success)
+                showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created successfully!", 'success')
+            }
+            else{
+                console.log(result)
+                showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Result cannot be saved", 'error')
+            }
+            })
+            .catch((error) => 
+                showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Result cannot be saved", 'error')
+            );
+    }
+}
+          
+function handleSurveyUpdate(selectedFormId){
+    debugger;
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer " + StratCloudToken);
 
     const raw = JSON.stringify({
-    "verifiedToken":"IsqlwEw4CVUMY0GzA5zgD/43Dv5e9zKKqYr/TLJHbiLFraaDf8Q/CgyL+H6pjH2cyJ+/nw5eQHeCPGjvjNyJ0T9hbUQnjlu/7hlo7eHwgFR3UXhK7YoVFqoDNVU9hLueQa+93f9rI2Y1rUS0bFTkl1oBjRZfGklx+ANhrqV53QwFBa+ICrCAGp11ZoIRgraT/b1F8t4wqTIH24dcKvHODix3F+PIo/yZSUKGo8Gpl6gvTVmB0NBsLUNOl2wQZ3ilWc+89+TmWv5ky8xdzQpaKbgxTqPzC4gOVo6nDvELyealaEev1pXHQBxURXZ97zrO3KNC3LiEUhFLrq3IOkixBA==",
-    "surveyResultsAsJson": JSON.stringify({
-        "ID": CommentID,
-        "Comment": document.getElementById('Comment').value
-    }),
+        "formResultId": formResultId,
+        "organizationUnitId": organizationUnit,
+        "formId": selectedFormId,
+        "formUserId": "d4928d79-f735-4504-2527-08dcf4c414cf",
+        "formResultsAsJson": JSON.stringify({
+                "Action": document.getElementById('Action').value,
+                "question1": document.getElementById('Action Description'),
+                "AgreedActionDate":document.getElementById('Agreed Action Date').value,
+                "Status": document.getElementById('Status').value,
+            }),
+        "existingRecord": true
     });
 
     const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow"
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
     };
 
-    fetch("https://demo.strategnosportal.co.za/api/services/app/SurveysToken/SaveCompletedSurveyResults", requestOptions)
+    fetch("https://demo.strategnosportal.co.za/api/services/app/Forms/EditFormTaskResult", requestOptions)
     .then((response) => response.text())
-    .then((result) => 
-        showNotification("<i class='fa-regular fa-thumbs-up fa-bounce'></i> Created successfully!", 'success')
-        )
-        .catch((error) => 
-            showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> Result cannot be save!", 'error')
-        );
-}
-            
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
+
+    }
 
 function stopResize() {
     isResizing = false;
@@ -646,7 +1015,6 @@ function stopResize() {
 }
 
 function getAvailableReportsForNode() {
-    debugger;
     const myHeaders = new Headers();
     myHeaders.append("accept", "text/plain");
     myHeaders.append("X-XSRF-TOKEN", "null");
@@ -664,6 +1032,7 @@ function getAvailableReportsForNode() {
         .then((response) => response.json())
         .then((data) => {
             document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('fullscreen-btn').style.display = 'block';
             const reports = data.result.reports.items;
             console.log(reports)
             const reportList = document.getElementById('reportList');
@@ -745,6 +1114,7 @@ function getAvailableReportsForNode() {
         const buttonId = clickedButton.getAttribute('data-id');
 
         document.getElementById('loading-overlay').style.display = 'block';
+        document.getElementById('fullscreen-btn').style.display = 'none';
 
         clickedButton.classList.add('selected');
         let embedContainer = document.getElementById("embed-container");
@@ -758,6 +1128,56 @@ function getAvailableReportsForNode() {
         formWrapper.classList.toggle('flyout-visible');
             
     }
+
+
+    document.getElementById('fullscreen-btn').addEventListener('click', function () {
+    const container = document.getElementById('second-form');
+
+    if (!document.fullscreenElement) {
+        // Add fullscreen class for entry animation
+        container.classList.add('fullscreen');
+
+        container.requestFullscreen().catch(err => {
+            console.error(`Error attempting to enable fullscreen mode: ${err.message}`);
+        });
+    } else {
+        // Add exit class for exit animation
+        container.classList.add('exit');
+
+        // Remove fullscreen mode
+        document.exitFullscreen().finally(() => {
+            // Cleanup classes after animations
+            setTimeout(() => {
+                container.classList.remove('fullscreen', 'exit');
+            }, 300);
+        });
+    }
+});
+
+function getCurrentLoginInfo() {
+    const myHeaders = new Headers();
+    myHeaders.append("accept", "text/plain");
+    myHeaders.append("X-XSRF-TOKEN", "null");
+    myHeaders.append("Authorization", "Bearer " + StratCloudToken);
+
+    const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+    };
+
+    fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/Session/GetCurrentLoginInformations`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+            // Extract user name and surname
+            console.log(result)
+            currentUser = result.result.user.name & " " & result.result.user.surname;
+            console.log(currentUser);
+        })
+        .catch((error) => console.error(error));
+}
+
+
 
 
 </script>
