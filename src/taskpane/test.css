@@ -7,7 +7,7 @@ body {
     animation: gradientAnimation 15s ease infinite;
     padding: 10px;
     line-height: 1.2;
-    overflow: hidden;
+    overflow: auto;
 }
 
 @keyframes gradientAnimation {
@@ -689,7 +689,7 @@ i:last-child:hover {
 .switch {
     position: absolute;
     top: 93.8%;
-    right: 57px; /* Adjusted right position to sit next to the fullscreen button */
+    right: 51px; /* Adjusted right position to sit next to the fullscreen button */
     display: inline-block;
     width: 61px; /* Slightly smaller than fullscreen button */
     height: 25px;

@@ -1,5 +1,5 @@
 
-
+<html>
 
 <head>
     <meta charset="UTF-8" />
@@ -930,7 +930,8 @@ function updateSurveyResult(validatedSurveyToken){
                     "question1": document.getElementById('Action Description').value,
                     "Id": CommentID,
                     "Status": document.getElementById('Status').value,
-                    "ResponsiblePerson": currentUser
+                    "Flag": document.getElementById('Flag').value,
+                    "ResposiblePerson": document.getElementById('Responsible Person')
                 }),
             });
         }
