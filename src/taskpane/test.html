@@ -54,6 +54,7 @@
         <div class="resizable-divider" id="divider"></div>
         <!-- Second Form (for comments) -->
         <div class="form-wrapper" id="second-form" >
+            <div class="illgal_overlay"><label>THIS PAGE CANNOT BE EDITED</label></div>
             <button class="fullscreen-button" id="fullscreen-btn">⛶</button>
             <label class="switch" id="modeSwitch" style="display: none;">
                 <input type="checkbox" id="toggleSwitch" onclick="toggleMode()">
@@ -166,14 +167,57 @@
 
     var visualNameForExport;
 
-    function toggleMode() {
+    let pageChangedListenerAdded = false; // To track whether the pageChanged listener has been added
+
+function toggleMode() {
     const toggleSwitch = document.getElementById("toggleSwitch");
+    const overlay = document.querySelector(".illgal_overlay");
+
+    // Flag to manage edit mode state
+    let isInEditMode = false;
+
+    // Event handler for overlay click
+    const showNotificationHandler = function () {
+        showNotification("<i class='fa-solid fa-exclamation fa-shake'></i> This page cannot be edited", 'error');
+    };
+
     if (toggleSwitch.checked) {
+        // Switch to edit mode and add page
         report.switchMode("edit");
-        console.log("Edit mode enabled");
+        report.addPage("Authoring Page");
+
+        if (!isInEditMode) {
+            // Add pageChanged listener only when in edit mode
+            report.on("pageChanged", function (event) {
+                const page = event.detail.newPage;
+                if (page.displayName === "Authoring Page") {
+                    console.log("Legal");
+                    overlay.style.display = "none"; // Hide overlay if legal
+                    overlay.removeEventListener('click', showNotificationHandler); // Remove click event listener
+                } else {
+                    console.log("Illegal");
+                    overlay.style.display = "block"; // Show overlay if illegal
+                    overlay.addEventListener('click', showNotificationHandler); // Add click event listener
+                }
+            });
+
+            isInEditMode = true; // Set flag to true indicating we're in edit mode
+        }
     } else {
+        // Switch to view mode
         report.switchMode("view");
         console.log("View mode enabled");
+
+        // Ensure overlay is hidden in view mode
+        overlay.style.display = "none"; 
+
+        // Remove the pageChanged listener when switching to view mode
+        report.off("pageChanged");
+
+        // Ensure no overlay click event listener is attached when in view mode
+        overlay.removeEventListener('click', showNotificationHandler);
+
+        isInEditMode = false; // Reset the flag for view mode
     }
 }
 
@@ -592,11 +636,6 @@
         console.log(spreadsheet.workbookSaveModule.saveJSON.toString())
     }
 
-    function editModeSwitch(){
-        // Switch to edit mode.
-        report.switchMode("edit");
-
-    }
 
 
     function embedReport(myVariable, reportId) {
@@ -609,8 +648,6 @@
             headers: myHeaders,
             redirect: "follow"
         };
-
-
 
         fetch(`https://${tenantName}.strategnosportal.co.za/api/services/app/TenantDashboard/GetReportEmbedInfo?reportId=${reportId}`, requestOptions)
             .then((response) => {
@@ -673,17 +710,13 @@
                     }
                 };
 
-
-                
                 const urlParams = new URLSearchParams(window.location.search);
                 const nodeId = urlParams.get('nodeId');
                 
                 var nodeIdNumber = nodeId;
 
-
                 // Embed the report and display it within the div container.
                 report = powerbi.embed(embedContainer, config);
-
 
                 // Apply the filter once the report is loaded
                 report.on("loaded", function() {    
@@ -692,7 +725,6 @@
                     document.getElementById('loading-overlay').style.display = 'none';
                     document.getElementById('fullscreen-btn').style.display = 'block';
                     document.getElementById("modeSwitch").style.display = "inline-block";
-                    
 
                 });
 
@@ -724,12 +756,6 @@
                                 document.getElementById('Work Order Number').value = CommentID;
                             }
 
-                        console.log(CommentID)
-                        
-
-
-                        
-
                     }
                     else if (data.visual.name === 'b3f3f31a308ce0d94399'){
                         console.log(data)
@@ -746,7 +772,6 @@
                         document.getElementById('Action Description').value = ActionDescription;
                         document.getElementById('Agreed Action Date').value = agreedActionDate;
                         document.getElementById('Status').value = actionStatus;
-                        
                         
                     }
                     else{
@@ -780,8 +805,6 @@
 
                         copyToClipboard(result.data)
 
-
-
                     }
                     catch (errors) {
                         console.log(errors);
@@ -790,7 +813,6 @@
                 })
 
                 report.on("buttonClicked", async function (event) {
-
                         try {
                             await report.refresh();
                             console.log("Refreshed");
@@ -798,7 +820,6 @@
                         catch (errors) {
                             console.log(errors);
                         }
-
                 });
                 
             }).catch((error) => {
@@ -810,10 +831,6 @@
                 document.getElementById('loading-overlay').style.display = 'none';
                 document.getElementById('fullscreen-btn').style.display = 'block';
                 document.getElementById('error-container').style.display = 'flex';
-                
-                
-
-
             });
     }
 
@@ -931,7 +948,7 @@ function updateSurveyResult(validatedSurveyToken){
                     "Id": CommentID,
                     "Status": document.getElementById('Status').value,
                     "Flag": document.getElementById('Flag').value,
-                    "ResposiblePerson": document.getElementById('Responsible Person')
+                    "ResposiblePerson": document.getElementById('Responsible Person').value
                 }),
             });
         }

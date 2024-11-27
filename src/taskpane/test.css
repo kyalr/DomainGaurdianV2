@@ -773,3 +773,15 @@ input:not(:checked) + .slider .slider-text:before {
 .fullscreen #modeSwitch{
     top: 95.2%; 
 }
+
+.illgal_overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 93.5%;
+    background: rgba(0, 0, 0, 0.1); /* semi-transparent black overlay */
+    z-index: 20;
+    display: none; /* Hidden by default */
+    cursor:no-drop;
+}
