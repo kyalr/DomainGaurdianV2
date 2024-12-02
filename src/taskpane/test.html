@@ -96,7 +96,7 @@
 
         <div id="formPopup" class="modal">
             <div class="modal-content">
-                <label style="align-items: left; font-size: 20px;">Select a Survey</label>
+                <label style="align-items: left; font-size: 20px;">Select an Option</label>
                 <span class="close">&times;</span>
 
               <div id="formButtonsContainer">
@@ -184,7 +184,9 @@ function toggleMode() {
     if (toggleSwitch.checked) {
         // Switch to edit mode and add page
         report.switchMode("edit");
+
         report.addPage("Authoring Page");
+
 
         if (!isInEditMode) {
             // Add pageChanged listener only when in edit mode
@@ -220,8 +222,6 @@ function toggleMode() {
         isInEditMode = false; // Reset the flag for view mode
     }
 }
-
-
 
     Office.onReady(async (info) => {
             if (info.host === Office.HostType.Outlook) {
